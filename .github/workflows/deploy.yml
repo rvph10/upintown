@@ -1,0 +1,28 @@
+name: Deploy to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v25
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'
+
+# Note: You need to add the following secrets to your GitHub repository:
+# - VERCEL_TOKEN: Your Vercel API token
+# - VERCEL_ORG_ID: Your Vercel organization ID
+# - VERCEL_PROJECT_ID: Your Vercel project ID
+#
+# Get these from: https://vercel.com/account/tokens

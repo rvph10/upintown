@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Work | upintown"
+  description="Explore upintown's portfolio and projects"
+  pageStyles={['work']}
+  pageScripts={['anime', 'work']}
+>
+  <section class="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container">
+      <h1 data-animate-type="reveal" data-animate-delay="0.25">
+        Our Work
+      </h1>
+      <p class="md" data-animate-type="line-reveal" data-animate-delay="0.5">
+        Featured projects and case studies.
+      </p>
+    </div>
+  </section>
+</BaseLayout>

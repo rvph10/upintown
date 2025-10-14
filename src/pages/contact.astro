@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Contact | upintown"
+  description="Get in touch with upintown"
+  pageStyles={['contact']}
+  pageScripts={['anime', 'contact']}
+>
+  <section class="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container">
+      <h1 data-animate-type="reveal" data-animate-delay="0.25">
+        Get In Touch
+      </h1>
+      <p class="md" data-animate-type="line-reveal" data-animate-delay="0.5">
+        Let's build something great together.
+      </p>
+      <form style="margin-top: 2rem; max-width: 600px;">
+        <div style="margin-bottom: 1rem;">
+          <input type="text" placeholder="Your Name" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);" />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <input type="email" placeholder="your@email.com" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);" />
+        </div>
+        <div style="margin-bottom: 1rem;">
+          <textarea placeholder="Your Message" rows="5" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);"></textarea>
+        </div>
+        <button type="submit" style="padding: 1rem 2rem; background: var(--base-300); border: none; color: var(--text-100); cursor: pointer;">
+          Send Message
+        </button>
+      </form>
+    </div>
+  </section>
+</BaseLayout>

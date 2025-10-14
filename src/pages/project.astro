@@ -1,0 +1,21 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="Project | upintown"
+  description="View project details"
+  pageStyles={['project']}
+  pageScripts={['anime', 'project', 'slides']}
+>
+  <section class="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+    <div class="container">
+      <h1 data-animate-type="reveal" data-animate-delay="0.25">
+        Project Details
+      </h1>
+      <p class="md" data-animate-type="line-reveal" data-animate-delay="0.5">
+        In-depth project showcase.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
