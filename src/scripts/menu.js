@@ -4,7 +4,6 @@ import { SplitText } from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 
 const menu = document.querySelector(".menu");
-const menuToggle = document.querySelector(".menu-toggle");
 const menuHeader = document.querySelector(".menu-header");
 const menuOverlay = document.querySelector(".menu-overlay");
 const menuItems = document.querySelectorAll(".menu-nav li");
@@ -22,7 +21,7 @@ let footerSplitTexts = [];
 function scrambleText(elements, duration = 0.4) {
   const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
 
-  elements.forEach((char, index) => {
+  elements.forEach((char) => {
     const originalText = char.textContent;
     let iterations = 0;
     const maxIterations = Math.floor(Math.random() * 6) + 3;

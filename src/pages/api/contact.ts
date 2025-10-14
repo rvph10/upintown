@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     // TODO: Intégrer avec Resend, SendGrid, ou autre service d'email
     // Pour l'instant, on simule l'envoi
-    console.log('Contact form submission:', { name, email, message });
+    console.warn('Contact form submission (not sent):', { name, email, message });
 
     /*
     // Exemple avec Resend:

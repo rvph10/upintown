@@ -17,9 +17,6 @@ function initSnapshotsScroll() {
 
   if (!wrapper || !snapshotsSection) return;
 
-  const snapshots = wrapper.querySelectorAll(".project-snapshot");
-  const snapshotCount = snapshots.length;
-
   const progressBarContainer = document.createElement("div");
   progressBarContainer.className = "snapshots-progress-bar";
 

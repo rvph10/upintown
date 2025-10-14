@@ -3,9 +3,22 @@ import tseslint from '@typescript-eslint/eslint-plugin';
 import tsparser from '@typescript-eslint/parser';
 
 export default [
-  ...eslintPluginAstro.configs.recommended,
+  // Ignore build outputs and dependencies
   {
-    files: ['**/*.{js,mjs,cjs,ts,tsx,astro}'],
+    ignores: [
+      'dist/',
+      '.vercel/',
+      'node_modules/',
+      '.astro/',
+      '_backup/',
+      '**/*.mjs', // Ignore built files
+    ],
+  },
+  // Astro files
+  ...eslintPluginAstro.configs.recommended,
+  // TypeScript and JavaScript files
+  {
+    files: ['**/*.{js,mjs,cjs,ts,tsx}'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -24,8 +37,5 @@ export default [
       '@typescript-eslint/no-explicit-any': 'warn',
       'no-console': ['warn', { allow: ['warn', 'error'] }],
     },
-  },
-  {
-    ignores: ['dist/', 'node_modules/', '.astro/', '_backup/'],
   },
 ];
