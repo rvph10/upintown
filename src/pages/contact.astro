@@ -3,33 +3,78 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
 <BaseLayout
-  title="Contact | upintown"
-  description="Get in touch with upintown"
+  title="Contact | upintown | Get in Touch"
+  description="Ready to bring your digital vision to life? Let's connect and create something extraordinary"
   pageStyles={['contact']}
-  pageScripts={['anime', 'contact']}
+  pageScripts={['contact']}
 >
-  <section class="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+  <section class="contact">
+    <div class="home-spotlight-top-bar">
+      <div class="container">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-light.png" alt="Symbol" />
+          </div>
+        </div>
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-light.png" alt="Symbol" />
+          </div>
+        </div>
+      </div>
+    </div>
     <div class="container">
-      <h1 data-animate-type="reveal" data-animate-delay="0.25">
-        Get In Touch
-      </h1>
-      <p class="md" data-animate-type="line-reveal" data-animate-delay="0.5">
-        Let's build something great together.
-      </p>
-      <form style="margin-top: 2rem; max-width: 600px;">
-        <div style="margin-bottom: 1rem;">
-          <input type="text" placeholder="Your Name" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);" />
+      <div class="contact-header">
+        <div class="contact-callout">
+          <p
+            class="mono"
+            data-animate-type="scramble"
+            data-animate-delay="0.25"
+          >
+            <span>&#9654;</span> Email: hello@upintown.com
+          </p>
         </div>
-        <div style="margin-bottom: 1rem;">
-          <input type="email" placeholder="your@email.com" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);" />
+        <div class="contact-header-title">
+          <h2 data-animate-type="line-reveal" data-animate-delay="0.25">
+            Let's Build Something Bold
+          </h2>
         </div>
-        <div style="margin-bottom: 1rem;">
-          <textarea placeholder="Your Message" rows="5" style="width: 100%; padding: 1rem; background: var(--base-200); border: 1px solid var(--base-300); color: var(--text-100);"></textarea>
-        </div>
-        <button type="submit" style="padding: 1rem 2rem; background: var(--base-300); border: none; color: var(--text-100); cursor: pointer;">
-          Send Message
-        </button>
-      </form>
+      </div>
+      <div class="contact-gif">
+        <img src="/contact/contact.gif" alt="" />
+      </div>
+    </div>
+    <div class="home-spotlight-bottom-bar">
+      <div class="container">
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+        >
+          <span>&#9654;</span> Instagram
+        </p>
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+        >
+          <span>&#9654;</span> Twitter / X
+        </p>
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+        >
+          <span>&#9654;</span> YouTube
+        </p>
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+        >
+          <span>&#9654;</span> LinkedIn
+        </p>
+      </div>
     </div>
   </section>
 </BaseLayout>

@@ -4,18 +4,270 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
 <BaseLayout
   title="About | upintown"
-  description="Learn more about upintown and our digital solutions"
-  pageStyles={['about']}
+  description="Learn more about upintown and our digital solutions expertise"
+  pageStyles={['home', 'about']}
   pageScripts={['anime', 'about']}
 >
-  <section class="hero" style="min-height: 100vh; display: flex; align-items: center; justify-content: center;">
+  <section class="about-hero">
+    <div class="about-hero-img">
+      <img src="/about/about-hero-img.jpg" alt="" />
+    </div>
     <div class="container">
-      <h1 data-animate-type="reveal" data-animate-delay="0.25">
-        About upintown
-      </h1>
-      <p class="md" data-animate-type="line-reveal" data-animate-delay="0.5">
-        Digital solutions crafted with precision and creativity.
-      </p>
+      <div class="about-header">
+        <h2 data-animate-type="line-reveal" data-animate-delay="0.25">
+          The Force Behind upintown
+        </h2>
+      </div>
     </div>
   </section>
+
+  <section class="anime-text-container">
+    <div class="home-spotlight-top-bar">
+      <div class="container">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-dark.png" alt="Symbol" />
+          </div>
+        </div>
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-dark.png" alt="Symbol" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="home-spotlight-bottom-bar">
+      <div class="container">
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.2"
+          data-animate-on-scroll="true"
+        >
+          <span>&#9654;</span> Specs loaded
+        </p>
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+          data-animate-on-scroll="true"
+        >
+          / Readme.md
+        </p>
+      </div>
+    </div>
+    <div class="container">
+      <div class="copy-container">
+        <div class="anime-text">
+          <p>
+            Welcome to upintown, where digital solutions are crafted with precision and creativity.
+            This isn't just a portfolio—it's a showcase of innovation, expertise, and dedication.
+          </p>
+          <p>
+            We design with purpose, develop with care, and believe every detail matters.
+            From concept to deployment, everything is built with intent and passion.
+            This space celebrates modern technology, meaningful design, and results that make an impact.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-skills">
+    <div class="container">
+      <div class="about-skills-col">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-light.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s2-light.png" alt="Symbol" />
+          </div>
+        </div>
+        <div class="about-skills-copy-wrapper">
+          <div class="about-skills-callout">
+            <p
+              class="mono"
+              data-animate-type="scramble"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              <span>&#9654;</span> Technologies that power innovation
+            </p>
+          </div>
+          <div class="about-skills-header">
+            <h3
+              data-animate-type="line-reveal"
+              data-animate-delay="0.4"
+              data-animate-on-scroll="true"
+            >
+              Tools we master to build exceptional digital experiences
+            </h3>
+          </div>
+        </div>
+      </div>
+      <div class="about-skills-col skills-playground">
+        <div class="object-container">
+          <div class="object os-1"><p class="mono">HTML</p></div>
+          <div class="object os-2"><p class="mono">CSS</p></div>
+          <div class="object os-3"><p class="mono">JavaScript</p></div>
+          <div class="object os-1"><p class="mono">TypeScript</p></div>
+          <div class="object os-2"><p class="mono">React</p></div>
+          <div class="object os-3"><p class="mono">Next.js</p></div>
+          <div class="object os-1"><p class="mono">Astro</p></div>
+          <div class="object os-2"><p class="mono">GSAP</p></div>
+          <div class="object os-3"><p class="mono">Node.js</p></div>
+          <div class="object os-1"><p class="mono">Tailwind</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-sticky-cards">
+    <div class="sticky-cards-header">
+      <h3
+        data-animate-type="line-reveal"
+        data-animate-delay="0.2"
+        data-animate-on-scroll="true"
+      >
+        Visual snapshots from our work
+      </h3>
+    </div>
+    <div class="home-spotlight-top-bar">
+      <div class="container">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-dark.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s2-dark.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s3-dark.png" alt="Symbol" />
+          </div>
+        </div>
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-dark.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s2-dark.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s3-dark.png" alt="Symbol" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="home-spotlight-bottom-bar">
+      <div class="container">
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.2"
+          data-animate-on-scroll="true"
+        >
+          <span>&#9654;</span> Gallery Mode
+        </p>
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.25"
+          data-animate-on-scroll="true"
+        >
+          / Snapshots
+        </p>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-1.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">X01-842</p></div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-2.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">V9-372K</p></div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-3.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">Z84-Q17</p></div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-4.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">L56-904</p></div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-5.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">A23-7P1</p></div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-card-img">
+        <img src="/gallery-images/gallery-img-6.jpg" alt="" />
+      </div>
+      <div class="gallery-card-content"><p class="mono">T98-462</p></div>
+    </div>
+  </section>
+
+  <section class="outro">
+    <div class="container">
+      <h3>Let's build something great</h3>
+    </div>
+    <div class="outro-strips">
+      <div class="outro-strip os-1">
+        <div class="skill skill-var-1"><p class="mono">Frontend</p></div>
+        <div class="skill skill-var-2"><p class="mono">UX</p></div>
+        <div class="skill skill-var-3"><p class="mono">Performance</p></div>
+        <div class="skill skill-var-1"><p class="mono">Clean Code</p></div>
+        <div class="skill skill-var-3"><p class="mono">Innovation</p></div>
+        <div class="skill skill-var-1"><p class="mono">Precision</p></div>
+      </div>
+      <div class="outro-strip os-2">
+        <div class="skill skill-var-2"><p class="mono">Motion</p></div>
+        <div class="skill skill-var-3"><p class="mono">Design</p></div>
+        <div class="skill skill-var-1"><p class="mono">Modern Stack</p></div>
+      </div>
+      <div class="outro-strip os-3">
+        <div class="skill skill-var-2"><p class="mono">Details</p></div>
+        <div class="skill skill-var-3"><p class="mono">Quality</p></div>
+        <div class="skill skill-var-1"><p class="mono">Solutions</p></div>
+        <div class="skill skill-var-2"><p class="mono">Digital</p></div>
+        <div class="skill skill-var-3"><p class="mono">Creativity</p></div>
+        <div class="skill skill-var-3"><p class="mono">Animations</p></div>
+        <div class="skill skill-var-1"><p class="mono">Best Practices</p></div>
+      </div>
+      <div class="outro-strip os-4">
+        <div class="skill skill-var-1"><p class="mono">TypeScript</p></div>
+        <div class="skill skill-var-2"><p class="mono">React</p></div>
+        <div class="skill skill-var-3"><p class="mono">Astro</p></div>
+      </div>
+      <div class="outro-strip os-5">
+        <div class="skill skill-var-1"><p class="mono">Web Apps</p></div>
+        <div class="skill skill-var-2"><p class="mono">Digital</p></div>
+        <div class="skill skill-var-3"><p class="mono">GSAP</p></div>
+        <div class="skill skill-var-1"><p class="mono">Excellence</p></div>
+        <div class="skill skill-var-2"><p class="mono">Live Sites</p></div>
+        <div class="skill skill-var-3"><p class="mono">Professional</p></div>
+        <div class="skill skill-var-1"><p class="mono">Launch Ready</p></div>
+        <div class="skill skill-var-2"><p class="mono">upintown</p></div>
+      </div>
+      <div class="outro-strip os-6">
+        <div class="skill skill-var-3"><p class="mono">UI Expert</p></div>
+        <div class="skill skill-var-1"><p class="mono">Reliable</p></div>
+        <div class="skill skill-var-2"><p class="mono">Deployed</p></div>
+        <div class="skill skill-var-3"><p class="mono">Modern CSS</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Matter.js for physics animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/matter-js/0.19.0/matter.min.js"></script>
 </BaseLayout>
