@@ -1,10 +1,14 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import s1 from '../../public/symbols/s1.png';
 ---
 
 <BaseLayout
-  title="404 | upintown"
-  description="Page not found"
+  title="404 Page Not Found | upintown"
+  description="The page you're looking for doesn't exist or has been moved. Return to upintown homepage to explore our digital solutions."
+  image="/og-image.jpg"
+  noindex={true}
   pageStyles={['error']}
   pageScripts={['anime']}
 >
@@ -13,12 +17,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="eager" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="eager" />
           </div>
         </div>
       </div>

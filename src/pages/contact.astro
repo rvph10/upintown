@@ -1,10 +1,13 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import s1 from '../../public/symbols/s1.png';
 ---
 
 <BaseLayout
-  title="Contact | upintown | Get in Touch"
-  description="Ready to bring your digital vision to life? Let's connect and create something extraordinary"
+  title="Contact upintown | Let's Build Something Great Together"
+  description="Ready to bring your digital vision to life? Contact upintown for modern web development, UI/UX design, and digital solutions. Email: contact@upintown.dev"
+  image="/og-image.jpg"
   pageStyles={['contact']}
   pageScripts={['contact']}
 >
@@ -13,12 +16,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -26,33 +29,30 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="container">
       <div class="contact-header">
         <div class="contact-callout">
-          <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
-            <span>&#9654;</span> Email: hello@upintown.com
-          </p>
+          <a href="mailto:contact@upintown.dev" class="mono" data-animate-type="scramble" data-animate-delay="0.25">
+            <span>&#9654;</span> Email: contact@upintown.dev
+          </a>
         </div>
         <div class="contact-header-title">
           <h2 data-animate-type="line-reveal" data-animate-delay="0.25">
-            Let's Build Something Bold
+            Tell us about your project
           </h2>
         </div>
-      </div>
-      <div class="contact-gif">
-        <img src="/contact/contact.gif" alt="" />
       </div>
     </div>
     <div class="home-spotlight-bottom-bar">
       <div class="container">
         <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
-          <span>&#9654;</span> Instagram
+          <span>&#9654;</span> Instagram (Coming Soon)
         </p>
         <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
-          <span>&#9654;</span> Twitter / X
+          <span>&#9654;</span> Twitter / X (Coming Soon)
         </p>
+        <a href="https://github.com/rvph10" target="_blank" rel="noopener noreferrer" class="mono" data-animate-type="scramble" data-animate-delay="0.25">
+          <span>&#9654;</span> Github
+        </a>
         <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
-          <span>&#9654;</span> YouTube
-        </p>
-        <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
-          <span>&#9654;</span> LinkedIn
+          <span>&#9654;</span> Linkedin (Coming Soon)
         </p>
       </div>
     </div>

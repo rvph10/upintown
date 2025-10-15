@@ -1,10 +1,24 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+
+// Import symbols
+import symbol1 from '../../public/symbols/s1.png';
+import symbol2 from '../../public/symbols/s2.png';
+import symbol3 from '../../public/symbols/s3.png';
+
+// Import project images
+import projectImg1 from '../../public/project-images/project-img-1.png';
+import projectImg2 from '../../public/project-images/project-img-2.png';
+import projectImg3 from '../../public/project-images/project-img-3.png';
+import projectImg4 from '../../public/project-images/project-img-4.png';
+import projectImg5 from '../../public/project-images/project-img-5.png';
 ---
 
 <BaseLayout
-  title="Project | upintown | Digital Portfolio"
-  description="Detailed project showcase from upintown"
+  title="Terrene Interior Studio Project | upintown Portfolio"
+  description="Case study: Terrene Interior Studio website built with Next.js, Tailwind CSS, GSAP, and Lenis. Featuring elegant animations, smooth scrolling, and modern design principles."
+  image="/project-images/project-img-1.png"
   pageStyles={['project']}
   pageScripts={['project']}
 >
@@ -12,12 +26,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="container">
       <div class="symbols-container">
         <div class="symbol">
-          <img src="/symbols/s1.png" alt="Symbol" />
+          <Image src={symbol1} alt="Decorative geometric symbol" loading="eager" />
         </div>
       </div>
       <div class="symbols-container">
         <div class="symbol">
-          <img src="/symbols/s1.png" alt="Symbol" />
+          <Image src={symbol1} alt="Decorative geometric symbol" loading="eager" />
         </div>
       </div>
     </div>
@@ -26,24 +40,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   <section class="project-header">
     <div class="container">
       <div class="project-title">
-        <h3 data-animate-type="reveal" data-animate-delay="0.25">Orange Room</h3>
+        <h3 data-animate-type="reveal" data-animate-delay="0.25">Terrene - Interior Studio</h3>
       </div>
       <div class="project-header-divider"></div>
       <div class="project-meta">
         <div class="project-meta-col">
-          <p data-animate-type="line-reveal" data-animate-delay="0.25">Orangeroom.uk.co</p>
+          <p data-animate-type="line-reveal" data-animate-delay="0.25">Terrene.co</p>
           <p data-animate-type="line-reveal" data-animate-delay="0.3">Website</p>
         </div>
         <div class="project-meta-col">
           <div class="project-meta-sub-col">
-            <p data-animate-type="line-reveal" data-animate-delay="0.25">June 2024</p>
+            <p data-animate-type="line-reveal" data-animate-delay="0.25">August 2025</p>
             <p data-animate-type="line-reveal" data-animate-delay="0.3">
-              Creative Dev, Experimental
+              Creative Dev, UI/UX Design
             </p>
           </div>
           <div class="project-meta-sub-col">
             <p data-animate-type="line-reveal" data-animate-delay="0.25">Client</p>
-            <p data-animate-type="line-reveal" data-animate-delay="0.3">Layer Eleven</p>
+            <p data-animate-type="line-reveal" data-animate-delay="0.3">Terrene</p>
           </div>
         </div>
       </div>
@@ -52,7 +66,16 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
   <section class="project-banner-img">
     <div class="container">
-      <img src="/project-images/project-img-2.jpg" alt="" />
+      <video autoplay muted loop playsinline preload="metadata">
+        <source src="/project-images/project-showcase.mp4" type="video/mp4" />
+        <Image
+          src={projectImg2}
+          alt="Terrene Interior Studio website showcase - elegant homepage with minimalist design"
+          loading="eager"
+          widths={[800, 1200, 1920]}
+          sizes="100vw"
+        />
+      </video>
     </div>
   </section>
 
@@ -100,11 +123,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </p>
           <br />
           <p data-animate-type="line-reveal" data-animate-delay="1" data-animate-on-scroll="true">
-            Orange Room started as a visual experiment for Layer Eleven — a space to explore how
-            structure, motion, and contrast could speak without words. The brief was intentionally
-            abstract. The execution had to be precise. Built from scratch with a custom scroll
-            system, layered transitions, and a minimalist grid, the site blends cinematic visuals
-            with frontend discipline.
+            Terrene is an interior studio that specializes in creating unique and bespoke
+            interiors. They are known for their use of natural materials and their commitment to
+            sustainability. They are based in London and have a team of talented designers and
+            craftsmen.
           </p>
         </div>
       </div>
@@ -116,18 +138,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={symbol2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={symbol2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -154,19 +176,54 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
     <div class="project-snapshots-wrapper">
       <div class="project-snapshot">
-        <img src="/project-images/project-img-1.jpg" alt="" />
+        <Image
+          src={projectImg1}
+          alt="Terrene project - Homepage hero section with elegant typography and natural imagery"
+          loading="lazy"
+          widths={[600, 1000, 1400]}
+          sizes="(max-width: 768px) 100vw, 80vw"
+          format="webp"
+        />
       </div>
       <div class="project-snapshot">
-        <img src="/project-images/project-img-2.jpg" alt="" />
+        <Image
+          src={projectImg2}
+          alt="Terrene project - Project gallery page showcasing interior design portfolio"
+          loading="lazy"
+          widths={[600, 1000, 1400]}
+          sizes="(max-width: 768px) 100vw, 80vw"
+          format="webp"
+        />
       </div>
       <div class="project-snapshot">
-        <img src="/project-images/project-img-3.jpg" alt="" />
+        <Image
+          src={projectImg3}
+          alt="Terrene project - About page with team information and studio philosophy"
+          loading="lazy"
+          widths={[600, 1000, 1400]}
+          sizes="(max-width: 768px) 100vw, 80vw"
+          format="webp"
+        />
       </div>
       <div class="project-snapshot">
-        <img src="/project-images/project-img-4.jpg" alt="" />
+        <Image
+          src={projectImg4}
+          alt="Terrene project - Contact page with interactive map and inquiry form"
+          loading="lazy"
+          widths={[600, 1000, 1400]}
+          sizes="(max-width: 768px) 100vw, 80vw"
+          format="webp"
+        />
       </div>
       <div class="project-snapshot">
-        <img src="/project-images/project-img-1.jpg" alt="" />
+        <Image
+          src={projectImg5}
+          alt="Terrene project - Mobile responsive design showing adaptive layouts"
+          loading="lazy"
+          widths={[600, 1000, 1400]}
+          sizes="(max-width: 768px) 100vw, 80vw"
+          format="webp"
+        />
       </div>
     </div>
     <div class="snapshots-progress-bar">
@@ -215,46 +272,46 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={symbol2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3.png" alt="Symbol" />
+            <Image src={symbol3} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s3.png" alt="Symbol" />
+            <Image src={symbol3} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={symbol2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
     </div>
     <div class="container next-project-data">
       <div class="next-project-title">
-        <h3>Futureschool</h3>
+        <h3>Coming Soon</h3>
       </div>
       <div class="next-project-header-divider"></div>
       <div class="next-project-meta">
         <div class="next-project-meta-col">
-          <p>Futureschool.com</p>
+          <p>Project TBA</p>
           <p>Website</p>
         </div>
         <div class="next-project-meta-col">
           <div class="next-project-meta-sub-col">
-            <p>March 2022</p>
-            <p>UI Design, Theme Concept</p>
+            <p>2025</p>
+            <p>Creative Dev, UI/UX Design</p>
           </div>
           <div class="next-project-meta-sub-col">
             <p>Client</p>
-            <p>Signal Department</p>
+            <p>TBA</p>
           </div>
         </div>
       </div>
@@ -262,7 +319,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     <div class="home-spotlight-bottom-bar">
       <div class="container">
         <p class="mono"><span>&#9654;</span> Next fragment</p>
-        <p class="mono">/ Ability Showcase</p>
+        <p class="mono">/ Coming Soon</p>
       </div>
     </div>
   </section>

@@ -1,10 +1,32 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Image } from 'astro:assets';
+
+// Import symbols
+import symbol1 from '../../public/symbols/s1.png';
+import symbol1Light from '../../public/symbols/s1-light.png';
+import symbol2Light from '../../public/symbols/s2-light.png';
+import symbol3Light from '../../public/symbols/s3-light.png';
+
+// Import upintown logo
+import uptownLogo from '../../public/global/upintown.svg';
+
+// Import spotlight images
+import spotlightImg1 from '../../public/spotlight-images/spotlight-img-1.png';
+import spotlightImg2 from '../../public/spotlight-images/spotlight-img-2.png';
+import spotlightImg3 from '../../public/spotlight-images/spotlight-img-3.webp';
+import spotlightImg4 from '../../public/spotlight-images/spotlight-img-4.png';
+import spotlightImg5 from '../../public/spotlight-images/spotlight-img-5.webp';
+import spotlightImg6 from '../../public/spotlight-images/spotlight-img-6.webp';
+import spotlightImg7 from '../../public/spotlight-images/spotlight-img-7.png';
+import spotlightImg8 from '../../public/spotlight-images/spotlight-img-8.webp';
+import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
 ---
 
 <BaseLayout
-  title="upintown | Digital Solutions"
-  description="upintown creates cutting-edge digital solutions with precision and creativity"
+  title="upintown | Digital Solutions - Modern Web Development"
+  description="upintown creates cutting-edge digital solutions with precision and creativity. Expert in Astro, React, TypeScript, GSAP animations, and modern web development."
+  image="/og-image.jpg"
   pageStyles={['home']}
   pageScripts={['anime', 'home']}
 >
@@ -13,12 +35,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="eager" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={symbol1} alt="Decorative geometric symbol" loading="eager" />
           </div>
         </div>
       </div>
@@ -27,7 +49,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="hero-content">
         <div class="hero-header">
           <h1 data-animate-type="reveal" data-animate-delay="0.25">
-            <img src="/global/upintown.svg" alt="upintown" />
+            <Image src={uptownLogo} alt="upintown - Digital Solutions" loading="eager" />
           </h1>
         </div>
         <div class="hero-footer">
@@ -55,7 +77,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="home-about-col">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <Image src={symbol2Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="home-about-header">
@@ -158,24 +180,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-light.png" alt="Symbol" />
+            <Image src={symbol1Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <Image src={symbol2Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3-light.png" alt="Symbol" />
+            <Image src={symbol3Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s3-light.png" alt="Symbol" />
+            <Image src={symbol3Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <Image src={symbol2Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s1-light.png" alt="Symbol" />
+            <Image src={symbol1Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -211,58 +233,116 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="home-spotlight-images-row">
         <div class="home-spotlight-image"></div>
         <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-1.png" alt="" />
+          <Image
+            src={spotlightImg1}
+            alt="Modern website interface design showcasing clean typography and minimalist layout"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
         </div>
         <div class="home-spotlight-image"></div>
         <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-2.png" alt="" />
-        </div>
-      </div>
-      <div class="home-spotlight-images-row">
-        <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-3.webp" alt="" />
-        </div>
-        <div class="home-spotlight-image"></div>
-        <div class="home-spotlight-image"></div>
-        <div class="home-spotlight-image"></div>
-      </div>
-      <div class="home-spotlight-images-row">
-        <div class="home-spotlight-image"></div>
-        <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-4.png" alt="" />
-        </div>
-        <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-5.webp" alt="" />
-        </div>
-        <div class="home-spotlight-image"></div>
-      </div>
-      <div class="home-spotlight-images-row">
-        <div class="home-spotlight-image"></div>
-        <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-6.webp" alt="" />
-        </div>
-        <div class="home-spotlight-image"></div>
-        <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-7.png" alt="" />
+          <Image
+            src={spotlightImg2}
+            alt="Interactive web application with smooth animations and modern UI elements"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
         </div>
       </div>
       <div class="home-spotlight-images-row">
         <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-8.webp" alt="" />
+          <Image
+            src={spotlightImg3}
+            alt="Portfolio project featuring bold typography and dynamic color scheme"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 100vw, 25vw"
+          />
+        </div>
+        <div class="home-spotlight-image"></div>
+        <div class="home-spotlight-image"></div>
+        <div class="home-spotlight-image"></div>
+      </div>
+      <div class="home-spotlight-images-row">
+        <div class="home-spotlight-image"></div>
+        <div class="home-spotlight-image image-holder">
+          <Image
+            src={spotlightImg4}
+            alt="E-commerce website with product showcase and seamless user experience"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        </div>
+        <div class="home-spotlight-image image-holder">
+          <Image
+            src={spotlightImg5}
+            alt="Creative landing page with engaging visual hierarchy and call-to-actions"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        </div>
+        <div class="home-spotlight-image"></div>
+      </div>
+      <div class="home-spotlight-images-row">
+        <div class="home-spotlight-image"></div>
+        <div class="home-spotlight-image image-holder">
+          <Image
+            src={spotlightImg6}
+            alt="Dashboard interface with data visualization and intuitive navigation"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
         </div>
         <div class="home-spotlight-image"></div>
         <div class="home-spotlight-image image-holder">
-          <img src="/spotlight-images/spotlight-img-9.jpeg" alt="" />
+          <Image
+            src={spotlightImg7}
+            alt="Mobile-first responsive design with smooth transitions and gestures"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        </div>
+      </div>
+      <div class="home-spotlight-images-row">
+        <div class="home-spotlight-image image-holder">
+          <Image
+            src={spotlightImg8}
+            alt="Brand identity system with consistent design language across platforms"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
+        </div>
+        <div class="home-spotlight-image"></div>
+        <div class="home-spotlight-image image-holder">
+          <Image
+            src={spotlightImg9}
+            alt="Content management system with modern editorial tools and workflow"
+            loading="lazy"
+            widths={[400, 800, 1200]}
+            sizes="(max-width: 768px) 50vw, 25vw"
+          />
         </div>
         <div class="home-spotlight-image"></div>
       </div>
     </div>
     <div class="spotlight-mask-image-container">
       <div class="spotlight-mask-image">
-        <video autoplay muted loop playsinline>
+        <video autoplay muted loop playsinline preload="metadata">
           <source src="/spotlight-images/spotlight-banner.webm" type="video/webm" />
           <source src="/spotlight-images/spotlight-banner-optimized.gif" type="image/gif" />
-          <img src="/spotlight-images/spotlight-banner-optimized.gif" alt="" loading="lazy" />
+          <img
+            src="/spotlight-images/spotlight-banner-optimized.gif"
+            alt="Animated showcase of modern digital solutions and creative interfaces"
+            loading="lazy"
+          />
         </video>
       </div>
       <div class="container">

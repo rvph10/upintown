@@ -1,10 +1,15 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import s1 from '../../public/symbols/s1.png';
+import s2 from '../../public/symbols/s2.png';
+import s3 from '../../public/symbols/s3.png';
 ---
 
 <BaseLayout
-  title="About | upintown"
-  description="Learn more about upintown and our digital solutions expertise"
+  title="About upintown | Expert Digital Solutions & Web Development"
+  description="Discover upintown's expertise in modern web development, UI/UX design, and digital solutions. We leverage cutting-edge technologies like Astro.js, React, and GSAP to deliver production-ready solutions."
+  image="/og-image.jpg"
   pageStyles={['home', 'about']}
   pageScripts={['anime', 'about']}
 >
@@ -23,12 +28,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -75,10 +80,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="about-skills-col">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={s2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="about-skills-copy-wrapper">
@@ -125,24 +130,24 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={s2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3.png" alt="Symbol" />
+            <Image src={s3} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1.png" alt="Symbol" />
+            <Image src={s1} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2.png" alt="Symbol" />
+            <Image src={s2} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3.png" alt="Symbol" />
+            <Image src={s3} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -171,13 +176,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="about-company-grid">
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 01 ]</p>
+            <p class="mono">01.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              Built on <span class="accent-text">excellence</span>
+              Excellence
             </h4>
           </div>
           <div class="about-company-card-content">
@@ -194,13 +199,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 02 ]</p>
+            <p class="mono">02.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              Modern <span class="accent-text">technology</span> stack
+              Modern Stack
             </h4>
           </div>
           <div class="about-company-card-content">
@@ -217,13 +222,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 03 ]</p>
+            <p class="mono">03.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              End-to-end <span class="accent-text">delivery</span>
+              End-to-End
             </h4>
           </div>
           <div class="about-company-card-content">
@@ -240,13 +245,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 04 ]</p>
+            <p class="mono">04.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              Detail-driven <span class="accent-text">approach</span>
+              Detail-Driven
             </h4>
           </div>
           <div class="about-company-card-content">
@@ -263,13 +268,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 05 ]</p>
+            <p class="mono">05.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              Launch <span class="accent-text">ready</span>
+              Launch Ready
             </h4>
           </div>
           <div class="about-company-card-content">
@@ -286,13 +291,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
         <div class="about-company-card">
           <div class="about-company-card-header">
-            <p class="mono">[ 06 ]</p>
+            <p class="mono">06.</p>
             <h4
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              Innovation at the <span class="accent-text">core</span>
+              Innovation
             </h4>
           </div>
           <div class="about-company-card-content">
