@@ -9,7 +9,8 @@
     "host": "astro dev --host",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "generate:og": "node generate-og-images.mjs"
   },
   "keywords": [],
   "author": "",
@@ -28,6 +29,7 @@
     "vite": "^7.0.5"
   },
   "devDependencies": {
+    "@napi-rs/canvas": "^0.1.80",
     "@typescript-eslint/eslint-plugin": "^8.46.1",
     "@typescript-eslint/parser": "^8.46.1",
     "eslint": "^9.37.0",
