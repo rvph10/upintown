@@ -232,16 +232,30 @@
 
 .home-spotlight-bottom-bar p.mono span,
 .project-overview p.mono span,
-.project-info p.mono span {
+.project-info p.mono span,
+.project-overview h3.mono span,
+.project-info h2.mono span {
   color: var(--accent-red);
 }
 
-.project-header .project-title h3 {
+/* Force h1 to look like h3 (6rem) for semantic SEO */
+.project-header .project-title h1 {
+  font-size: 6rem;
   transition: color 0.3s ease;
 }
 
-.project-header:hover .project-title h3 {
+.project-header:hover .project-title h1 {
   color: var(--accent-red);
+}
+
+/* Force h3.mono to look like p.mono */
+.project-overview h3.mono,
+.project-info h2.mono {
+  text-transform: uppercase;
+  font-family: 'DM Mono';
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: normal;
 }
 
 .project-banner-img video {
@@ -254,6 +268,14 @@
 }
 
 @media (max-width: 1000px) {
+  .project-header .project-title h1 {
+    font-size: 3rem;
+  }
+
+  .next-project .next-project-title h2 {
+    font-size: 3rem;
+  }
+
   .project-header .project-meta,
   .project-header .project-meta-col:nth-child(2),
   .next-project .next-project-meta,

@@ -126,7 +126,13 @@ footer .footer-logo svg {
   fill: var(--accent-red);
 }
 
-footer .footer-bottom .footer-col:nth-child(2) p.mono {
+/* Force h2.mono in footer to look like p.mono */
+footer .footer-bottom .footer-col h2.mono {
+  text-transform: uppercase;
+  font-family: 'DM Mono';
+  font-size: 0.85rem;
+  font-weight: 500;
+  line-height: normal;
   margin-bottom: 2rem;
   opacity: 0.25;
 }

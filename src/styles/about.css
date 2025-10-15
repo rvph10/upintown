@@ -15,6 +15,11 @@
   color: var(--black);
 }
 
+/* Force h1 to look like h2 (8rem) for semantic SEO */
+.about-hero .about-header h1 {
+  font-size: 8rem;
+}
+
 .anime-text-container {
   position: relative;
   width: 100vw;
@@ -103,8 +108,10 @@
   justify-content: space-between;
 }
 
-.about-skills .about-skills-col:nth-child(1) h3 {
+/* Force h2 to look like h3 (6rem) for skills section */
+.about-skills .about-skills-col:nth-child(1) h2 {
   width: 80%;
+  font-size: 6rem;
 }
 
 .about-skills .about-skills-col .object-container {
@@ -203,7 +210,8 @@
   font-family: 'Barlow Condensed', Impact, Arial Black, sans-serif;
 }
 
-.about-company-card-header h4 {
+/* Force h3 to look like original h4 style (3.5rem) */
+.about-company-card-header h3 {
   font-size: 3.5rem;
   font-weight: 600;
   line-height: 1;
@@ -215,7 +223,7 @@
   transition: color 0.3s ease;
 }
 
-.about-company-card:hover .about-company-card-header h4 {
+.about-company-card:hover .about-company-card-header h3 {
   color: var(--base-300);
 }
 
@@ -267,12 +275,17 @@
     transform: translate(-50%, -50%);
   }
 
+  .about-hero .about-header h1 {
+    font-size: 5rem;
+  }
+
   .about-skills {
     height: 100svh;
   }
 
-  .about-skills .about-skills-col:nth-child(1) h3 {
+  .about-skills .about-skills-col:nth-child(1) h2 {
     width: 100%;
+    font-size: 3rem;
   }
 
   .about-skills .container {
@@ -324,7 +337,7 @@
     margin: 0;
   }
 
-  .about-company-card-header h4 {
+  .about-company-card-header h3 {
     font-size: 2rem;
     margin-top: 0;
   }

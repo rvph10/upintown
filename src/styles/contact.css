@@ -47,11 +47,13 @@
   color: var(--accent-red);
 }
 
-.contact-header-title h2 {
+/* Force h1 to look like h2 (8rem) for semantic SEO */
+.contact-header-title h1 {
+  font-size: 8rem;
   transition: color 0.3s ease;
 }
 
-.contact-header:hover .contact-header-title h2 {
+.contact-header:hover .contact-header-title h1 {
   color: var(--accent-red);
 }
 
@@ -59,5 +61,9 @@
   .contact .home-spotlight-bottom-bar p:nth-child(2),
   .contact .home-spotlight-bottom-bar p:nth-child(3) {
     display: none;
+  }
+
+  .contact-header-title h1 {
+    font-size: 5rem;
   }
 }

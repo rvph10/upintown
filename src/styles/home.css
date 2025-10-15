@@ -202,11 +202,18 @@
   color: var(--accent-red);
 }
 
-.home-about .home-about-card h4 {
+/* Force h2 to look like h3 (6rem) for semantic SEO */
+.home-about .home-about-header h2 {
+  font-size: 6rem;
+}
+
+/* Force h3 to look like h4 (2.5rem) for semantic SEO */
+.home-about .home-about-card h3 {
+  font-size: 2.5rem;
   transition: color 0.3s ease;
 }
 
-.home-about .home-about-card:hover h4 {
+.home-about .home-about-card:hover h3 {
   color: var(--accent-red);
 }
 
@@ -499,6 +506,11 @@
   color: var(--base-100);
 }
 
+/* Force h2 to look like h3 (6rem) for portfolio section */
+.home-spotlight .spotlight-intro-header h2 {
+  font-size: 6rem;
+}
+
 .home-spotlight-top-bar {
   position: absolute;
   top: 0;
@@ -537,9 +549,11 @@
   align-items: center;
 }
 
-.outro h3 {
+/* Force h2 to look like h3 (6rem) for outro */
+.outro h2 {
   width: 50%;
   text-align: center;
+  font-size: 6rem;
 }
 
 .outro .outro-strips {
@@ -688,6 +702,14 @@
     width: 100%;
   }
 
+  .home-about .home-about-header h2 {
+    font-size: 3rem;
+  }
+
+  .home-spotlight .spotlight-intro-header h2 {
+    font-size: 3rem;
+  }
+
   .home-about .home-about-col:nth-child(2),
   .home-about .home-about-col-row {
     flex-direction: column;
@@ -725,8 +747,9 @@
     gap: 1rem;
   }
 
-  .outro h3 {
+  .outro h2 {
     width: 90%;
+    font-size: 3rem;
   }
 
   .outro .outro-strips {
