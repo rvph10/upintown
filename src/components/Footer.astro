@@ -1,5 +1,9 @@
 ---
 // Footer du site
+import { Image } from 'astro:assets';
+import logo from '../../public/global/logo.svg';
+import s1Light from '../../public/symbols/s1-light.png';
+import s2Light from '../../public/symbols/s2-light.png';
 ---
 
 <footer>
@@ -7,7 +11,7 @@
     <div class="footer-top">
       <div class="footer-col">
         <p class="mono">
-          <span>&#9654;</span> Get notified about new <span class="accent-text">projects</span> & updates
+          <span>&#9654;</span> Stay updated on new <span class="accent-text">projects</span>
         </p>
         <form class="footer-newsletter-form">
           <div class="footer-email-container">
@@ -38,7 +42,7 @@
       <div class="footer-col">
         <div class="footer-logo">
           <a href="/">
-            <img src="/global/logo.svg" alt="upintown" style="width: 300px;" />
+            <Image src={logo} alt="upintown logo" style="width: 300px;" loading="lazy" />
           </a>
         </div>
       </div>
@@ -75,18 +79,18 @@
       <div class="footer-copyright-top">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-light.png" alt="Symbol" />
+            <Image src={s1Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <Image src={s2Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <Image src={s2Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s1-light.png" alt="Symbol" />
+            <Image src={s1Light} alt="Decorative geometric symbol" loading="lazy" />
           </div>
         </div>
       </div>
@@ -116,6 +120,18 @@
     border-radius: 8px;
     font-size: 0.9rem;
     display: none;
+    animation: slideDown 0.3s ease-out;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   .footer-newsletter-message.success {
@@ -130,13 +146,31 @@
     border: 1px solid rgba(239, 68, 68, 0.3);
   }
 
+  .footer-newsletter-input.error {
+    border-color: rgb(239, 68, 68) !important;
+    outline-color: rgb(239, 68, 68);
+    animation: shake 0.4s ease-in-out;
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+  }
+
   .footer-newsletter-btn.loading {
     opacity: 0.6;
     cursor: not-allowed;
+    pointer-events: none;
   }
 
   .footer-newsletter-btn:disabled {
     opacity: 0.6;
     cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .footer-newsletter-input.error::placeholder {
+    color: rgba(239, 68, 68, 0.6);
   }
 </style>
