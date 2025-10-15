@@ -40,6 +40,15 @@
   aspect-ratio: 16/9;
 }
 
+.project-banner-img video,
+.project-banner-img picture,
+.project-banner-img img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 .project-overview {
   position: relative;
   width: 100vw;
@@ -92,13 +101,20 @@
   align-items: center;
 }
 
-.project-snapshot img {
+.project-snapshot img,
+.project-snapshot picture {
   width: 65%;
   height: 65%;
   aspect-ratio: 16/9;
   object-fit: cover;
   border: 1px dashed var(--base-secondary-dark);
   border-radius: 8px;
+}
+
+.project-snapshot picture img {
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 .snapshots-progress-bar {
@@ -161,6 +177,8 @@
   background-color: var(--base-300);
   color: var(--base-100);
   overflow: hidden;
+  border-bottom: 1px dashed var(--base-secondary-dark);
+  padding-bottom: 2rem;
 }
 
 .next-project .container.next-project-data {
@@ -210,6 +228,29 @@
 .home-spotlight-bottom-bar .container {
   display: flex;
   justify-content: space-between;
+}
+
+.home-spotlight-bottom-bar p.mono span,
+.project-overview p.mono span,
+.project-info p.mono span {
+  color: var(--accent-red);
+}
+
+.project-header .project-title h3 {
+  transition: color 0.3s ease;
+}
+
+.project-header:hover .project-title h3 {
+  color: var(--accent-red);
+}
+
+.project-banner-img video {
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.project-banner-img:hover video {
+  border-color: var(--accent-red);
 }
 
 @media (max-width: 1000px) {

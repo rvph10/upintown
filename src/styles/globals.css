@@ -1,4 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
+/* Fonts optimisés - Chargement uniquement des poids utilisés (500, 600, 900) */
+/* Barlow Condensed: Utilisé pour les titres (font-weight: 900) */
+/* DM Mono: Utilisé pour les labels mono (font-weight: 500) */
+/* Host Grotesk: Utilisé pour le corps de texte (font-weight: 400-600) */
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=DM+Mono:wght@500&family=Host+Grotesk:wght@400;500;600&display=swap');
 
 :root {
   --base-100: #f9f4eb;
@@ -70,6 +74,40 @@ h4 {
 
 a {
   text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease, outline 0.2s ease;
+}
+
+a:hover:not(.contact-callout a) {
+  color: var(--accent-red);
+}
+
+/* Focus states for accessibility (keyboard navigation) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--accent-red);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+/* Remove default outline for mouse users */
+a:focus:not(:focus-visible),
+button:focus:not(:focus-visible),
+input:focus:not(:focus-visible),
+textarea:focus:not(:focus-visible) {
+  outline: none;
+}
+
+.contact-callout a {
+  cursor: pointer;
+}
+
+/* Skip link visibility on focus */
+.skip-link:focus {
+  outline: 3px solid var(--accent-red);
+  outline-offset: 2px;
 }
 
 p {
@@ -115,6 +153,18 @@ a span {
 
 .symbols-container .symbol {
   width: 1.125rem;
+}
+
+/* Respect user's reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 @media (max-width: 1000px) {
