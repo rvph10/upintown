@@ -6,9 +6,16 @@ export default defineConfig({
   output: 'server', // SSR pour permettre les API routes
   server: {
     port: 4321,
-    host: true
-  },  
-  adapter: vercel(),
+    host: true,
+  },
+  adapter: vercel({
+    webAnalytics: {
+      enabled: true,
+    },
+    speedInsights: {
+      enabled: true,
+    },
+  }),
   vite: {
     build: {
       assetsInclude: ['**/*.jpeg', '**/*.jpg', '**/*.png', '**/*.svg', '**/*.gif'],

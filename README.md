@@ -111,6 +111,7 @@ The site is configured for automatic deployment to Vercel:
 3. Push to `main` branch to deploy
 
 GitHub Actions will:
+
 - Run linting and formatting checks
 - Build the project
 - Deploy to Vercel (on push to main)

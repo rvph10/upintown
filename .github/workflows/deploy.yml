@@ -19,7 +19,6 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           vercel-args: '--prod'
-
 # Note: You need to add the following secrets to your GitHub repository:
 # - VERCEL_TOKEN: Your Vercel API token
 # - VERCEL_ORG_ID: Your Vercel organization ID
