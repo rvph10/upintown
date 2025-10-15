@@ -1,0 +1,179 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout
+  title="404 | upintown"
+  description="Page not found"
+  pageStyles={['error']}
+  pageScripts={['anime']}
+>
+  <section class="error-hero">
+    <div class="error-top-bar">
+      <div class="container">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1.png" alt="Symbol" />
+          </div>
+        </div>
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1.png" alt="Symbol" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="error-content">
+        <div class="error-status">
+          <p 
+            class="mono"
+            data-animate-type="scramble"
+            data-animate-delay="0.2"
+          >
+            <span>&#9654;</span> Error 404
+          </p>
+        </div>
+        <div class="error-header">
+          <h1 
+            data-animate-type="line-reveal" 
+            data-animate-delay="0.25"
+          >
+            Page not <span class="accent-text">found</span>
+          </h1>
+        </div>
+        <div class="error-message">
+          <p 
+            class="md"
+            data-animate-type="line-reveal"
+            data-animate-delay="0.4"
+          >
+            The page you're looking for doesn't exist or has been moved.
+            Let's get you back on track.
+          </p>
+        </div>
+        <div class="error-actions">
+          <a 
+            href="/" 
+            class="error-btn"
+            data-animate-type="reveal"
+            data-animate-delay="0.6"
+          >
+            Back to Home
+          </a>
+          <a 
+            href="/contact" 
+            class="error-btn error-btn-secondary"
+            data-animate-type="reveal"
+            data-animate-delay="0.7"
+          >
+            Get Help
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="error-suggestions">
+    <div class="error-suggestions-bar">
+    </div>
+    <div class="container">
+      <div class="error-suggestions-header">
+        <p
+          class="mono"
+          data-animate-type="scramble"
+          data-animate-delay="0.2"
+          data-animate-on-scroll="true"
+        >
+          <span>&#9654;</span> Quick Links
+        </p>
+        <h3
+          data-animate-type="line-reveal"
+          data-animate-delay="0.3"
+          data-animate-on-scroll="true"
+        >
+          Explore our <span class="accent-text">digital</span> solutions
+        </h3>
+      </div>
+      <div class="error-links-grid">
+        <a 
+          href="/"
+          class="error-link-card"
+          data-animate-type="reveal"
+          data-animate-delay="0.2"
+          data-animate-on-scroll="true"
+        >
+          <div class="error-link-header">
+            <p class="mono">[ 01 ]</p>
+            <h4>Start Here</h4>
+          </div>
+          <div class="error-link-content">
+            <p>Discover upintown's digital solutions and innovation approach</p>
+          </div>
+          <div class="error-link-arrow">
+            <p class="mono"><span>&#9654;</span></p>
+          </div>
+        </a>
+
+        <a 
+          href="/about"
+          class="error-link-card"
+          data-animate-type="reveal"
+          data-animate-delay="0.3"
+          data-animate-on-scroll="true"
+        >
+          <div class="error-link-header">
+            <p class="mono">[ 02 ]</p>
+            <h4>Meet Us</h4>
+          </div>
+          <div class="error-link-content">
+            <p>Learn about our expertise and modern technology stack</p>
+          </div>
+          <div class="error-link-arrow">
+            <p class="mono"><span>&#9654;</span></p>
+          </div>
+        </a>
+
+        <a 
+          href="/project"
+          class="error-link-card"
+          data-animate-type="reveal"
+          data-animate-delay="0.4"
+          data-animate-on-scroll="true"
+        >
+          <div class="error-link-header">
+            <p class="mono">[ 03 ]</p>
+            <h4>Explore Work</h4>
+          </div>
+          <div class="error-link-content">
+            <p>Quality over quantity: view our featured projects</p>
+          </div>
+          <div class="error-link-arrow">
+            <p class="mono"><span>&#9654;</span></p>
+          </div>
+        </a>
+
+        <a 
+          href="/contact"
+          class="error-link-card"
+          data-animate-type="reveal"
+          data-animate-delay="0.5"
+          data-animate-on-scroll="true"
+        >
+          <div class="error-link-header">
+            <p class="mono">[ 04 ]</p>
+            <h4>Get In Touch</h4>
+          </div>
+          <div class="error-link-content">
+            <p>Let's build something great together</p>
+          </div>
+          <div class="error-link-arrow">
+            <p class="mono"><span>&#9654;</span></p>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
