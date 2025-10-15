@@ -175,6 +175,12 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function initPhysics(container) {
+    // Check if Matter.js is loaded
+    if (typeof Matter === 'undefined') {
+      console.error('Matter.js is not loaded');
+      return;
+    }
+
     engine = Matter.Engine.create();
     engine.gravity = config.gravity;
 
@@ -322,28 +328,41 @@ document.addEventListener("DOMContentLoaded", () => {
     updatePositions();
   }
 
+  // Wait for Matter.js to be loaded
+  function waitForMatter(callback) {
+    if (typeof window.Matter !== 'undefined') {
+      callback();
+    } else {
+      setTimeout(() => waitForMatter(callback), 50);
+    }
+  }
+
   if (animateOnScroll) {
-    document.querySelectorAll("section").forEach((section) => {
-      if (section.querySelector(".object-container")) {
-        ScrollTrigger.create({
-          trigger: section,
-          start: "top bottom",
-          once: true,
-          onEnter: () => {
-            const container = section.querySelector(".object-container");
-            if (container && !engine) {
-              initPhysics(container);
-            }
-          },
-        });
-      }
+    waitForMatter(() => {
+      document.querySelectorAll("section").forEach((section) => {
+        if (section.querySelector(".object-container")) {
+          ScrollTrigger.create({
+            trigger: section,
+            start: "top bottom",
+            once: true,
+            onEnter: () => {
+              const container = section.querySelector(".object-container");
+              if (container && !engine) {
+                initPhysics(container);
+              }
+            },
+          });
+        }
+      });
     });
   } else {
-    window.addEventListener("load", () => {
-      const container = document.querySelector(".object-container");
-      if (container) {
-        initPhysics(container);
-      }
+    waitForMatter(() => {
+      window.addEventListener("load", () => {
+        const container = document.querySelector(".object-container");
+        if (container) {
+          initPhysics(container);
+        }
+      });
     });
   }
 

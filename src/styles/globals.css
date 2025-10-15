@@ -17,10 +17,16 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   font-family: "Host Grotesk";
   background-color: var(--base-100);
   color: var(--base-300);
+  width: 100%;
 }
 
 img {
