@@ -6,12 +6,14 @@
   <div class="container">
     <div class="footer-top">
       <div class="footer-col">
-        <p class="mono"><span>&#9654;</span> Drop your email if you vibe</p>
+        <p class="mono"><span>&#9654;</span> Drop your email if you <span class="accent-text">vibe</span></p>
         <div class="footer-email-container">
           <div class="footer-email-row">
             <input type="text" placeholder="your@email.com" />
-            <button>
-              <img src="/global/footer-right-arrow.png" alt="" />
+            <button class="submit-btn">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M5 12H19M19 12L12 5M19 12L12 19" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </button>
           </div>
         </div>
@@ -21,41 +23,64 @@
     <div class="footer-bottom">
       <div class="footer-col">
         <div class="footer-logo">
-          <img src="/global/logo.png" alt="" />
+          <a href="/">
+            <img src="/global/logo.svg" alt="upintown" style="width: 300px;" />
+          </a>
         </div>
       </div>
       <div class="footer-col">
         <div class="footer-sub-col">
-          <p class="mono">Explore</p>
+          <p class="mono"><span>&#9654;</span> Explore</p>
           <div class="footer-links">
             <p><a href="/">Start Here</a></p>
-            <p><a href="/about">Who's Juno</a></p>
-            <p><a href="/project">Single Project</a></p>
-            <p><a href="/contact">Slide Into Inbox</a></p>
+            <p><a href="/about">Meet Us</a></p>
+            <p><a href="/project">Explore Work</a></p>
+            <p><a href="/contact">Get In Touch</a></p>
           </div>
         </div>
         <div class="footer-sub-col">
-          <p class="mono">Stalk Me</p>
+          <p class="mono"><span>&#9654;</span> Connect</p>
           <div class="footer-copy">
-            <p>Unit 7, The Pixel Building</p>
-            <p>Z Street, Amsterdam</p>
-            <br />
-            <p>LinkedIn</p>
-            <p>Twitter</p>
+            <p><a href="https://github.com/rvph10" target="_blank" rel="noopener noreferrer">Github</a></p>
+            <p class="coming-soon">Instagram <span>(Coming Soon)</span></p>
+          </div>
+        </div>
+        <div class="footer-sub-col">
+          <p class="mono"><span>&#9654;</span> Contact</p>
+          <div class="footer-copy">
+            <p><a href="mailto:contact@upintown.dev">contact@upintown.dev</a></p>
           </div>
         </div>
       </div>
     </div>
     <div class="footer-copyright">
-      <div class="footer-col">
-        <p class="mono">MWT July 2025</p>
-      </div>
-      <div class="footer-col">
-        <div class="footer-sub-col">
-          <p class="mono">Made by Codegrid</p>
+      <div class="footer-copyright-top">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s1-light.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s2-light.png" alt="Symbol" />
+          </div>
         </div>
-        <div class="footer-sub-col">
+        <div class="symbols-container">
+          <div class="symbol">
+            <img src="/symbols/s2-light.png" alt="Symbol" />
+          </div>
+          <div class="symbol">
+            <img src="/symbols/s1-light.png" alt="Symbol" />
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright-bottom">
+        <div class="footer-col">
+          <p class="mono"><span>&#9654;</span> upintown</p>
+        </div>
+        <div class="footer-col">
           <p class="mono">&copy; 2025 All Rights Reserved</p>
+        </div>
+        <div class="footer-col">
+          <p class="mono">MWT {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
         </div>
       </div>
     </div>
