@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import { PAGE_SEO } from '../data/seo-config';
 
+// Import page styles
+import '../styles/home.css';
+
 // Import symbols
 import symbol1 from '../../public/symbols/s1.png';
 import symbol1Light from '../../public/symbols/s1-light.png';
@@ -29,8 +32,6 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
   description={PAGE_SEO.home.description}
   image={PAGE_SEO.home.image}
   keywords={PAGE_SEO.home.keywords}
-  pageStyles={['home']}
-  pageScripts={['anime', 'home']}
   includeServiceSchema={true}
 >
   <section class="hero" aria-label="Hero section">
@@ -416,3 +417,6 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
     </div>
   </section>
 </BaseLayout>
+
+<script src="../scripts/anime.js"></script>
+<script src="../scripts/home.js"></script>

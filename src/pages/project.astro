@@ -3,6 +3,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
 import { PAGE_SEO } from '../data/seo-config';
 
+// Import page styles
+import '../styles/project.css';
+
 // Import symbols
 import symbol1 from '../../public/symbols/s1.png';
 import symbol2 from '../../public/symbols/s2.png';
@@ -21,8 +24,6 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
   description={PAGE_SEO.project.description}
   image={PAGE_SEO.project.image}
   keywords={PAGE_SEO.project.keywords}
-  pageStyles={['project']}
-  pageScripts={['project']}
 >
   <div class="home-spotlight-top-bar" role="presentation">
     <div class="container">
@@ -338,3 +339,5 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 </BaseLayout>
+
+<script src="../scripts/project.js"></script>

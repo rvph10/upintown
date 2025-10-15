@@ -8,6 +8,12 @@ import { inject } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 import { SITE_URL } from '../data/seo-config';
 
+// Import global styles
+import '../styles/globals.css';
+import '../styles/transition.css';
+import '../styles/menu.css';
+import '../styles/footer.css';
+
 interface Props {
   title?: string;
   description?: string;
@@ -15,8 +21,6 @@ interface Props {
   type?: 'website' | 'article';
   noindex?: boolean;
   keywords?: string[];
-  pageStyles?: string[];
-  pageScripts?: string[];
   includeServiceSchema?: boolean;
 }
 
@@ -27,8 +31,6 @@ const {
   type = 'website',
   noindex = false,
   keywords = [],
-  pageStyles = [],
-  pageScripts = [],
   includeServiceSchema = false,
 } = Astro.props;
 
@@ -130,14 +132,7 @@ const websiteSchema = {
     <link rel="apple-touch-icon" href="/global/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
-    <!-- Styles globaux -->
-    <link rel="stylesheet" href="/src/styles/globals.css" />
-    <link rel="stylesheet" href="/src/styles/transition.css" />
-    <link rel="stylesheet" href="/src/styles/menu.css" />
-    <link rel="stylesheet" href="/src/styles/footer.css" />
-
-    <!-- Styles spécifiques à la page -->
-    {pageStyles.map((style) => <link rel="stylesheet" href={`/src/styles/${style}.css`} />)}
+    <!-- Page-specific styles are imported in the page components themselves -->
 
     <!-- Schema.org structured data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
@@ -169,13 +164,10 @@ const websiteSchema = {
 
     <Footer />
 
-    <!-- Scripts globaux -->
-    <script src="/src/scripts/lenis-scroll.js" type="module"></script>
-    <script src="/src/scripts/transition.js" type="module"></script>
-    <script src="/src/scripts/menu.js" type="module"></script>
-
-    <!-- Scripts spécifiques à la page -->
-    {pageScripts.map((script) => <script src={`/src/scripts/${script}.js`} type="module" />)}
+    <!-- Global scripts -->
+    <script src="../scripts/lenis-scroll.js"></script>
+    <script src="../scripts/transition.js"></script>
+    <script src="../scripts/menu.js"></script>
   </body>
 </html>
 
