@@ -287,12 +287,13 @@ document.addEventListener("DOMContentLoaded", () => {
       Matter.World.add(engine.world, topWall);
     }, 3000);
 
+    // Random forces to keep objects moving
     setInterval(() => {
-      if (bodies.length > 0 && Math.random() < 0.3) {
+      if (bodies.length > 0 && Math.random() < 0.5) {
         const randomBody = bodies[Math.floor(Math.random() * bodies.length)];
         const randomForce = {
-          x: (Math.random() - 0.5) * 0.02,
-          y: (Math.random() - 0.5) * 0.01,
+          x: (Math.random() - 0.5) * 0.05,
+          y: (Math.random() - 0.5) * 0.03,
         };
         Matter.Body.applyForce(
           randomBody.body,
@@ -300,7 +301,25 @@ document.addEventListener("DOMContentLoaded", () => {
           randomForce
         );
       }
-    }, 2000);
+    }, 1500);
+
+    // Mouse interaction - allow dragging objects
+    const mouse = Matter.Mouse.create(container);
+    const mouseConstraint = Matter.MouseConstraint.create(engine, {
+      mouse: mouse,
+      constraint: {
+        stiffness: 0.2,
+        render: {
+          visible: false
+        }
+      }
+    });
+
+    Matter.World.add(engine.world, mouseConstraint);
+
+    // Keep the mouse in sync with rendering
+    mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
+    mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
 
     runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
