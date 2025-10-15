@@ -5,14 +5,6 @@
   overflow: hidden;
 }
 
-.about-hero .about-hero-img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-}
-
 .about-hero .about-header {
   position: absolute;
   bottom: 2.75rem;
@@ -20,7 +12,7 @@
   transform: translateX(-50%);
   width: 60%;
   text-align: center;
-  color: var(--base-100);
+  color: var(--black);
 }
 
 .anime-text-container {
@@ -71,44 +63,11 @@
 }
 
 .anime-text-container .anime-text .word span.keyword {
-  border-radius: 2rem;
   display: inline-block;
   width: 100%;
   height: 100%;
   padding: 0.1rem 0;
-  color: var(--base-300);
-}
-
-.anime-text-container .anime-text .word span.keyword::before {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(100% + 1rem);
-  height: calc(100% + 0.1rem);
-  background-color: var(--base-300);
-  border-radius: 8px;
-  z-index: -1;
-  border: 1px dashed var(--base-300);
-}
-
-.anime-text-container .anime-text .word span.keyword.corner::before,
-.anime-text-container .anime-text .word span.keyword.learnings::before,
-.anime-text-container .anime-text .word span.keyword.deploy::before {
-  background-color: var(--accent-1);
-}
-
-.anime-text-container .anime-text .word span.keyword.scroll::before,
-.anime-text-container .anime-text .word span.keyword.rhythm::before,
-.anime-text-container .anime-text .word span.keyword.caffeine::before {
-  background-color: var(--accent-2);
-}
-
-.anime-text-container .anime-text .word span.keyword.archive::before,
-.anime-text-container .anime-text .word span.keyword.detail::before,
-.anime-text-container .anime-text .word span.keyword.messing::before {
-  background-color: var(--accent-3);
+  color: var(--accent-red);
 }
 
 .anime-text-container .anime-text .word,
@@ -201,63 +160,88 @@
   gap: 2rem;
 }
 
-.about-sticky-cards {
+.about-company {
   position: relative;
   width: 100vw;
-  height: 100svh;
-  overflow: hidden;
+  min-height: 100svh;
+  padding: 8rem 0;
   background-color: var(--base-100);
   color: var(--base-300);
 }
 
-.about-sticky-cards .sticky-cards-header {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 40%;
-  text-align: center;
+.about-company-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  margin-top: 4rem;
 }
 
-.about-sticky-cards .gallery-card {
-  position: absolute;
-  top: 25%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  will-change: transform;
-  width: 25%;
-  height: 50%;
-  padding: 0.5em;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5em;
-  border-radius: 12px;
+.about-company-card {
+  position: relative;
+  padding: 3rem;
   background-color: var(--base-300);
   color: var(--base-100);
-}
-
-.about-sticky-cards .gallery-card-img {
-  flex: 1 1 0;
-  min-height: 0;
-  width: 100%;
-  border-radius: 8px;
+  border-radius: 16px;
+  border: 1px dashed var(--base-secondary-fade);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
   overflow: hidden;
 }
 
-.about-sticky-cards .gallery-card-content {
-  flex: 0 0 12px;
-  display: flex;
-  align-items: center;
+.about-company-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  pointer-events: none;
 }
 
-.about-sticky-cards .gallery-card-content p.mono {
-  font-size: 0.8rem;
+.about-company-card:hover::before {
+  opacity: 1;
 }
 
-@media (max-width: 1000px) {
-  .about-sticky-cards .gallery-card {
-    width: 75%;
-  }
+.about-company-card:hover {
+  border-color: var(--base-100);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.about-company-card-header {
+  position: relative;
+  z-index: 1;
+  margin-bottom: 1.5rem;
+}
+
+.about-company-card-header p.mono {
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.about-company-card:hover .about-company-card-header p.mono {
+  opacity: 0.8;
+}
+
+.about-company-card-header h4 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.about-company-card-content {
+  position: relative;
+  z-index: 1;
+}
+
+.about-company-card-content p {
+  font-size: 1rem;
+  line-height: 1.6;
+  opacity: 0.9;
 }
 
 @media (max-width: 1000px) {
@@ -328,16 +312,25 @@
     border: 2px solid #101010;
   }
 
-  .about-sticky-cards .gallery-card {
-    top: 50%;
+  .about-company {
+    padding: 4rem 0;
   }
 
-  .about-sticky-cards .gallery-card {
-    width: 50%;
-    height: 25svh;
+  .about-company-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-top: 2rem;
   }
 
-  .about-sticky-cards .sticky-cards-header {
-    width: 90%;
+  .about-company-card {
+    padding: 2rem;
+  }
+
+  .about-company-card-header h4 {
+    font-size: 1.5rem;
+  }
+
+  .about-company-card-content p {
+    font-size: 0.95rem;
   }
 }

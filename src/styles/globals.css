@@ -6,9 +6,10 @@
   --base-300: #0a0a0a;
   --base-secondary-dark: #686560;
   --base-secondary-fade: rgba(249, 244, 235, 0.15);
-  --accent-1: #b1c1ef;
-  --accent-2: #f2acac;
-  --accent-3: #ffdd94;
+  --accent-1: #3b82f6;
+  --accent-2: #10b981;
+  --accent-3: #f59e0b;
+  --accent-red: #C80815;
 }
 
 * {
@@ -45,6 +46,10 @@ h4 {
   font-weight: 900;
   line-height: 0.85;
   letter-spacing: -0.02rem;
+}
+
+.accent-text {
+  color: var(--accent-red);
 }
 
 h1 {
