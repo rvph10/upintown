@@ -7,13 +7,37 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (!form || !input || !submitBtn) return;
 
+  // Email validation regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  // Real-time validation on input
+  input.addEventListener('input', () => {
+    // Remove error state on input
+    input.classList.remove('error');
+    const messageEl = document.querySelector('.footer-newsletter-message');
+    if (messageEl && messageEl.classList.contains('error')) {
+      messageEl.style.display = 'none';
+    }
+  });
+
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const email = input.value.trim();
 
+    // Validate empty field
     if (!email) {
-      showMessage('Please enter your email', 'error');
+      showMessage('Please enter your email address', 'error');
+      input.classList.add('error');
+      input.focus();
+      return;
+    }
+
+    // Validate email format
+    if (!emailRegex.test(email)) {
+      showMessage('Please enter a valid email address', 'error');
+      input.classList.add('error');
+      input.focus();
       return;
     }
 
@@ -33,14 +57,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const data = await response.json();
 
       if (data.success) {
-        showMessage(data.message, 'success');
+        showMessage('Successfully subscribed! Check your inbox', 'success');
         input.value = ''; // Clear input
+        input.classList.remove('error');
       } else {
-        showMessage(data.error || 'An error occurred', 'error');
+        // Handle specific error messages
+        let errorMessage = 'Something went wrong. Please try again';
+
+        if (data.error === 'Invalid email') {
+          errorMessage = 'Please enter a valid email address';
+          input.classList.add('error');
+        } else if (data.error === 'Email already subscribed') {
+          errorMessage = 'This email is already subscribed';
+        } else if (data.error === 'Configuration error' || data.error === 'Subscription error') {
+          errorMessage = 'Service temporarily unavailable. Please try again later';
+        }
+
+        showMessage(errorMessage, 'error');
       }
     } catch (error) {
       console.error('Newsletter error:', error);
-      showMessage('Connection error', 'error');
+      showMessage('Connection error. Please check your internet and try again', 'error');
     } finally {
       submitBtn.disabled = false;
       submitBtn.classList.remove('loading');
@@ -61,9 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
     messageEl.className = `footer-newsletter-message mono ${type}`;
     messageEl.style.display = 'block';
 
-    // Hide after 5 seconds
+    // Hide after 6 seconds for success, 8 seconds for errors
+    const hideDelay = type === 'success' ? 6000 : 8000;
     setTimeout(() => {
       messageEl.style.display = 'none';
-    }, 5000);
+    }, hideDelay);
   }
 });

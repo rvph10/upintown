@@ -5,12 +5,21 @@ gsap.registerPlugin(SplitText);
 
 let splitInstances = [];
 
+// Check if user prefers reduced motion
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 function getTextContent(element) {
   return element.textContent || element.innerText || '';
 }
 
 export function scrambleAnimation(element, delay = 0) {
   if (window.innerWidth < 1200) return;
+
+  // Si l'utilisateur préfère moins d'animations, afficher directement
+  if (prefersReducedMotion) {
+    gsap.set(element, { opacity: 1 });
+    return;
+  }
 
   const textContent = getTextContent(element);
 
@@ -33,6 +42,12 @@ export function scrambleAnimation(element, delay = 0) {
 
 export function revealAnimation(element, delay = 0) {
   if (window.innerWidth < 1200) return;
+
+  // Si l'utilisateur préfère moins d'animations, afficher directement
+  if (prefersReducedMotion) {
+    gsap.set(element, { opacity: 1 });
+    return;
+  }
 
   const textContent = getTextContent(element);
 
@@ -60,6 +75,12 @@ export function revealAnimation(element, delay = 0) {
 
 export function lineRevealAnimation(element, delay = 0) {
   if (window.innerWidth < 1200) return;
+
+  // Si l'utilisateur préfère moins d'animations, afficher directement
+  if (prefersReducedMotion) {
+    gsap.set(element, { opacity: 1 });
+    return;
+  }
 
   const textContent = getTextContent(element);
 

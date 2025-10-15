@@ -3,6 +3,15 @@ import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Check if user prefers reduced motion - disable smooth scroll if true
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // If user prefers reduced motion, skip Lenis initialization
+  if (prefersReducedMotion) {
+    console.log('Smooth scroll disabled: user prefers reduced motion');
+    return;
+  }
+
   let isMobile = window.innerWidth <= 900;
 
   const scrollSettings = isMobile
