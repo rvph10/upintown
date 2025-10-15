@@ -157,3 +157,4 @@ Pour tester vos og-images :
 3. Vérifiez visuellement les images générées
 4. Testez avec les outils de validation des réseaux sociaux
 5. Committez les nouvelles images
+
