@@ -1,0 +1,111 @@
+---
+/**
+ * Breadcrumbs Component with Schema.org structured data
+ * Helps with navigation and SEO
+ */
+import { SITE_URL, SITE_NAME } from '../data/seo-config';
+
+interface BreadcrumbItem {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  items?: BreadcrumbItem[];
+  showVisual?: boolean;
+}
+
+const { items = [], showVisual = true } = Astro.props;
+
+// Always include home
+const breadcrumbItems: BreadcrumbItem[] = [
+  { name: SITE_NAME, url: SITE_URL },
+  ...items,
+];
+
+// Create BreadcrumbList schema
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: breadcrumbItems.map((item, index) => ({
+    '@type': 'ListItem',
+    position: index + 1,
+    name: item.name,
+    item: item.url,
+  })),
+};
+---
+
+<!-- Breadcrumb Schema -->
+<script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+
+{showVisual && breadcrumbItems.length > 1 && (
+  <nav aria-label="Breadcrumb" class="breadcrumbs">
+    <ol class="breadcrumb-list">
+      {breadcrumbItems.map((item, index) => (
+        <li class="breadcrumb-item">
+          {index < breadcrumbItems.length - 1 ? (
+            <>
+              <a href={item.url}>{item.name}</a>
+              <span class="breadcrumb-separator" aria-hidden="true">/</span>
+            </>
+          ) : (
+            <span aria-current="page">{item.name}</span>
+          )}
+        </li>
+      ))}
+    </ol>
+  </nav>
+)}
+
+<style>
+  .breadcrumbs {
+    padding: 1rem 0;
+    font-size: 0.9rem;
+  }
+
+  .breadcrumb-list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .breadcrumb-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .breadcrumb-item a {
+    color: var(--base-300);
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .breadcrumb-item a:hover {
+    color: var(--accent-red);
+    text-decoration: underline;
+  }
+
+  .breadcrumb-item span[aria-current="page"] {
+    color: var(--base-200);
+    font-weight: 500;
+  }
+
+  .breadcrumb-separator {
+    color: var(--base-200);
+    user-select: none;
+  }
+
+  @media (max-width: 768px) {
+    .breadcrumbs {
+      font-size: 0.85rem;
+      padding: 0.75rem 0;
+    }
+  }
+</style>
+
