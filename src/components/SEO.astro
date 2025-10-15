@@ -50,7 +50,16 @@ const keywordsString = keywords.join(', ');
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Robots -->
-{noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
+{
+  noindex ? (
+    <meta name="robots" content="noindex, nofollow" />
+  ) : (
+    <meta
+      name="robots"
+      content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1"
+    />
+  )
+}
 
 <!-- Language -->
 <meta name="language" content="English" />
@@ -79,8 +88,7 @@ const keywordsString = keywords.join(', ');
         <meta property="article:modified_time" content={article.modifiedTime} />
       )}
       {article.author && <meta property="article:author" content={article.author} />}
-      {article.tags &&
-        article.tags.map((tag) => <meta property="article:tag" content={tag} />)}
+      {article.tags && article.tags.map((tag) => <meta property="article:tag" content={tag} />)}
     </>
   )
 }

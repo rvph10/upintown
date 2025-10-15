@@ -18,10 +18,7 @@ interface Props {
 const { items = [], showVisual = true } = Astro.props;
 
 // Always include home
-const breadcrumbItems: BreadcrumbItem[] = [
-  { name: SITE_NAME, url: SITE_URL },
-  ...items,
-];
+const breadcrumbItems: BreadcrumbItem[] = [{ name: SITE_NAME, url: SITE_URL }, ...items];
 
 // Create BreadcrumbList schema
 const breadcrumbSchema = {
@@ -39,24 +36,28 @@ const breadcrumbSchema = {
 <!-- Breadcrumb Schema -->
 <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 
-{showVisual && breadcrumbItems.length > 1 && (
-  <nav aria-label="Breadcrumb" class="breadcrumbs">
-    <ol class="breadcrumb-list">
-      {breadcrumbItems.map((item, index) => (
-        <li class="breadcrumb-item">
-          {index < breadcrumbItems.length - 1 ? (
-            <>
-              <a href={item.url}>{item.name}</a>
-              <span class="breadcrumb-separator" aria-hidden="true">/</span>
-            </>
-          ) : (
-            <span aria-current="page">{item.name}</span>
-          )}
-        </li>
-      ))}
-    </ol>
-  </nav>
-)}
+{
+  showVisual && breadcrumbItems.length > 1 && (
+    <nav aria-label="Breadcrumb" class="breadcrumbs">
+      <ol class="breadcrumb-list">
+        {breadcrumbItems.map((item, index) => (
+          <li class="breadcrumb-item">
+            {index < breadcrumbItems.length - 1 ? (
+              <>
+                <a href={item.url}>{item.name}</a>
+                <span class="breadcrumb-separator" aria-hidden="true">
+                  /
+                </span>
+              </>
+            ) : (
+              <span aria-current="page">{item.name}</span>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
 
 <style>
   .breadcrumbs {
@@ -91,7 +92,7 @@ const breadcrumbSchema = {
     text-decoration: underline;
   }
 
-  .breadcrumb-item span[aria-current="page"] {
+  .breadcrumb-item span[aria-current='page'] {
     color: var(--base-200);
     font-weight: 500;
   }
@@ -108,4 +109,3 @@ const breadcrumbSchema = {
     }
   }
 </style>
-

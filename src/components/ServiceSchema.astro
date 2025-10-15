@@ -77,11 +77,11 @@ const professionalServiceSchema = {
 };
 ---
 
-<!-- Service Schemas -->
-{serviceSchemas.map((schema) => (
-  <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
-))}
+<!-- Service Schemas -->{
+  serviceSchemas.map((schema) => (
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+  ))
+}
 
 <!-- Professional Service Schema -->
 <script is:inline type="application/ld+json" set:html={JSON.stringify(professionalServiceSchema)} />
-

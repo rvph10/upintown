@@ -11,7 +11,9 @@ import s2Light from '../../public/symbols/s2-light.png';
     <section class="footer-top" aria-labelledby="newsletter-heading">
       <div class="footer-col">
         <p class="mono" id="newsletter-heading">
-          <span aria-hidden="true">&#9654;</span> Stay updated on new <span class="accent-text">projects</span>
+          <span aria-hidden="true">&#9654;</span> Stay updated on new <span class="accent-text"
+            >projects</span
+          >
         </p>
         <form class="footer-newsletter-form" aria-label="Newsletter subscription form">
           <div class="footer-email-container">
@@ -25,8 +27,17 @@ import s2Light from '../../public/symbols/s2-light.png';
                 aria-label="Email address for newsletter"
                 required
               />
-              <button type="submit" class="submit-btn footer-newsletter-btn" aria-label="Subscribe to newsletter">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <button
+                type="submit"
+                class="submit-btn footer-newsletter-btn"
+                aria-label="Subscribe to newsletter"
+              >
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  aria-hidden="true"
+                >
                   <path
                     d="M5 12H19M19 12L12 5M19 12L12 19"
                     stroke="currentColor"
@@ -106,7 +117,9 @@ import s2Light from '../../public/symbols/s2-light.png';
         </div>
         <div class="footer-col">
           <p class="mono">
-            MWT <time datetime={new Date().toISOString()}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time>
+            MWT <time datetime={new Date().toISOString()}
+              >{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time
+            >
           </p>
         </div>
       </div>
@@ -156,9 +169,23 @@ import s2Light from '../../public/symbols/s2-light.png';
   }
 
   @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-    20%, 40%, 60%, 80% { transform: translateX(4px); }
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    10%,
+    30%,
+    50%,
+    70%,
+    90% {
+      transform: translateX(-4px);
+    }
+    20%,
+    40%,
+    60%,
+    80% {
+      transform: translateX(4px);
+    }
   }
 
   .footer-newsletter-btn.loading {
