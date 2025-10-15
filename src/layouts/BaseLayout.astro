@@ -3,8 +3,10 @@ import Transition from '../components/Transition.astro';
 import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
+import ServiceSchema from '../components/ServiceSchema.astro';
 import { inject } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
+import { SITE_URL } from '../data/seo-config';
 
 interface Props {
   title?: string;
@@ -12,8 +14,10 @@ interface Props {
   image?: string;
   type?: 'website' | 'article';
   noindex?: boolean;
+  keywords?: string[];
   pageStyles?: string[];
   pageScripts?: string[];
+  includeServiceSchema?: boolean;
 }
 
 const {
@@ -22,8 +26,10 @@ const {
   image = '/og-image.jpg',
   type = 'website',
   noindex = false,
+  keywords = [],
   pageStyles = [],
   pageScripts = [],
+  includeServiceSchema = false,
 } = Astro.props;
 
 // Initialize Vercel Analytics & Speed Insights
@@ -31,7 +37,7 @@ inject();
 injectSpeedInsights();
 
 // Site URL for canonical and schema
-const siteUrl = Astro.site?.toString() || 'https://upintown.dev';
+const siteUrl = Astro.site?.toString() || SITE_URL;
 
 // Schema.org Organization structured data
 const organizationSchema = {
@@ -93,11 +99,12 @@ const websiteSchema = {
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#f9f4eb" />
+    <meta name="format-detection" content="telephone=no" />
 
     <!-- SEO Meta Tags -->
     <SEO
@@ -106,6 +113,7 @@ const websiteSchema = {
       image={image}
       type={type}
       noindex={noindex}
+      keywords={keywords}
     />
 
     <!-- Preconnect to external domains for performance -->
@@ -134,10 +142,18 @@ const websiteSchema = {
     <!-- Schema.org structured data -->
     <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
     <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+    
+    <!-- Service Schema (for home page) -->
+    {includeServiceSchema && <ServiceSchema />}
 
     <!-- Verification tags (add when ready) -->
     <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /> -->
     <!-- <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" /> -->
+
+    <!-- Security headers -->
+    <meta http-equiv="X-Content-Type-Options" content="nosniff" />
+    <meta http-equiv="X-Frame-Options" content="SAMEORIGIN" />
+    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin" />
   </head>
   <body>
     <!-- Skip to main content for accessibility -->
@@ -147,7 +163,7 @@ const websiteSchema = {
     <Menu />
 
     <!-- Main content -->
-    <main id="main-content">
+    <main id="main-content" role="main">
       <slot />
     </main>
 

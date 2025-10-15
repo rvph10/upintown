@@ -6,6 +6,7 @@ interface Props {
   type?: 'website' | 'article';
   noindex?: boolean;
   canonical?: string;
+  keywords?: string[];
   article?: {
     publishedTime?: string;
     modifiedTime?: string;
@@ -21,6 +22,7 @@ const {
   type = 'website',
   noindex = false,
   canonical,
+  keywords = [],
   article,
 } = Astro.props;
 
@@ -35,16 +37,26 @@ const optimizedTitle = title.length > 60 ? title.substring(0, 57) + '...' : titl
 // Ensure description is not too long (recommended max 160 chars)
 const optimizedDescription =
   description.length > 160 ? description.substring(0, 157) + '...' : description;
+
+// Format keywords
+const keywordsString = keywords.join(', ');
 ---
 
 <!-- Primary Meta Tags -->
 <title>{optimizedTitle}</title>
 <meta name="title" content={optimizedTitle} />
 <meta name="description" content={optimizedDescription} />
+{keywords.length > 0 && <meta name="keywords" content={keywordsString} />}
 <link rel="canonical" href={canonicalURL} />
 
 <!-- Robots -->
-{noindex && <meta name="robots" content="noindex, nofollow" />}
+{noindex ? <meta name="robots" content="noindex, nofollow" /> : <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />}
+
+<!-- Language -->
+<meta name="language" content="English" />
+
+<!-- Content Type -->
+<meta http-equiv="content-language" content="en" />
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content={type} />
@@ -84,3 +96,22 @@ const optimizedDescription =
 <!-- Additional SEO -->
 <meta name="author" content="upintown" />
 <meta name="publisher" content="upintown" />
+<meta name="copyright" content="upintown" />
+<meta name="reply-to" content="contact@upintown.dev" />
+
+<!-- Geographic -->
+<meta name="geo.region" content="US" />
+<meta name="geo.placename" content="United States" />
+
+<!-- Mobile Optimization -->
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="upintown" />
+
+<!-- Web App Manifest -->
+<link rel="manifest" href="/site.webmanifest" />
+
+<!-- Performance Hints -->
+<link rel="preconnect" href={siteUrl} />
+<link rel="dns-prefetch" href={siteUrl} />
