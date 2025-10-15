@@ -9,13 +9,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   pageScripts={['anime', 'about']}
 >
   <section class="about-hero">
-    <div class="about-hero-img">
-      <img src="/about/about-hero-img.jpg" alt="" />
-    </div>
     <div class="container">
       <div class="about-header">
         <h2 data-animate-type="line-reveal" data-animate-delay="0.25">
-          The Force Behind upintown
+          We don't just build, we <span class="accent-text">create</span> experiences
         </h2>
       </div>
     </div>
@@ -26,12 +23,12 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-dark.png" alt="Symbol" />
+            <img src="/symbols/s1.png" alt="Symbol" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-dark.png" alt="Symbol" />
+            <img src="/symbols/s1.png" alt="Symbol" />
           </div>
         </div>
       </div>
@@ -78,10 +75,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       <div class="about-skills-col">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-light.png" alt="Symbol" />
+            <img src="/symbols/s1.png" alt="Symbol" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-light.png" alt="Symbol" />
+            <img src="/symbols/s2.png" alt="Symbol" />
           </div>
         </div>
         <div class="about-skills-copy-wrapper">
@@ -92,7 +89,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
-              <span>&#9654;</span> Technologies that power innovation
+              <span>&#9654;</span> Full-spectrum digital capabilities
             </p>
           </div>
           <div class="about-skills-header">
@@ -101,60 +98,51 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               data-animate-delay="0.4"
               data-animate-on-scroll="true"
             >
-              Tools we master to build exceptional digital experiences
+              From concept to deployment, we deliver <span class="accent-text">complete</span> solutions
             </h3>
           </div>
         </div>
       </div>
       <div class="about-skills-col skills-playground">
         <div class="object-container">
-          <div class="object os-1"><p class="mono">HTML</p></div>
-          <div class="object os-2"><p class="mono">CSS</p></div>
-          <div class="object os-3"><p class="mono">JavaScript</p></div>
-          <div class="object os-1"><p class="mono">TypeScript</p></div>
-          <div class="object os-2"><p class="mono">React</p></div>
-          <div class="object os-3"><p class="mono">Next.js</p></div>
-          <div class="object os-1"><p class="mono">Astro</p></div>
-          <div class="object os-2"><p class="mono">GSAP</p></div>
-          <div class="object os-3"><p class="mono">Node.js</p></div>
-          <div class="object os-1"><p class="mono">Tailwind</p></div>
+          <div class="object os-1"><p class="mono">Web Apps</p></div>
+          <div class="object os-2"><p class="mono">Database</p></div>
+          <div class="object os-3"><p class="mono">AI Solutions</p></div>
+          <div class="object os-1"><p class="mono">Automation</p></div>
+          <div class="object os-2"><p class="mono">Infrastructure</p></div>
+          <div class="object os-3"><p class="mono">APIs</p></div>
+          <div class="object os-1"><p class="mono">Cloud</p></div>
+          <div class="object os-2"><p class="mono">DevOps</p></div>
+          <div class="object os-3"><p class="mono">Analytics</p></div>
+          <div class="object os-1"><p class="mono">Mobile</p></div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="about-sticky-cards">
-    <div class="sticky-cards-header">
-      <h3
-        data-animate-type="line-reveal"
-        data-animate-delay="0.2"
-        data-animate-on-scroll="true"
-      >
-        Visual snapshots from our work
-      </h3>
-    </div>
+  <section class="about-company">
     <div class="home-spotlight-top-bar">
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-dark.png" alt="Symbol" />
+            <img src="/symbols/s1.png" alt="Symbol" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-dark.png" alt="Symbol" />
+            <img src="/symbols/s2.png" alt="Symbol" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3-dark.png" alt="Symbol" />
+            <img src="/symbols/s3.png" alt="Symbol" />
           </div>
         </div>
         <div class="symbols-container">
           <div class="symbol">
-            <img src="/symbols/s1-dark.png" alt="Symbol" />
+            <img src="/symbols/s1.png" alt="Symbol" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s2-dark.png" alt="Symbol" />
+            <img src="/symbols/s2.png" alt="Symbol" />
           </div>
           <div class="symbol">
-            <img src="/symbols/s3-dark.png" alt="Symbol" />
+            <img src="/symbols/s3.png" alt="Symbol" />
           </div>
         </div>
       </div>
@@ -167,7 +155,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           data-animate-delay="0.2"
           data-animate-on-scroll="true"
         >
-          <span>&#9654;</span> Gallery Mode
+          <span>&#9654;</span> Company DNA
         </p>
         <p
           class="mono"
@@ -175,59 +163,158 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           data-animate-delay="0.25"
           data-animate-on-scroll="true"
         >
-          / Snapshots
+          / Foundation
         </p>
       </div>
     </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-1.jpg" alt="" />
+    <div class="container">
+      <div class="about-company-grid">
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 01 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              Built on <span class="accent-text">excellence</span>
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              We don't settle for average. Every line of code, every design decision, every deployment—crafted with precision and purpose.
+            </p>
+          </div>
+        </div>
+        
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 02 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              Modern <span class="accent-text">technology</span> stack
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              We leverage cutting-edge tools and frameworks. TypeScript, React, Astro, GSAP—our tech choices ensure performance, scalability, and future-proof solutions.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 03 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              End-to-end <span class="accent-text">delivery</span>
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              From initial concept to final deployment, we handle it all. Database architecture, API development, cloud infrastructure—complete digital ecosystems.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 04 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              Detail-driven <span class="accent-text">approach</span>
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              The difference is in the details. Clean code, smooth animations, optimized performance, accessible interfaces—we obsess over what others overlook.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 05 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              Launch <span class="accent-text">ready</span>
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              We don't just build prototypes. We deliver production-ready solutions. Tested, optimized, and ready to scale from day one.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-company-card">
+          <div class="about-company-card-header">
+            <p class="mono">[ 06 ]</p>
+            <h4
+              data-animate-type="line-reveal"
+              data-animate-delay="0.2"
+              data-animate-on-scroll="true"
+            >
+              Innovation at the <span class="accent-text">core</span>
+            </h4>
+          </div>
+          <div class="about-company-card-content">
+            <p
+              data-animate-type="line-reveal"
+              data-animate-delay="0.3"
+              data-animate-on-scroll="true"
+            >
+              We stay ahead of the curve. AI integration, automation pipelines, modern DevOps—we bring tomorrow's solutions to today's challenges.
+            </p>
+          </div>
+        </div>
       </div>
-      <div class="gallery-card-content"><p class="mono">X01-842</p></div>
-    </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-2.jpg" alt="" />
-      </div>
-      <div class="gallery-card-content"><p class="mono">V9-372K</p></div>
-    </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-3.jpg" alt="" />
-      </div>
-      <div class="gallery-card-content"><p class="mono">Z84-Q17</p></div>
-    </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-4.jpg" alt="" />
-      </div>
-      <div class="gallery-card-content"><p class="mono">L56-904</p></div>
-    </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-5.jpg" alt="" />
-      </div>
-      <div class="gallery-card-content"><p class="mono">A23-7P1</p></div>
-    </div>
-    <div class="gallery-card">
-      <div class="gallery-card-img">
-        <img src="/gallery-images/gallery-img-6.jpg" alt="" />
-      </div>
-      <div class="gallery-card-content"><p class="mono">T98-462</p></div>
     </div>
   </section>
 
   <section class="outro">
     <div class="container">
-      <h3>Let's build something great</h3>
+      <h3>Let's <span class="accent-text">build</span> something great</h3>
     </div>
     <div class="outro-strips">
       <div class="outro-strip os-1">
         <div class="skill skill-var-1"><p class="mono">Frontend</p></div>
-        <div class="skill skill-var-2"><p class="mono">UX</p></div>
+        <div class="skill skill-var-red"><p class="mono">UX</p></div>
         <div class="skill skill-var-3"><p class="mono">Performance</p></div>
         <div class="skill skill-var-1"><p class="mono">Clean Code</p></div>
-        <div class="skill skill-var-3"><p class="mono">Innovation</p></div>
+        <div class="skill skill-var-red"><p class="mono">Innovation</p></div>
         <div class="skill skill-var-1"><p class="mono">Precision</p></div>
       </div>
       <div class="outro-strip os-2">
@@ -251,13 +338,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       </div>
       <div class="outro-strip os-5">
         <div class="skill skill-var-1"><p class="mono">Web Apps</p></div>
-        <div class="skill skill-var-2"><p class="mono">Digital</p></div>
+        <div class="skill skill-var-red"><p class="mono">Digital</p></div>
         <div class="skill skill-var-3"><p class="mono">GSAP</p></div>
         <div class="skill skill-var-1"><p class="mono">Excellence</p></div>
         <div class="skill skill-var-2"><p class="mono">Live Sites</p></div>
-        <div class="skill skill-var-3"><p class="mono">Professional</p></div>
+        <div class="skill skill-var-red"><p class="mono">Professional</p></div>
         <div class="skill skill-var-1"><p class="mono">Launch Ready</p></div>
-        <div class="skill skill-var-2"><p class="mono">upintown</p></div>
+        <div class="skill skill-var-red"><p class="mono">upintown</p></div>
       </div>
       <div class="outro-strip os-6">
         <div class="skill skill-var-3"><p class="mono">UI Expert</p></div>
