@@ -3,6 +3,7 @@ import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://upintown.dev',
   output: 'server', // SSR pour permettre les API routes
   server: {
     port: 4321,
