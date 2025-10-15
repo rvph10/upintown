@@ -2,12 +2,16 @@
 import Transition from '../components/Transition.astro';
 import Menu from '../components/Menu.astro';
 import Footer from '../components/Footer.astro';
+import SEO from '../components/SEO.astro';
 import { inject } from '@vercel/analytics';
 import { injectSpeedInsights } from '@vercel/speed-insights';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
   pageStyles?: string[];
   pageScripts?: string[];
 }
@@ -15,6 +19,9 @@ interface Props {
 const {
   title = 'upintown | Digital Solutions',
   description = 'Digital solutions crafted with precision and creativity',
+  image = '/og-image.jpg',
+  type = 'website',
+  noindex = false,
   pageStyles = [],
   pageScripts = [],
 } = Astro.props;
@@ -22,6 +29,67 @@ const {
 // Initialize Vercel Analytics & Speed Insights
 inject();
 injectSpeedInsights();
+
+// Site URL for canonical and schema
+const siteUrl = Astro.site?.toString() || 'https://upintown.dev';
+
+// Schema.org Organization structured data
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'upintown',
+  url: siteUrl,
+  logo: `${siteUrl}/global/logo.svg`,
+  description: 'Digital solutions crafted with precision and creativity',
+  foundingDate: '2024',
+  sameAs: ['https://github.com/rvph10'],
+  contactPoint: {
+    '@type': 'ContactPoint',
+    email: 'contact@upintown.dev',
+    contactType: 'Customer Service',
+    availableLanguage: ['English'],
+  },
+  address: {
+    '@type': 'PostalAddress',
+    addressCountry: 'US',
+  },
+  areaServed: 'Worldwide',
+  knowsAbout: [
+    'Web Development',
+    'UI/UX Design',
+    'Frontend Development',
+    'Digital Solutions',
+    'Astro.js',
+    'React',
+    'TypeScript',
+    'GSAP Animation',
+  ],
+};
+
+// WebSite schema for search box
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'upintown',
+  url: siteUrl,
+  description: 'Digital solutions crafted with precision and creativity',
+  publisher: {
+    '@type': 'Organization',
+    name: 'upintown',
+    logo: {
+      '@type': 'ImageObject',
+      url: `${siteUrl}/global/logo.svg`,
+    },
+  },
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: {
+      '@type': 'EntryPoint',
+      urlTemplate: `${siteUrl}/?s={search_term_string}`,
+    },
+    'query-input': 'required name=search_term_string',
+  },
+};
 ---
 
 <!doctype html>
@@ -29,9 +97,30 @@ injectSpeedInsights();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
-    <link rel="icon" href="/global/site-icon.png" />
+    <meta name="theme-color" content="#f9f4eb" />
+
+    <!-- SEO Meta Tags -->
+    <SEO
+      title={title}
+      description={description}
+      image={image}
+      type={type}
+      noindex={noindex}
+    />
+
+    <!-- Preconnect to external domains for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- DNS Prefetch for external resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <link rel="icon" href="/global/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/global/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Styles globaux -->
     <link rel="stylesheet" href="/src/styles/globals.css" />
@@ -41,13 +130,26 @@ injectSpeedInsights();
 
     <!-- Styles spécifiques à la page -->
     {pageStyles.map((style) => <link rel="stylesheet" href={`/src/styles/${style}.css`} />)}
+
+    <!-- Schema.org structured data -->
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+
+    <!-- Verification tags (add when ready) -->
+    <!-- <meta name="google-site-verification" content="YOUR_VERIFICATION_CODE" /> -->
+    <!-- <meta name="msvalidate.01" content="YOUR_BING_VERIFICATION_CODE" /> -->
   </head>
   <body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
     <Transition />
     <Menu />
 
-    <!-- Contenu de la page -->
-    <slot />
+    <!-- Main content -->
+    <main id="main-content">
+      <slot />
+    </main>
 
     <Footer />
 
@@ -60,3 +162,24 @@ injectSpeedInsights();
     {pageScripts.map((script) => <script src={`/src/scripts/${script}.js`} type="module" />)}
   </body>
 </html>
+
+<style>
+  /* Skip to main content link for accessibility */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--base-300);
+    color: var(--base-100);
+    padding: 8px 16px;
+    text-decoration: none;
+    z-index: 100;
+    font-family: 'Host Grotesk', sans-serif;
+    font-size: 0.9rem;
+    transition: top 0.2s ease;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+</style>
