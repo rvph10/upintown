@@ -1,0 +1,23 @@
+# robots.txt for upintown.dev
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://upintown.dev/sitemap.xml
+
+# Crawl-delay (optional - helps prevent server overload)
+# Crawl-delay: 1
+
+# Block specific paths if needed (examples commented out)
+# Disallow: /api/
+# Disallow: /admin/
+# Disallow: /*.json$
+
+# Block specific bots if needed (examples commented out)
+# User-agent: AhrefsBot
+# Disallow: /
+
+# User-agent: SemrushBot
+# Disallow: /
