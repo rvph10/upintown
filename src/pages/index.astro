@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import { PAGE_SEO } from '../data/seo-config';
 
 // Import symbols
 import symbol1 from '../../public/symbols/s1.png';
@@ -24,13 +25,15 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
 ---
 
 <BaseLayout
-  title="upintown | Digital Solutions - Modern Web Development"
-  description="upintown creates cutting-edge digital solutions with precision and creativity. Expert in Astro, React, TypeScript, GSAP animations, and modern web development."
-  image="/og-image.jpg"
+  title={PAGE_SEO.home.title}
+  description={PAGE_SEO.home.description}
+  image={PAGE_SEO.home.image}
+  keywords={PAGE_SEO.home.keywords}
   pageStyles={['home']}
   pageScripts={['anime', 'home']}
+  includeServiceSchema={true}
 >
-  <section class="hero">
+  <section class="hero" aria-label="Hero section">
     <div class="home-services-top-bar">
       <div class="container">
         <div class="symbols-container">
@@ -49,7 +52,8 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
       <div class="hero-content">
         <div class="hero-header">
           <h1 data-animate-type="reveal" data-animate-delay="0.25">
-            <Image src={uptownLogo} alt="upintown - Digital Solutions" loading="eager" />
+            <span class="visually-hidden">upintown - Digital Solutions</span>
+            <Image src={uptownLogo} alt="" loading="eager" aria-hidden="true" />
           </h1>
         </div>
         <div class="hero-footer">
@@ -72,7 +76,7 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
     </div>
   </section>
 
-  <section class="home-about">
+  <section class="home-about" aria-labelledby="skillset-heading">
     <div class="container">
       <div class="home-about-col">
         <div class="symbols-container">
@@ -89,13 +93,14 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
           >
             <span>&#9654;</span> Skillset
           </p>
-          <h3
+          <h2
+            id="skillset-heading"
             data-animate-type="line-reveal"
             data-animate-delay="0.2"
             data-animate-on-scroll="true"
           >
             Expertise that <span class="accent-text">drives</span> results
-          </h3>
+          </h2>
         </div>
       </div>
       <div class="home-about-col">
@@ -109,13 +114,13 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
             >
               [ Service 01 ]
             </p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Strategy
-            </h4>
+            </h3>
           </div>
           <div class="home-about-card">
             <p
@@ -126,13 +131,13 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
             >
               [ Service 02 ]
             </p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.25"
               data-animate-on-scroll="true"
             >
               Design
-            </h4>
+            </h3>
           </div>
         </div>
         <div class="home-about-col-row">
@@ -145,13 +150,13 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
             >
               [ Service 03 ]
             </p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.3"
               data-animate-on-scroll="true"
             >
               Development
-            </h4>
+            </h3>
           </div>
           <div class="home-about-card">
             <p
@@ -162,20 +167,20 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
             >
               [ Service 04 ]
             </p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.35"
               data-animate-on-scroll="true"
             >
-              Launch
-            </h4>
+              AI & Automation
+            </h3>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="home-spotlight">
+  <section class="home-spotlight" aria-labelledby="portfolio-heading">
     <div class="home-spotlight-top-bar">
       <div class="container">
         <div class="symbols-container">
@@ -224,9 +229,9 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
     </div>
     <div class="container">
       <div class="spotlight-intro-header">
-        <h3 data-animate-type="line-reveal" data-animate-delay="0.3" data-animate-on-scroll="true">
+        <h2 id="portfolio-heading" data-animate-type="line-reveal" data-animate-delay="0.3" data-animate-on-scroll="true">
           <span class="accent-text">Quality</span> over quantity, always
-        </h3>
+        </h2>
       </div>
     </div>
     <div class="home-spotlight-images">
@@ -347,34 +352,34 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
       </div>
       <div class="container">
         <div class="spotlight-mask-header">
-          <h3>Crafted with <span class="accent-text">Modern</span> Inspiration</h3>
+          <h3 aria-label="Crafted with modern inspiration">Crafted with <span class="accent-text">Modern</span> Inspiration</h3>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="outro">
+  <section class="outro" aria-label="Call to action">
     <div class="container">
-      <h3>Let's <span class="accent-text">build</span> something great</h3>
+      <h2>Let's <span class="accent-text">build</span> something great</h2>
     </div>
     <div class="outro-strips">
       <div class="outro-strip os-1">
         <div class="skill skill-var-1"><p class="mono">Frontend</p></div>
-        <div class="skill skill-var-red"><p class="mono">UX</p></div>
+        <div class="skill skill-var-red"><p class="mono">AI Solutions</p></div>
         <div class="skill skill-var-3"><p class="mono">Performance</p></div>
         <div class="skill skill-var-1"><p class="mono">Clean Code</p></div>
-        <div class="skill skill-var-red"><p class="mono">Innovation</p></div>
+        <div class="skill skill-var-red"><p class="mono">Automation</p></div>
         <div class="skill skill-var-1"><p class="mono">Precision</p></div>
       </div>
       <div class="outro-strip os-2">
         <div class="skill skill-var-2"><p class="mono">Motion</p></div>
         <div class="skill skill-var-3"><p class="mono">Design</p></div>
-        <div class="skill skill-var-1"><p class="mono">Modern Stack</p></div>
+        <div class="skill skill-var-1"><p class="mono">Infrastructure</p></div>
       </div>
       <div class="outro-strip os-3">
         <div class="skill skill-var-2"><p class="mono">Details</p></div>
         <div class="skill skill-var-3"><p class="mono">Quality</p></div>
-        <div class="skill skill-var-1"><p class="mono">Builds</p></div>
+        <div class="skill skill-var-1"><p class="mono">AI Integration</p></div>
         <div class="skill skill-var-2"><p class="mono">Solutions</p></div>
         <div class="skill skill-var-3"><p class="mono">Creativity</p></div>
         <div class="skill skill-var-3"><p class="mono">Animations</p></div>
@@ -383,23 +388,23 @@ import spotlightImg9 from '../../public/spotlight-images/spotlight-img-9.jpeg';
       <div class="outro-strip os-4">
         <div class="skill skill-var-1"><p class="mono">TypeScript</p></div>
         <div class="skill skill-var-2"><p class="mono">React</p></div>
-        <div class="skill skill-var-3"><p class="mono">Astro</p></div>
+        <div class="skill skill-var-3"><p class="mono">ML Systems</p></div>
       </div>
       <div class="outro-strip os-5">
         <div class="skill skill-var-1"><p class="mono">Web Apps</p></div>
         <div class="skill skill-var-red"><p class="mono">Digital</p></div>
-        <div class="skill skill-var-3"><p class="mono">GSAP</p></div>
+        <div class="skill skill-var-3"><p class="mono">Intelligent Automation</p></div>
         <div class="skill skill-var-1"><p class="mono">Excellence</p></div>
         <div class="skill skill-var-2"><p class="mono">Live Sites</p></div>
-        <div class="skill skill-var-red"><p class="mono">Professional</p></div>
+        <div class="skill skill-var-red"><p class="mono">AI Infrastructure</p></div>
         <div class="skill skill-var-1"><p class="mono">Launch Ready</p></div>
         <div class="skill skill-var-red"><p class="mono">upintown</p></div>
       </div>
       <div class="outro-strip os-6">
-        <div class="skill skill-var-3"><p class="mono">UI Expert</p></div>
+        <div class="skill skill-var-3"><p class="mono">DevOps</p></div>
         <div class="skill skill-var-1"><p class="mono">Reliable</p></div>
-        <div class="skill skill-var-2"><p class="mono">Deployed</p></div>
-        <div class="skill skill-var-3"><p class="mono">Modern CSS</p></div>
+        <div class="skill skill-var-2"><p class="mono">Cloud Native</p></div>
+        <div class="skill skill-var-3"><p class="mono">Modern Stack</p></div>
       </div>
     </div>
   </section>

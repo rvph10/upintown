@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { Image } from 'astro:assets';
+import { PAGE_SEO } from '../data/seo-config';
 
 // Import symbols
 import symbol1 from '../../public/symbols/s1.png';
@@ -16,13 +17,14 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
 ---
 
 <BaseLayout
-  title="Terrene Interior Studio Project | upintown Portfolio"
-  description="Case study: Terrene Interior Studio website built with Next.js, Tailwind CSS, GSAP, and Lenis. Featuring elegant animations, smooth scrolling, and modern design principles."
-  image="/project-images/project-img-1.png"
+  title={PAGE_SEO.project.title}
+  description={PAGE_SEO.project.description}
+  image={PAGE_SEO.project.image}
+  keywords={PAGE_SEO.project.keywords}
   pageStyles={['project']}
   pageScripts={['project']}
 >
-  <div class="home-spotlight-top-bar">
+  <div class="home-spotlight-top-bar" role="presentation">
     <div class="container">
       <div class="symbols-container">
         <div class="symbol">
@@ -37,10 +39,10 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </div>
 
-  <section class="project-header">
+  <section class="project-header" aria-labelledby="project-title">
     <div class="container">
       <div class="project-title">
-        <h3 data-animate-type="reveal" data-animate-delay="0.25">Terrene - Interior Studio</h3>
+        <h1 id="project-title" data-animate-type="reveal" data-animate-delay="0.25">Terrene - Interior Studio</h1>
       </div>
       <div class="project-header-divider"></div>
       <div class="project-meta">
@@ -64,9 +66,9 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 
-  <section class="project-banner-img">
+  <section class="project-banner-img" aria-label="Project showcase video">
     <div class="container">
-      <video autoplay muted loop playsinline preload="metadata">
+      <video autoplay muted loop playsinline preload="metadata" aria-label="Terrene Interior Studio website demonstration">
         <source src="/project-images/project-showcase.mp4" type="video/mp4" />
         <Image
           src={projectImg2}
@@ -79,19 +81,20 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 
-  <section class="project-overview">
+  <section class="project-overview" aria-labelledby="project-overview-heading">
+    <h2 id="project-overview-heading" class="visually-hidden">Project Overview</h2>
     <div class="container">
       <div class="project-overview-col"></div>
       <div class="project-overview-col">
         <div class="project-stack">
-          <p
+          <h3
             class="mono"
             data-animate-type="scramble"
             data-animate-delay="0.2"
             data-animate-on-scroll="true"
           >
             <span>&#9654;</span> Stack
-          </p>
+          </h3>
           <br />
           <p data-animate-type="line-reveal" data-animate-delay="0.3" data-animate-on-scroll="true">
             Next.js
@@ -113,14 +116,14 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
           </p>
         </div>
         <div class="project-overview-copy">
-          <p
+          <h3
             class="mono"
             data-animate-type="scramble"
             data-animate-delay="0.9"
             data-animate-on-scroll="true"
           >
             <span>&#9654;</span> Background
-          </p>
+          </h3>
           <br />
           <p data-animate-type="line-reveal" data-animate-delay="1" data-animate-on-scroll="true">
             Terrene is an interior studio that specializes in creating unique and bespoke
@@ -133,8 +136,9 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 
-  <section class="project-snapshots">
-    <div class="home-spotlight-top-bar">
+  <section class="project-snapshots" aria-labelledby="snapshots-heading">
+    <h2 id="snapshots-heading" class="visually-hidden">Project Screenshots</h2>
+    <div class="home-spotlight-top-bar" role="presentation">
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
@@ -154,7 +158,7 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
         </div>
       </div>
     </div>
-    <div class="home-spotlight-bottom-bar">
+    <div class="home-spotlight-bottom-bar" role="presentation">
       <div class="container">
         <p
           class="mono"
@@ -231,19 +235,20 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 
-  <section class="project-info">
+  <section class="project-info" aria-labelledby="client-review-heading">
     <div class="container">
       <div class="project-info-col"></div>
       <div class="project-info-col">
         <div class="project-info-copy">
-          <p
+          <h2
+            id="client-review-heading"
             class="mono"
             data-animate-type="scramble"
             data-animate-delay="0.2"
             data-animate-on-scroll="true"
           >
             <span>&#9654;</span> Client Review
-          </p>
+          </h2>
           <br />
           <p
             data-animate-type="line-reveal"
@@ -267,8 +272,8 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
   </section>
 
-  <section class="next-project">
-    <div class="home-spotlight-top-bar">
+  <section class="next-project" aria-labelledby="next-project-heading">
+    <div class="home-spotlight-top-bar" role="presentation">
       <div class="container">
         <div class="symbols-container">
           <div class="symbol">
@@ -296,7 +301,7 @@ import projectImg5 from '../../public/project-images/project-img-5.png';
     </div>
     <div class="container next-project-data">
       <div class="next-project-title">
-        <h3>Coming Soon</h3>
+        <h2 id="next-project-heading">Coming Soon</h2>
       </div>
       <div class="next-project-header-divider"></div>
       <div class="next-project-meta">

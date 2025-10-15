@@ -1,29 +1,31 @@
 ---
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { PAGE_SEO } from '../data/seo-config';
 import s1 from '../../public/symbols/s1.png';
 import s2 from '../../public/symbols/s2.png';
 import s3 from '../../public/symbols/s3.png';
 ---
 
 <BaseLayout
-  title="About upintown | Expert Digital Solutions & Web Development"
-  description="Discover upintown's expertise in modern web development, UI/UX design, and digital solutions. We leverage cutting-edge technologies like Astro.js, React, and GSAP to deliver production-ready solutions."
-  image="/og-image.jpg"
+  title={PAGE_SEO.about.title}
+  description={PAGE_SEO.about.description}
+  image={PAGE_SEO.about.image}
+  keywords={PAGE_SEO.about.keywords}
   pageStyles={['home', 'about']}
   pageScripts={['anime', 'about']}
 >
-  <section class="about-hero">
+  <section class="about-hero" aria-labelledby="about-heading">
     <div class="container">
       <div class="about-header">
-        <h2 data-animate-type="line-reveal" data-animate-delay="0.25">
+        <h1 id="about-heading" data-animate-type="line-reveal" data-animate-delay="0.25">
           We don't just build, we <span class="accent-text">create</span> experiences
-        </h2>
+        </h1>
       </div>
     </div>
   </section>
 
-  <section class="anime-text-container">
+  <section class="anime-text-container" aria-label="About upintown introduction">
     <div class="home-spotlight-top-bar">
       <div class="container">
         <div class="symbols-container">
@@ -75,7 +77,7 @@ import s3 from '../../public/symbols/s3.png';
     </div>
   </section>
 
-  <section class="about-skills">
+  <section class="about-skills" aria-labelledby="skills-heading">
     <div class="container">
       <div class="about-skills-col">
         <div class="symbols-container">
@@ -98,13 +100,14 @@ import s3 from '../../public/symbols/s3.png';
             </p>
           </div>
           <div class="about-skills-header">
-            <h3
+            <h2
+              id="skills-heading"
               data-animate-type="line-reveal"
               data-animate-delay="0.4"
               data-animate-on-scroll="true"
             >
               From concept to deployment, we deliver <span class="accent-text">complete</span> solutions
-            </h3>
+            </h2>
           </div>
         </div>
       </div>
@@ -125,7 +128,7 @@ import s3 from '../../public/symbols/s3.png';
     </div>
   </section>
 
-  <section class="about-company">
+  <section class="about-company" aria-label="Company values and foundation">
     <div class="home-spotlight-top-bar">
       <div class="container">
         <div class="symbols-container">
@@ -177,13 +180,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">01.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Excellence
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -200,13 +203,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">02.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Modern Stack
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -223,13 +226,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">03.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               End-to-End
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -246,13 +249,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">04.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Detail-Driven
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -269,13 +272,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">05.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Launch Ready
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -292,13 +295,13 @@ import s3 from '../../public/symbols/s3.png';
         <div class="about-company-card">
           <div class="about-company-card-header">
             <p class="mono">06.</p>
-            <h4
+            <h3
               data-animate-type="line-reveal"
               data-animate-delay="0.2"
               data-animate-on-scroll="true"
             >
               Innovation
-            </h4>
+            </h3>
           </div>
           <div class="about-company-card-content">
             <p
@@ -315,29 +318,29 @@ import s3 from '../../public/symbols/s3.png';
     </div>
   </section>
 
-  <section class="outro">
+  <section class="outro" aria-label="Call to action">
     <div class="container">
-      <h3>Let's <span class="accent-text">build</span> something great</h3>
+      <h2>Let's <span class="accent-text">build</span> something great</h2>
     </div>
     <div class="outro-strips">
       <div class="outro-strip os-1">
         <div class="skill skill-var-1"><p class="mono">Frontend</p></div>
-        <div class="skill skill-var-red"><p class="mono">UX</p></div>
+        <div class="skill skill-var-red"><p class="mono">AI Solutions</p></div>
         <div class="skill skill-var-3"><p class="mono">Performance</p></div>
         <div class="skill skill-var-1"><p class="mono">Clean Code</p></div>
-        <div class="skill skill-var-red"><p class="mono">Innovation</p></div>
+        <div class="skill skill-var-red"><p class="mono">Automation</p></div>
         <div class="skill skill-var-1"><p class="mono">Precision</p></div>
       </div>
       <div class="outro-strip os-2">
         <div class="skill skill-var-2"><p class="mono">Motion</p></div>
         <div class="skill skill-var-3"><p class="mono">Design</p></div>
-        <div class="skill skill-var-1"><p class="mono">Modern Stack</p></div>
+        <div class="skill skill-var-1"><p class="mono">Infrastructure</p></div>
       </div>
       <div class="outro-strip os-3">
         <div class="skill skill-var-2"><p class="mono">Details</p></div>
         <div class="skill skill-var-3"><p class="mono">Quality</p></div>
-        <div class="skill skill-var-1"><p class="mono">Solutions</p></div>
-        <div class="skill skill-var-2"><p class="mono">Digital</p></div>
+        <div class="skill skill-var-1"><p class="mono">AI Integration</p></div>
+        <div class="skill skill-var-2"><p class="mono">Solutions</p></div>
         <div class="skill skill-var-3"><p class="mono">Creativity</p></div>
         <div class="skill skill-var-3"><p class="mono">Animations</p></div>
         <div class="skill skill-var-1"><p class="mono">Best Practices</p></div>
@@ -345,23 +348,23 @@ import s3 from '../../public/symbols/s3.png';
       <div class="outro-strip os-4">
         <div class="skill skill-var-1"><p class="mono">TypeScript</p></div>
         <div class="skill skill-var-2"><p class="mono">React</p></div>
-        <div class="skill skill-var-3"><p class="mono">Astro</p></div>
+        <div class="skill skill-var-3"><p class="mono">ML Systems</p></div>
       </div>
       <div class="outro-strip os-5">
         <div class="skill skill-var-1"><p class="mono">Web Apps</p></div>
         <div class="skill skill-var-red"><p class="mono">Digital</p></div>
-        <div class="skill skill-var-3"><p class="mono">GSAP</p></div>
+        <div class="skill skill-var-3"><p class="mono">Intelligent Automation</p></div>
         <div class="skill skill-var-1"><p class="mono">Excellence</p></div>
         <div class="skill skill-var-2"><p class="mono">Live Sites</p></div>
-        <div class="skill skill-var-red"><p class="mono">Professional</p></div>
+        <div class="skill skill-var-red"><p class="mono">AI Infrastructure</p></div>
         <div class="skill skill-var-1"><p class="mono">Launch Ready</p></div>
         <div class="skill skill-var-red"><p class="mono">upintown</p></div>
       </div>
       <div class="outro-strip os-6">
-        <div class="skill skill-var-3"><p class="mono">UI Expert</p></div>
+        <div class="skill skill-var-3"><p class="mono">DevOps</p></div>
         <div class="skill skill-var-1"><p class="mono">Reliable</p></div>
-        <div class="skill skill-var-2"><p class="mono">Deployed</p></div>
-        <div class="skill skill-var-3"><p class="mono">Modern CSS</p></div>
+        <div class="skill skill-var-2"><p class="mono">Cloud Native</p></div>
+        <div class="skill skill-var-3"><p class="mono">Modern Stack</p></div>
       </div>
     </div>
   </section>
