@@ -6,24 +6,27 @@ import s1Light from '../../public/symbols/s1-light.png';
 import s2Light from '../../public/symbols/s2-light.png';
 ---
 
-<footer>
+<footer role="contentinfo">
   <div class="container">
-    <div class="footer-top">
+    <section class="footer-top" aria-labelledby="newsletter-heading">
       <div class="footer-col">
-        <p class="mono">
-          <span>&#9654;</span> Stay updated on new <span class="accent-text">projects</span>
+        <p class="mono" id="newsletter-heading">
+          <span aria-hidden="true">&#9654;</span> Stay updated on new <span class="accent-text">projects</span>
         </p>
-        <form class="footer-newsletter-form">
+        <form class="footer-newsletter-form" aria-label="Newsletter subscription form">
           <div class="footer-email-container">
             <div class="footer-email-row">
+              <label for="newsletter-email" class="visually-hidden">Email address</label>
               <input
                 type="email"
+                id="newsletter-email"
                 class="footer-newsletter-input"
                 placeholder="your@email.com"
+                aria-label="Email address for newsletter"
                 required
               />
-              <button type="submit" class="submit-btn footer-newsletter-btn">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <button type="submit" class="submit-btn footer-newsletter-btn" aria-label="Subscribe to newsletter">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                   <path
                     d="M5 12H19M19 12L12 5M19 12L12 19"
                     stroke="currentColor"
@@ -37,18 +40,18 @@ import s2Light from '../../public/symbols/s2-light.png';
         </form>
       </div>
       <div class="footer-col"></div>
-    </div>
+    </section>
     <div class="footer-bottom">
       <div class="footer-col">
         <div class="footer-logo">
-          <a href="/">
+          <a href="/" aria-label="upintown home">
             <Image src={logo} alt="upintown logo" style="width: 300px;" loading="lazy" />
           </a>
         </div>
       </div>
-      <div class="footer-col">
+      <nav class="footer-col" aria-label="Footer navigation">
         <div class="footer-sub-col">
-          <p class="mono"><span>&#9654;</span> Explore</p>
+          <h2 class="mono"><span aria-hidden="true">&#9654;</span> Explore</h2>
           <div class="footer-links">
             <p><a href="/">Start Here</a></p>
             <p><a href="/about">Meet Us</a></p>
@@ -57,7 +60,7 @@ import s2Light from '../../public/symbols/s2-light.png';
           </div>
         </div>
         <div class="footer-sub-col">
-          <p class="mono"><span>&#9654;</span> Connect</p>
+          <h2 class="mono"><span aria-hidden="true">&#9654;</span> Connect</h2>
           <div class="footer-copy">
             <p>
               <a href="https://github.com/rvph10" target="_blank" rel="noopener noreferrer"
@@ -68,15 +71,15 @@ import s2Light from '../../public/symbols/s2-light.png';
           </div>
         </div>
         <div class="footer-sub-col">
-          <p class="mono"><span>&#9654;</span> Contact</p>
+          <h2 class="mono"><span aria-hidden="true">&#9654;</span> Contact</h2>
           <div class="footer-copy">
             <p><a href="mailto:contact@upintown.dev">contact@upintown.dev</a></p>
           </div>
         </div>
-      </div>
+      </nav>
     </div>
     <div class="footer-copyright">
-      <div class="footer-copyright-top">
+      <div class="footer-copyright-top" role="presentation">
         <div class="symbols-container">
           <div class="symbol">
             <Image src={s1Light} alt="Decorative geometric symbol" loading="lazy" />
@@ -96,14 +99,14 @@ import s2Light from '../../public/symbols/s2-light.png';
       </div>
       <div class="footer-copyright-bottom">
         <div class="footer-col">
-          <p class="mono"><span>&#9654;</span> upintown</p>
+          <p class="mono"><span aria-hidden="true">&#9654;</span> upintown</p>
         </div>
         <div class="footer-col">
           <p class="mono">&copy; 2025 All Rights Reserved</p>
         </div>
         <div class="footer-col">
           <p class="mono">
-            MWT {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}
+            MWT <time datetime={new Date().toISOString()}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</time>
           </p>
         </div>
       </div>
