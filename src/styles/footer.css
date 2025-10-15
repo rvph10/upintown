@@ -58,7 +58,7 @@ footer .footer-email-row {
 footer .footer-email-row input {
   flex: 1;
   width: 100%;
-  font-family: "Host Grotesk";
+  font-family: 'Host Grotesk';
   font-weight: 900;
   font-size: 3rem;
   color: var(--base-100);

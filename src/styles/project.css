@@ -63,10 +63,7 @@
   gap: 4rem;
 }
 
-.project-overview
-  .container
-  .project-overview-col:nth-child(2)
-  .project-overview-copy {
+.project-overview .container .project-overview-col:nth-child(2) .project-overview-copy {
   width: 75%;
 }
 
@@ -232,10 +229,7 @@
     display: none;
   }
 
-  .project-overview
-    .container
-    .project-overview-col:nth-child(2)
-    .project-overview-copy,
+  .project-overview .container .project-overview-col:nth-child(2) .project-overview-copy,
   .project-info .container .project-info-col:nth-child(2) .project-info-copy {
     width: 100%;
   }

@@ -64,7 +64,7 @@
   background-color: var(--base-300);
   color: var(--base-100);
   text-transform: uppercase;
-  font-family: "DM Mono";
+  font-family: 'DM Mono';
   font-size: 0.9rem;
   font-weight: 500;
   border: 2px solid var(--base-300);
@@ -384,4 +384,3 @@
     width: 300vw;
   }
 }
-
