@@ -1,45 +1,35 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
-import { initAnimations } from "./anime";
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import { initAnimations } from './anime';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
   initAnimations();
 
-  const animeTextParagraphs = document.querySelectorAll(".anime-text p");
-  const wordHighlightBgColor = "191, 188, 180";
+  const animeTextParagraphs = document.querySelectorAll('.anime-text p');
+  const wordHighlightBgColor = '191, 188, 180';
 
-  const keywords = [
-    "corner",
-    "scroll",
-    "archive",
-    "learnings",
-    "rhythm",
-    "detail",
-    "deploy",
-    "caffeine",
-    "messing",
-  ];
+  const keywords = ['precision', 'dedication', 'detail', 'intent', 'impact', 'modern'];
 
   animeTextParagraphs.forEach((paragraph) => {
     const text = paragraph.textContent;
     const words = text.split(/\s+/);
-    paragraph.innerHTML = "";
+    paragraph.innerHTML = '';
 
     words.forEach((word) => {
       if (word.trim()) {
-        const wordContainer = document.createElement("div");
-        wordContainer.className = "word";
+        const wordContainer = document.createElement('div');
+        wordContainer.className = 'word';
 
-        const wordText = document.createElement("span");
+        const wordText = document.createElement('span');
         wordText.textContent = word;
 
-        const normalizedWord = word.toLowerCase().replace(/[.,!?;:"]/g, "");
+        const normalizedWord = word.toLowerCase().replace(/[.,!?;:"]/g, '');
         if (keywords.includes(normalizedWord)) {
-          wordContainer.classList.add("keyword-wrapper");
-          wordText.classList.add("keyword", normalizedWord);
+          wordContainer.classList.add('keyword-wrapper');
+          wordText.classList.add('keyword', normalizedWord);
         }
 
         wordContainer.appendChild(wordText);
@@ -48,26 +38,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  const animeTextContainers = document.querySelectorAll(
-    ".anime-text-container"
-  );
+  const animeTextContainers = document.querySelectorAll('.anime-text-container');
 
   animeTextContainers.forEach((container) => {
     ScrollTrigger.create({
       trigger: container,
       pin: container,
-      start: "top top",
+      start: 'top top',
       end: `+=${window.innerHeight * 4}`,
       pinSpacing: true,
       onUpdate: (self) => {
         const progress = self.progress;
-        const words = Array.from(
-          container.querySelectorAll(".anime-text .word")
-        );
+        const words = Array.from(container.querySelectorAll('.anime-text .word'));
         const totalWords = words.length;
 
         words.forEach((word, index) => {
-          const wordText = word.querySelector("span");
+          const wordText = word.querySelector('span');
 
           if (progress <= 0.7) {
             const progressTarget = 0.7;
@@ -94,21 +80,19 @@ document.addEventListener("DOMContentLoaded", () => {
               revealProgress <= adjustedStart
                 ? 0
                 : revealProgress >= adjustedEnd
-                ? 1
-                : (revealProgress - adjustedStart) / duration;
+                  ? 1
+                  : (revealProgress - adjustedStart) / duration;
 
             word.style.opacity = wordProgress;
 
-            const backgroundFadeStart =
-              wordProgress >= 0.9 ? (wordProgress - 0.9) / 0.1 : 0;
+            const backgroundFadeStart = wordProgress >= 0.9 ? (wordProgress - 0.9) / 0.1 : 0;
             const backgroundOpacity = Math.max(0, 1 - backgroundFadeStart);
             word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${backgroundOpacity})`;
 
             const textRevealThreshold = 0.9;
             const textRevealProgress =
               wordProgress >= textRevealThreshold
-                ? (wordProgress - textRevealThreshold) /
-                  (1 - textRevealThreshold)
+                ? (wordProgress - textRevealThreshold) / (1 - textRevealThreshold)
                 : 0;
             wordText.style.opacity = Math.pow(textRevealProgress, 0.5);
           } else {
@@ -118,18 +102,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const reverseOverlapWords = 5;
             const reverseWordStart = index / totalWords;
-            const reverseWordEnd =
-              reverseWordStart + reverseOverlapWords / totalWords;
+            const reverseWordEnd = reverseWordStart + reverseOverlapWords / totalWords;
 
             const reverseTimelineScale =
-              1 /
-              Math.max(
-                1,
-                (totalWords - 1) / totalWords + reverseOverlapWords / totalWords
-              );
+              1 / Math.max(1, (totalWords - 1) / totalWords + reverseOverlapWords / totalWords);
 
-            const reverseAdjustedStart =
-              reverseWordStart * reverseTimelineScale;
+            const reverseAdjustedStart = reverseWordStart * reverseTimelineScale;
             const reverseAdjustedEnd = reverseWordEnd * reverseTimelineScale;
             const reverseDuration = reverseAdjustedEnd - reverseAdjustedStart;
 
@@ -137,12 +115,11 @@ document.addEventListener("DOMContentLoaded", () => {
               reverseProgress <= reverseAdjustedStart
                 ? 0
                 : reverseProgress >= reverseAdjustedEnd
-                ? 1
-                : (reverseProgress - reverseAdjustedStart) / reverseDuration;
+                  ? 1
+                  : (reverseProgress - reverseAdjustedStart) / reverseDuration;
 
             if (reverseWordProgress > 0) {
-              wordText.style.opacity =
-                targetTextOpacity * (1 - reverseWordProgress);
+              wordText.style.opacity = targetTextOpacity * (1 - reverseWordProgress);
               word.style.backgroundColor = `rgba(${wordHighlightBgColor}, ${reverseWordProgress})`;
             } else {
               wordText.style.opacity = targetTextOpacity;
@@ -220,30 +197,22 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
     Matter.World.add(engine.world, walls);
 
-    const objects = container.querySelectorAll(".object");
+    const objects = container.querySelectorAll('.object');
     objects.forEach((obj, index) => {
       const objRect = obj.getBoundingClientRect();
 
-      const startX =
-        Math.random() * (containerRect.width - objRect.width) +
-        objRect.width / 2;
+      const startX = Math.random() * (containerRect.width - objRect.width) + objRect.width / 2;
       const startY = -500 - index * 200;
       const startRotation = (Math.random() - 0.5) * Math.PI;
 
-      const body = Matter.Bodies.rectangle(
-        startX,
-        startY,
-        objRect.width,
-        objRect.height,
-        {
-          restitution: config.restitution,
-          friction: config.friction,
-          frictionAir: config.frictionAir,
-          density: config.density,
-          chamfer: { radius: 10 },
-          slop: 0.02,
-        }
-      );
+      const body = Matter.Bodies.rectangle(startX, startY, objRect.width, objRect.height, {
+        restitution: config.restitution,
+        friction: config.friction,
+        frictionAir: config.frictionAir,
+        density: config.density,
+        chamfer: { radius: 10 },
+        slop: 0.02,
+      });
 
       Matter.Body.setAngle(body, startRotation);
 
@@ -257,7 +226,15 @@ document.addEventListener("DOMContentLoaded", () => {
       Matter.World.add(engine.world, body);
     });
 
-    Matter.Events.on(engine, "beforeUpdate", function () {
+    // Wake up bodies on collision
+    Matter.Events.on(engine, 'collisionStart', function (event) {
+      event.pairs.forEach((pair) => {
+        Matter.Sleeping.set(pair.bodyA, false);
+        Matter.Sleeping.set(pair.bodyB, false);
+      });
+    });
+
+    Matter.Events.on(engine, 'beforeUpdate', function () {
       bodies.forEach(({ body }) => {
         const maxVelocity = 250;
 
@@ -287,22 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
       Matter.World.add(engine.world, topWall);
     }, 3000);
 
-    // Random forces to keep objects moving
-    setInterval(() => {
-      if (bodies.length > 0 && Math.random() < 0.5) {
-        const randomBody = bodies[Math.floor(Math.random() * bodies.length)];
-        const randomForce = {
-          x: (Math.random() - 0.5) * 0.05,
-          y: (Math.random() - 0.5) * 0.03,
-        };
-        Matter.Body.applyForce(
-          randomBody.body,
-          randomBody.body.position,
-          randomForce
-        );
-      }
-    }, 1500);
-
     // Mouse interaction - allow dragging objects
     const mouse = Matter.Mouse.create(container);
     const mouseConstraint = Matter.MouseConstraint.create(engine, {
@@ -310,35 +271,31 @@ document.addEventListener("DOMContentLoaded", () => {
       constraint: {
         stiffness: 0.2,
         render: {
-          visible: false
-        }
-      }
+          visible: false,
+        },
+      },
     });
 
     Matter.World.add(engine.world, mouseConstraint);
 
     // Keep the mouse in sync with rendering
-    mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
-    mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+    mouse.element.removeEventListener('mousewheel', mouse.mousewheel);
+    mouse.element.removeEventListener('DOMMouseScroll', mouse.mousewheel);
 
     runner = Matter.Runner.create();
     Matter.Runner.run(runner, engine);
 
     function updatePositions() {
       bodies.forEach(({ body, element, width, height }) => {
-        const x = clamp(
-          body.position.x - width / 2,
-          0,
-          containerRect.width - width
-        );
+        const x = clamp(body.position.x - width / 2, 0, containerRect.width - width);
         const y = clamp(
           body.position.y - height / 2,
           -height * 3,
           containerRect.height - height - floorOffset
         );
 
-        element.style.left = x + "px";
-        element.style.top = y + "px";
+        element.style.left = x + 'px';
+        element.style.top = y + 'px';
         element.style.transform = `rotate(${body.angle}rad)`;
       });
 
@@ -358,14 +315,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (animateOnScroll) {
     waitForMatter(() => {
-      document.querySelectorAll("section").forEach((section) => {
-        if (section.querySelector(".object-container")) {
+      document.querySelectorAll('section').forEach((section) => {
+        if (section.querySelector('.object-container')) {
           ScrollTrigger.create({
             trigger: section,
-            start: "top bottom",
+            start: 'top bottom',
             once: true,
             onEnter: () => {
-              const container = section.querySelector(".object-container");
+              const container = section.querySelector('.object-container');
               if (container && !engine) {
                 initPhysics(container);
               }
@@ -376,8 +333,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   } else {
     waitForMatter(() => {
-      window.addEventListener("load", () => {
-        const container = document.querySelector(".object-container");
+      window.addEventListener('load', () => {
+        const container = document.querySelector('.object-container');
         if (container) {
           initPhysics(container);
         }
@@ -385,90 +342,77 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const galleryCards = gsap.utils.toArray(".gallery-card");
-  const rotations = [-12, 10, -5, 5, -5, -2];
-
-  galleryCards.forEach((galleryCard, index) => {
-    gsap.set(galleryCard, {
-      y: window.innerHeight,
-      rotate: rotations[index],
-    });
-  });
-
   ScrollTrigger.create({
-    trigger: ".about-skills",
-    start: "top top",
+    trigger: '.about-skills',
+    start: 'top top',
     end: `+=${window.innerHeight * 3}px`,
     pin: true,
     pinSpacing: true,
     scrub: 1,
   });
 
-  ScrollTrigger.create({
-    trigger: ".about-sticky-cards",
-    start: "top top",
-    end: `+=${window.innerHeight * 8}px`,
-    pin: true,
-    pinSpacing: true,
-    scrub: 1,
-    onUpdate: (self) => {
-      const progress = self.progress;
-      const totalCards = galleryCards.length;
-      const progressPerCard = 1 / totalCards;
+  // Company cards animations - minimal and elegant
+  const companyCards = document.querySelectorAll('.about-company-card');
 
-      galleryCards.forEach((galleryCard, index) => {
-        const galleryCardStart = index * progressPerCard;
-        let galleryCardProgress =
-          (progress - galleryCardStart) / progressPerCard;
-        galleryCardProgress = Math.min(Math.max(galleryCardProgress, 0), 1);
+  companyCards.forEach((card, index) => {
+    // Set initial state
+    gsap.set(card, {
+      opacity: 0,
+      y: 40,
+    });
 
-        let yPos = window.innerHeight * (1 - galleryCardProgress);
-        let xPos = 0;
-
-        if (galleryCardProgress === 1 && index < totalCards - 1) {
-          const remainingProgress =
-            (progress - (galleryCardStart + progressPerCard)) /
-            (1 - (galleryCardStart + progressPerCard));
-          if (remainingProgress > 0) {
-            const distanceMultiplier = 1 - index * 0.15;
-            xPos =
-              -window.innerWidth * 0.3 * distanceMultiplier * remainingProgress;
-            yPos =
-              -window.innerHeight *
-              0.3 *
-              distanceMultiplier *
-              remainingProgress;
-          }
-        }
-
-        gsap.to(galleryCard, {
-          y: yPos,
-          x: xPos,
-          duration: 0,
-          ease: "none",
+    // Fade in and slide up on scroll
+    ScrollTrigger.create({
+      trigger: card,
+      start: 'top bottom-=100',
+      onEnter: () => {
+        gsap.to(card, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          delay: index * 0.1, // Stagger effect
+          ease: 'power2.out',
         });
+      },
+      once: true,
+    });
+
+    // Subtle hover animation
+    card.addEventListener('mouseenter', () => {
+      gsap.to(card, {
+        scale: 1.02,
+        duration: 0.4,
+        ease: 'power2.out',
       });
-    },
+    });
+
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        scale: 1,
+        duration: 0.4,
+        ease: 'power2.out',
+      });
+    });
   });
 
-  const outroHeader = document.querySelector(".outro h3");
+  const outroHeader = document.querySelector('.outro h3');
   let outroSplit = null;
 
   if (outroHeader) {
     outroSplit = SplitText.create(outroHeader, {
-      type: "words",
-      wordsClass: "outro-word",
+      type: 'words',
+      wordsClass: 'outro-word',
     });
 
     gsap.set(outroSplit.words, { opacity: 0 });
   }
 
-  const outroStrips = document.querySelectorAll(".outro-strip");
+  const outroStrips = document.querySelectorAll('.outro-strip');
   const stripSpeeds = [0.3, 0.4, 0.25, 0.35, 0.2, 0.25];
 
   ScrollTrigger.create({
-    trigger: ".outro",
-    start: "top top",
+    trigger: '.outro',
+    start: 'top top',
     end: `+=${window.innerHeight * 3}px`,
     pin: true,
     pinSpacing: true,
@@ -500,8 +444,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   ScrollTrigger.create({
-    trigger: ".outro",
-    start: "top bottom",
+    trigger: '.outro',
+    start: 'top bottom',
     end: `+=${window.innerHeight * 6}px`,
     scrub: 1,
     onUpdate: (self) => {

@@ -1,24 +1,24 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { SplitText } from "gsap/SplitText";
-import { initAnimations } from "./anime";
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { SplitText } from 'gsap/SplitText';
+import { initAnimations } from './anime';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
 
   gsap.registerPlugin(ScrollTrigger, SplitText);
 
-  gsap.set(".hero .hero-cards .card", { transformOrigin: "center center" });
+  gsap.set('.hero .hero-cards .card', { transformOrigin: 'center center' });
 
-  gsap.to(".hero .hero-cards .card", {
+  gsap.to('.hero .hero-cards .card', {
     scale: 1,
     duration: 0.75,
     delay: 0.25,
     stagger: 0.1,
-    ease: "power4.out",
+    ease: 'power4.out',
     onComplete: () => {
-      gsap.set("#hero-card-1", { transformOrigin: "top right" });
-      gsap.set("#hero-card-3", { transformOrigin: "top left" });
+      gsap.set('#hero-card-1', { transformOrigin: 'top right' });
+      gsap.set('#hero-card-3', { transformOrigin: 'top left' });
     },
   });
 
@@ -26,102 +26,68 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (window.innerWidth > 1000) {
     ScrollTrigger.create({
-      trigger: ".hero",
-      start: "top top",
-      end: "75% top",
+      trigger: '.hero',
+      start: 'top top',
+      end: '75% top',
       scrub: 1,
       onUpdate: (self) => {
         const progress = self.progress;
 
-        const heroCardsContainerOpacity = gsap.utils.interpolate(
-          1,
-          0.5,
-          smoothStep(progress)
-        );
-        gsap.set(".hero-cards", {
+        const heroCardsContainerOpacity = gsap.utils.interpolate(1, 0.5, smoothStep(progress));
+        gsap.set('.hero-cards', {
           opacity: heroCardsContainerOpacity,
         });
 
-        ["#hero-card-1", "#hero-card-2", "#hero-card-3"].forEach(
-          (cardId, index) => {
-            const delay = index * 0.9;
-            const cardProgress = gsap.utils.clamp(
-              0,
-              1,
-              (progress - delay * 0.1) / (1 - delay * 0.1)
-            );
+        ['#hero-card-1', '#hero-card-2', '#hero-card-3'].forEach((cardId, index) => {
+          const delay = index * 0.9;
+          const cardProgress = gsap.utils.clamp(0, 1, (progress - delay * 0.1) / (1 - delay * 0.1));
 
-            const y = gsap.utils.interpolate(
-              "0%",
-              "400%",
-              smoothStep(cardProgress)
-            );
-            const scale = gsap.utils.interpolate(
-              1,
-              0.75,
-              smoothStep(cardProgress)
-            );
+          const y = gsap.utils.interpolate('0%', '400%', smoothStep(cardProgress));
+          const scale = gsap.utils.interpolate(1, 0.75, smoothStep(cardProgress));
 
-            let x = "0%";
-            let rotation = 0;
-            if (index === 0) {
-              x = gsap.utils.interpolate("0%", "90%", smoothStep(cardProgress));
-              rotation = gsap.utils.interpolate(
-                0,
-                -15,
-                smoothStep(cardProgress)
-              );
-            } else if (index === 2) {
-              x = gsap.utils.interpolate(
-                "0%",
-                "-90%",
-                smoothStep(cardProgress)
-              );
-              rotation = gsap.utils.interpolate(
-                0,
-                15,
-                smoothStep(cardProgress)
-              );
-            }
-
-            gsap.set(cardId, {
-              y: y,
-              x: x,
-              rotation: rotation,
-              scale: scale,
-            });
+          let x = '0%';
+          let rotation = 0;
+          if (index === 0) {
+            x = gsap.utils.interpolate('0%', '90%', smoothStep(cardProgress));
+            rotation = gsap.utils.interpolate(0, -15, smoothStep(cardProgress));
+          } else if (index === 2) {
+            x = gsap.utils.interpolate('0%', '-90%', smoothStep(cardProgress));
+            rotation = gsap.utils.interpolate(0, 15, smoothStep(cardProgress));
           }
-        );
+
+          gsap.set(cardId, {
+            y: y,
+            x: x,
+            rotation: rotation,
+            scale: scale,
+          });
+        });
       },
     });
 
     ScrollTrigger.create({
-      trigger: ".home-services",
-      start: "top top",
+      trigger: '.home-services',
+      start: 'top top',
       end: `+=${window.innerHeight * 4}px`,
-      pin: ".home-services",
+      pin: '.home-services',
       pinSpacing: true,
     });
 
     ScrollTrigger.create({
-      trigger: ".home-services",
-      start: "top bottom",
+      trigger: '.home-services',
+      start: 'top bottom',
       end: `+=${window.innerHeight * 4}`,
       scrub: 1,
       onUpdate: (self) => {
         const progress = self.progress;
 
         const headerProgress = gsap.utils.clamp(0, 1, progress / 0.9);
-        const headerY = gsap.utils.interpolate(
-          "300%",
-          "0%",
-          smoothStep(headerProgress)
-        );
-        gsap.set(".home-services-header", {
+        const headerY = gsap.utils.interpolate('300%', '0%', smoothStep(headerProgress));
+        gsap.set('.home-services-header', {
           y: headerY,
         });
 
-        ["#card-1", "#card-2", "#card-3"].forEach((cardId, index) => {
+        ['#card-1', '#card-2', '#card-3'].forEach((cardId, index) => {
           const delay = index * 0.5;
           const cardProgress = gsap.utils.clamp(
             0,
@@ -129,44 +95,26 @@ document.addEventListener("DOMContentLoaded", () => {
             (progress - delay * 0.1) / (0.9 - delay * 0.1)
           );
 
-          const innerCard = document.querySelector(
-            `${cardId} .flip-card-inner`
-          );
+          const innerCard = document.querySelector(`${cardId} .flip-card-inner`);
 
           let y;
           if (cardProgress < 0.4) {
             const normalizedProgress = cardProgress / 0.4;
-            y = gsap.utils.interpolate(
-              "-100%",
-              "50%",
-              smoothStep(normalizedProgress)
-            );
+            y = gsap.utils.interpolate('-100%', '50%', smoothStep(normalizedProgress));
           } else if (cardProgress < 0.6) {
             const normalizedProgress = (cardProgress - 0.4) / 0.2;
-            y = gsap.utils.interpolate(
-              "50%",
-              "0%",
-              smoothStep(normalizedProgress)
-            );
+            y = gsap.utils.interpolate('50%', '0%', smoothStep(normalizedProgress));
           } else {
-            y = "0%";
+            y = '0%';
           }
 
           let scale;
           if (cardProgress < 0.4) {
             const normalizedProgress = cardProgress / 0.4;
-            scale = gsap.utils.interpolate(
-              0.25,
-              0.75,
-              smoothStep(normalizedProgress)
-            );
+            scale = gsap.utils.interpolate(0.25, 0.75, smoothStep(normalizedProgress));
           } else if (cardProgress < 0.6) {
             const normalizedProgress = (cardProgress - 0.4) / 0.2;
-            scale = gsap.utils.interpolate(
-              0.75,
-              1,
-              smoothStep(normalizedProgress)
-            );
+            scale = gsap.utils.interpolate(0.75, 1, smoothStep(normalizedProgress));
           } else {
             scale = 1;
           }
@@ -181,14 +129,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
           let x, rotate, rotationY;
           if (cardProgress < 0.6) {
-            x = index === 0 ? "100%" : index === 1 ? "0%" : "-100%";
+            x = index === 0 ? '100%' : index === 1 ? '0%' : '-100%';
             rotate = index === 0 ? -5 : index === 1 ? 0 : 5;
             rotationY = 0;
           } else if (cardProgress < 1) {
             const normalizedProgress = (cardProgress - 0.6) / 0.4;
             x = gsap.utils.interpolate(
-              index === 0 ? "100%" : index === 1 ? "0%" : "-100%",
-              "0%",
+              index === 0 ? '100%' : index === 1 ? '0%' : '-100%',
+              '0%',
               smoothStep(normalizedProgress)
             );
             rotate = gsap.utils.interpolate(
@@ -198,7 +146,7 @@ document.addEventListener("DOMContentLoaded", () => {
             );
             rotationY = smoothStep(normalizedProgress) * 180;
           } else {
-            x = "0%";
+            x = '0%';
             rotate = 0;
             rotationY = 180;
           }
@@ -219,28 +167,28 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  const spotlightImages = document.querySelector(".home-spotlight-images");
+  const spotlightImages = document.querySelector('.home-spotlight-images');
   const containerHeight = spotlightImages.offsetHeight;
   const viewportHeight = window.innerHeight;
 
   const initialOffset = containerHeight * 0.05;
   const totalMovement = containerHeight + initialOffset + viewportHeight;
 
-  const spotlightHeader = document.querySelector(".spotlight-mask-header h3");
+  const spotlightHeader = document.querySelector('.spotlight-mask-header h3');
   let headerSplit = null;
 
   if (spotlightHeader) {
     headerSplit = SplitText.create(spotlightHeader, {
-      type: "words",
-      wordsClass: "spotlight-word",
+      type: 'words',
+      wordsClass: 'spotlight-word',
     });
 
     gsap.set(headerSplit.words, { opacity: 0 });
   }
 
   ScrollTrigger.create({
-    trigger: ".home-spotlight",
-    start: "top top",
+    trigger: '.home-spotlight',
+    start: 'top top',
     end: `+=${window.innerHeight * 7}px`,
     pin: true,
     pinSpacing: true,
@@ -261,10 +209,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
       }
 
-      const maskContainer = document.querySelector(
-        ".spotlight-mask-image-container"
-      );
-      const maskImage = document.querySelector(".spotlight-mask-image");
+      const maskContainer = document.querySelector('.spotlight-mask-image-container');
+      const maskImage = document.querySelector('.spotlight-mask-image');
 
       if (maskContainer && maskImage) {
         if (progress >= 0.25 && progress <= 0.75) {
@@ -273,22 +219,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
           const imageScale = 1.25 - maskProgress * 0.25;
 
-          maskContainer.style.setProperty("-webkit-mask-size", maskSize);
-          maskContainer.style.setProperty("mask-size", maskSize);
+          maskContainer.style.setProperty('-webkit-mask-size', maskSize);
+          maskContainer.style.setProperty('mask-size', maskSize);
 
           gsap.set(maskImage, {
             scale: imageScale,
           });
         } else if (progress < 0.25) {
-          maskContainer.style.setProperty("-webkit-mask-size", "0%");
-          maskContainer.style.setProperty("mask-size", "0%");
+          maskContainer.style.setProperty('-webkit-mask-size', '0%');
+          maskContainer.style.setProperty('mask-size', '0%');
 
           gsap.set(maskImage, {
             scale: 1.25,
           });
         } else if (progress > 0.75) {
-          maskContainer.style.setProperty("-webkit-mask-size", "475%");
-          maskContainer.style.setProperty("mask-size", "475%");
+          maskContainer.style.setProperty('-webkit-mask-size', '475%');
+          maskContainer.style.setProperty('mask-size', '475%');
 
           gsap.set(maskImage, {
             scale: 1,
@@ -319,24 +265,24 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   });
 
-  const outroHeader = document.querySelector(".outro h3");
+  const outroHeader = document.querySelector('.outro h3');
   let outroSplit = null;
 
   if (outroHeader) {
     outroSplit = SplitText.create(outroHeader, {
-      type: "words",
-      wordsClass: "outro-word",
+      type: 'words',
+      wordsClass: 'outro-word',
     });
 
     gsap.set(outroSplit.words, { opacity: 0 });
   }
 
-  const outroStrips = document.querySelectorAll(".outro-strip");
+  const outroStrips = document.querySelectorAll('.outro-strip');
   const stripSpeeds = [0.3, 0.4, 0.25, 0.35, 0.2, 0.25];
 
   ScrollTrigger.create({
-    trigger: ".outro",
-    start: "top top",
+    trigger: '.outro',
+    start: 'top top',
     end: `+=${window.innerHeight * 3}px`,
     pin: true,
     pinSpacing: true,
@@ -368,8 +314,8 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   ScrollTrigger.create({
-    trigger: ".outro",
-    start: "top bottom",
+    trigger: '.outro',
+    start: 'top bottom',
     end: `+=${window.innerHeight * 6}px`,
     scrub: 1,
     onUpdate: (self) => {

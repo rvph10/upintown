@@ -1,15 +1,15 @@
-import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(SplitText);
 
-const menu = document.querySelector(".menu");
-const menuHeader = document.querySelector(".menu-header");
-const menuOverlay = document.querySelector(".menu-overlay");
-const menuItems = document.querySelectorAll(".menu-nav li");
-const menuFooter = document.querySelector(".menu-footer");
-const menuLogo = document.querySelector(".menu-logo img");
-const hamburgerMenu = document.querySelector(".menu-hamburger-icon");
+const menu = document.querySelector('.menu');
+const menuHeader = document.querySelector('.menu-header');
+const menuOverlay = document.querySelector('.menu-overlay');
+const menuItems = document.querySelectorAll('.menu-nav li');
+const menuFooter = document.querySelector('.menu-footer');
+const menuLogo = document.querySelector('.menu-logo svg');
+const hamburgerMenu = document.querySelector('.menu-hamburger-icon');
 
 let isOpen = false;
 let lastScrollY = window.scrollY;
@@ -19,7 +19,7 @@ let splitTexts = [];
 let footerSplitTexts = [];
 
 function scrambleText(elements, duration = 0.4) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
 
   elements.forEach((char) => {
     const originalText = char.textContent;
@@ -48,15 +48,15 @@ function scrambleText(elements, duration = 0.4) {
 function initMenu() {
   gsap.set(menuOverlay, {
     scaleY: 0,
-    transformOrigin: "top center",
+    transformOrigin: 'top center',
   });
 
   menuItems.forEach((item) => {
-    const link = item.querySelector("a");
+    const link = item.querySelector('a');
     if (link) {
       const split = new SplitText(link, {
-        type: "words",
-        mask: "words",
+        type: 'words',
+        mask: 'words',
       });
       splitTexts.push(split);
 
@@ -66,12 +66,10 @@ function initMenu() {
     }
   });
 
-  const footerElements = document.querySelectorAll(
-    ".menu-social a, .menu-social span, .menu-time"
-  );
+  const footerElements = document.querySelectorAll('.menu-social a, .menu-social span, .menu-time');
   footerElements.forEach((element) => {
     const split = new SplitText(element, {
-      type: "chars",
+      type: 'chars',
     });
     footerSplitTexts.push(split);
 
@@ -79,7 +77,7 @@ function initMenu() {
       opacity: 0,
     });
 
-    if (element.classList.contains("menu-time")) {
+    if (element.classList.contains('menu-time')) {
       gsap.set(element, { opacity: 0 });
     }
   });
@@ -108,10 +106,10 @@ function openMenu() {
   isOpen = true;
   isAnimating = true;
   if (hamburgerMenu) {
-    hamburgerMenu.classList.add("open");
+    hamburgerMenu.classList.add('open');
   }
   if (menuLogo) {
-    menuLogo.classList.add("rotated");
+    menuLogo.classList.add('rotated');
   }
 
   const tl = gsap.timeline({
@@ -123,7 +121,7 @@ function openMenu() {
   tl.to(menuOverlay, {
     duration: 0.5,
     scaleY: 1,
-    ease: "power3.out",
+    ease: 'power3.out',
   });
 
   const allWords = splitTexts.reduce((acc, split) => {
@@ -136,9 +134,9 @@ function openMenu() {
       duration: 0.75,
       yPercent: 0,
       stagger: 0.05,
-      ease: "power4.out",
+      ease: 'power4.out',
     },
-    "-=0.3"
+    '-=0.3'
   );
 
   tl.to(
@@ -146,9 +144,9 @@ function openMenu() {
     {
       duration: 0.3,
       y: 0,
-      ease: "power2.out",
+      ease: 'power2.out',
       onComplete: () => {
-        const timeElement = document.querySelector(".menu-time");
+        const timeElement = document.querySelector('.menu-time');
         if (timeElement) {
           gsap.set(timeElement, { opacity: 1 });
         }
@@ -164,7 +162,7 @@ function openMenu() {
         });
       },
     },
-    "-=1"
+    '-=1'
   );
 }
 
@@ -172,10 +170,10 @@ function closeMenu() {
   isOpen = false;
   isAnimating = true;
   if (hamburgerMenu) {
-    hamburgerMenu.classList.remove("open");
+    hamburgerMenu.classList.remove('open');
   }
   if (menuLogo) {
-    menuLogo.classList.remove("rotated");
+    menuLogo.classList.remove('rotated');
   }
 
   const tl = gsap.timeline({
@@ -191,9 +189,9 @@ function closeMenu() {
   tl.to([menuFooter], {
     duration: 0.3,
     y: 20,
-    ease: "power2.in",
+    ease: 'power2.in',
     onStart: () => {
-      const timeElement = document.querySelector(".menu-time");
+      const timeElement = document.querySelector('.menu-time');
       if (timeElement) {
         gsap.set(timeElement, { opacity: 0 });
       }
@@ -211,9 +209,9 @@ function closeMenu() {
       duration: 0.25,
       yPercent: 120,
       stagger: -0.025,
-      ease: "power2.in",
+      ease: 'power2.in',
     },
-    "-=0.25"
+    '-=0.25'
   );
 
   tl.to(
@@ -221,9 +219,9 @@ function closeMenu() {
     {
       duration: 0.5,
       scaleY: 0,
-      ease: "power3.inOut",
+      ease: 'power3.inOut',
     },
-    "-=0.2"
+    '-=0.2'
   );
 }
 
@@ -235,12 +233,12 @@ function handleScroll() {
       closeMenu();
     }
     if (isMenuVisible) {
-      menu.classList.add("hidden");
+      menu.classList.add('hidden');
       isMenuVisible = false;
     }
   } else if (currentScrollY < lastScrollY) {
     if (!isMenuVisible) {
-      menu.classList.remove("hidden");
+      menu.classList.remove('hidden');
       isMenuVisible = true;
     }
   }
@@ -250,23 +248,21 @@ function handleScroll() {
 
 function updateTime() {
   const now = new Date();
-  const timeString = now.toLocaleTimeString("en-US", {
+  const timeString = now.toLocaleTimeString('en-US', {
     hour12: false,
   });
-  const timeElement = document.querySelector(".menu-time");
+  const timeElement = document.querySelector('.menu-time');
   if (timeElement) {
     if (!isOpen) {
       timeElement.textContent = `${timeString} LOCAL`;
     } else {
-      const timeSplit = footerSplitTexts.find(
-        (split) => split.element === timeElement
-      );
+      const timeSplit = footerSplitTexts.find((split) => split.element === timeElement);
 
       if (timeSplit && timeSplit.chars) {
         const newText = `${timeString} LOCAL`;
         const oldChars = timeSplit.chars;
 
-        newText.split("").forEach((char, index) => {
+        newText.split('').forEach((char, index) => {
           if (oldChars[index]) {
             oldChars[index].textContent = char;
           }
@@ -280,13 +276,13 @@ function init() {
   initMenu();
 
   if (menuHeader) {
-    menuHeader.addEventListener("click", toggleMenu);
+    menuHeader.addEventListener('click', toggleMenu);
   }
 
   menuItems.forEach((item) => {
-    const link = item.querySelector("a");
+    const link = item.querySelector('a');
     if (link) {
-      link.addEventListener("click", () => {
+      link.addEventListener('click', () => {
         if (isOpen) {
           closeMenu();
         }
@@ -294,14 +290,14 @@ function init() {
     }
   });
 
-  window.addEventListener("scroll", handleScroll);
+  window.addEventListener('scroll', handleScroll);
 
   updateTime();
   setInterval(updateTime, 1000);
 }
 
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", init);
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
 } else {
   init();
 }
