@@ -6,7 +6,9 @@
   <div class="menu-header">
     <a href="/" class="menu-logo">
       <svg viewBox="0 0 144.34766 160.90128" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 2.0625036,6.8248064e-6 C 0.92009685,6.8248064e-6 5.5739174e-6,1.0692105 5.5739174e-6,2.3984466 V 45.587893 c 0,1.329236 0.9200912760826,2.398439 2.0624980260826,2.398439 H 142.28516 c 1.1424,0 2.06249,-1.069203 2.06249,-2.398439 V 2.3984466 c 0,-1.3292361 -0.92009,-2.3984397751936 -2.06249,-2.3984397751936 z M 73.60938,48.443361 c -0.455078,0.01585 -0.910924,0.164204 -1.308598,0.453127 L 37.845713,73.929695 c -1.060464,0.770467 -1.293909,2.24422 -0.523442,3.304683 L 97.39844,159.92383 c 0.770479,1.06046 2.246182,1.29391 3.30664,0.52344 l 34.45508,-25.03321 c 1.06045,-0.77046 1.29391,-2.24423 0.52343,-3.30469 L 75.605477,49.41993 C 75.123934,48.75714 74.36784,48.416859 73.60938,48.443361 Z" />
+        <path
+          d="M 2.0625036,6.8248064e-6 C 0.92009685,6.8248064e-6 5.5739174e-6,1.0692105 5.5739174e-6,2.3984466 V 45.587893 c 0,1.329236 0.9200912760826,2.398439 2.0624980260826,2.398439 H 142.28516 c 1.1424,0 2.06249,-1.069203 2.06249,-2.398439 V 2.3984466 c 0,-1.3292361 -0.92009,-2.3984397751936 -2.06249,-2.3984397751936 z M 73.60938,48.443361 c -0.455078,0.01585 -0.910924,0.164204 -1.308598,0.453127 L 37.845713,73.929695 c -1.060464,0.770467 -1.293909,2.24422 -0.523442,3.304683 L 97.39844,159.92383 c 0.770479,1.06046 2.246182,1.29391 3.30664,0.52344 l 34.45508,-25.03321 c 1.06045,-0.77046 1.29391,-2.24423 0.52343,-3.30469 L 75.605477,49.41993 C 75.123934,48.75714 74.36784,48.416859 73.60938,48.443361 Z"
+        ></path>
       </svg>
     </a>
     <button class="menu-toggle" aria-label="Toggle menu">
@@ -20,15 +22,27 @@
     <nav class="menu-nav">
       <ul>
         <li><a href="/" data-page="/"><span class="menu-indicator">&#9654;</span>Start Here</a></li>
-        <li><a href="/about" data-page="/about"><span class="menu-indicator">&#9654;</span>Meet Us</a></li>
-        <li><a href="/project" data-page="/project"><span class="menu-indicator">&#9654;</span>Explore Work</a></li>
-        <li><a href="/contact" data-page="/contact"><span class="menu-indicator">&#9654;</span>Get In Touch</a></li>
+        <li>
+          <a href="/about" data-page="/about"><span class="menu-indicator">&#9654;</span>Meet Us</a>
+        </li>
+        <li>
+          <a href="/project" data-page="/project"
+            ><span class="menu-indicator">&#9654;</span>Explore Work</a
+          >
+        </li>
+        <li>
+          <a href="/contact" data-page="/contact"
+            ><span class="menu-indicator">&#9654;</span>Get In Touch</a
+          >
+        </li>
       </ul>
     </nav>
     <div class="menu-footer">
       <div class="menu-social">
         <a href="mailto:contact@upintown.dev"><span>&#9654;</span> contact@upintown.dev</a>
-        <a href="https://github.com/rvph10" target="_blank" rel="noopener noreferrer"><span>&#9654;</span> Github</a>
+        <a href="https://github.com/rvph10" target="_blank" rel="noopener noreferrer"
+          ><span>&#9654;</span> Github</a
+        >
       </div>
       <div class="menu-time">23:24:02 NY</div>
     </div>
@@ -39,8 +53,8 @@
   // Détection de la page active
   const currentPath = window.location.pathname;
   const menuLinks = document.querySelectorAll('.menu-nav a');
-  
-  menuLinks.forEach(link => {
+
+  menuLinks.forEach((link) => {
     const linkPath = link.getAttribute('data-page');
     if (linkPath === currentPath) {
       link.classList.add('active');
