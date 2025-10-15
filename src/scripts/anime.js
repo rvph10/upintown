@@ -1,12 +1,12 @@
-import gsap from "gsap";
-import { SplitText } from "gsap/SplitText";
+import gsap from 'gsap';
+import { SplitText } from 'gsap/SplitText';
 
 gsap.registerPlugin(SplitText);
 
 let splitInstances = [];
 
 function getTextContent(element) {
-  return element.textContent || element.innerText || "";
+  return element.textContent || element.innerText || '';
 }
 
 export function scrambleAnimation(element, delay = 0) {
@@ -17,7 +17,7 @@ export function scrambleAnimation(element, delay = 0) {
   if (!textContent.trim()) return;
 
   const split = new SplitText(element, {
-    type: "chars",
+    type: 'chars',
   });
 
   splitInstances.push(split);
@@ -39,8 +39,8 @@ export function revealAnimation(element, delay = 0) {
   if (!textContent.trim()) return;
 
   const split = new SplitText(element, {
-    type: "words",
-    mask: "words",
+    type: 'words',
+    mask: 'words',
   });
 
   splitInstances.push(split);
@@ -53,7 +53,7 @@ export function revealAnimation(element, delay = 0) {
     duration: 0.75,
     yPercent: 0,
     stagger: 0.1,
-    ease: "power4.out",
+    ease: 'power4.out',
     delay: delay,
   });
 }
@@ -66,8 +66,8 @@ export function lineRevealAnimation(element, delay = 0) {
   if (!textContent.trim()) return;
 
   const split = new SplitText(element, {
-    type: "lines",
-    mask: "lines",
+    type: 'lines',
+    mask: 'lines',
   });
 
   splitInstances.push(split);
@@ -80,7 +80,7 @@ export function lineRevealAnimation(element, delay = 0) {
     duration: 0.8,
     yPercent: 0,
     stagger: 0.1,
-    ease: "power4.out",
+    ease: 'power4.out',
     delay: delay,
   });
 }
@@ -94,7 +94,7 @@ function scrambleTextStaggered(elements, duration = 0.4) {
 }
 
 function scrambleText(elements, duration = 0.4) {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()";
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()';
 
   elements.forEach((char) => {
     const originalText = char.textContent;
@@ -126,26 +126,22 @@ export function initAnimations() {
   }
 
   document.fonts.ready.then(() => {
-    const animatedElements = document.querySelectorAll("[data-animate-type]");
+    const animatedElements = document.querySelectorAll('[data-animate-type]');
 
     const sectionsWithScrollElements = new Set();
     const sectionObservers = new Map();
 
     animatedElements.forEach((element) => {
-      const animationType = element.getAttribute("data-animate-type");
-      const delay = parseFloat(element.getAttribute("data-animate-delay")) || 0;
-      const animateOnScroll =
-        element.getAttribute("data-animate-on-scroll") === "true";
+      const animationType = element.getAttribute('data-animate-type');
+      const delay = parseFloat(element.getAttribute('data-animate-delay')) || 0;
+      const animateOnScroll = element.getAttribute('data-animate-on-scroll') === 'true';
 
       if (animateOnScroll) {
         gsap.set(element, { opacity: 0 });
 
-        const parentSection = element.closest("section");
+        const parentSection = element.closest('section');
         if (!parentSection) {
-          console.warn(
-            "No parent section found for scroll animation:",
-            element
-          );
+          console.warn('No parent section found for scroll animation:', element);
           return;
         }
 
@@ -161,21 +157,19 @@ export function initAnimations() {
                   );
 
                   sectionElements.forEach((el) => {
-                    const elAnimationType =
-                      el.getAttribute("data-animate-type");
-                    const elDelay =
-                      parseFloat(el.getAttribute("data-animate-delay")) || 0;
+                    const elAnimationType = el.getAttribute('data-animate-type');
+                    const elDelay = parseFloat(el.getAttribute('data-animate-delay')) || 0;
 
                     gsap.set(el, { opacity: 1 });
 
                     switch (elAnimationType) {
-                      case "scramble":
+                      case 'scramble':
                         scrambleAnimation(el, elDelay);
                         break;
-                      case "reveal":
+                      case 'reveal':
                         revealAnimation(el, elDelay);
                         break;
-                      case "line-reveal":
+                      case 'line-reveal':
                         lineRevealAnimation(el, elDelay);
                         break;
                     }
@@ -187,7 +181,7 @@ export function initAnimations() {
             },
             {
               threshold: [0, 0.1, 0.3, 0.5, 0.7, 1.0],
-              rootMargin: "0px 0px -20% 0px",
+              rootMargin: '0px 0px -20% 0px',
             }
           );
 
@@ -196,13 +190,13 @@ export function initAnimations() {
         }
       } else {
         switch (animationType) {
-          case "scramble":
+          case 'scramble':
             scrambleAnimation(element, delay);
             break;
-          case "reveal":
+          case 'reveal':
             revealAnimation(element, delay);
             break;
-          case "line-reveal":
+          case 'line-reveal':
             lineRevealAnimation(element, delay);
             break;
           default:
@@ -230,13 +224,13 @@ export function animateElement(selector, type, delay = 0) {
   }
 
   switch (type) {
-    case "scramble":
+    case 'scramble':
       scrambleAnimation(element, delay);
       break;
-    case "reveal":
+    case 'reveal':
       revealAnimation(element, delay);
       break;
-    case "line-reveal":
+    case 'line-reveal':
       lineRevealAnimation(element, delay);
       break;
     default:
@@ -257,13 +251,13 @@ export function animateElements(selector, type, delay = 0, staggerDelay = 0.1) {
     const totalDelay = delay + index * staggerDelay;
 
     switch (type) {
-      case "scramble":
+      case 'scramble':
         scrambleAnimation(element, totalDelay);
         break;
-      case "reveal":
+      case 'reveal':
         revealAnimation(element, totalDelay);
         break;
-      case "line-reveal":
+      case 'line-reveal':
         lineRevealAnimation(element, totalDelay);
         break;
       default:

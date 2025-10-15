@@ -1,8 +1,8 @@
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { initAnimations } from "./anime.js";
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { initAnimations } from './anime.js';
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   gsap.registerPlugin(ScrollTrigger);
   initAnimations();
 
@@ -12,22 +12,22 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function initSnapshotsScroll() {
-  const wrapper = document.querySelector(".project-snapshots-wrapper");
-  const snapshotsSection = document.querySelector(".project-snapshots");
+  const wrapper = document.querySelector('.project-snapshots-wrapper');
+  const snapshotsSection = document.querySelector('.project-snapshots');
 
   if (!wrapper || !snapshotsSection) return;
 
-  const progressBarContainer = document.createElement("div");
-  progressBarContainer.className = "snapshots-progress-bar";
+  const progressBarContainer = document.createElement('div');
+  progressBarContainer.className = 'snapshots-progress-bar';
 
   for (let i = 0; i < 30; i++) {
-    const indicator = document.createElement("div");
-    indicator.className = "progress-indicator";
+    const indicator = document.createElement('div');
+    indicator.className = 'progress-indicator';
     progressBarContainer.appendChild(indicator);
   }
 
-  const progressBar = document.createElement("div");
-  progressBar.className = "progress-bar";
+  const progressBar = document.createElement('div');
+  progressBar.className = 'progress-bar';
   progressBarContainer.appendChild(progressBar);
 
   snapshotsSection.appendChild(progressBarContainer);
@@ -46,8 +46,8 @@ function initSnapshotsScroll() {
   const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   ScrollTrigger.create({
-    trigger: ".project-snapshots",
-    start: "top top",
+    trigger: '.project-snapshots',
+    start: 'top top',
     end: () => `+=${window.innerHeight * 5}px`,
     pin: true,
     pinSpacing: true,
@@ -63,7 +63,7 @@ function initSnapshotsScroll() {
       gsap.set(wrapper, {
         x: currentTranslateX,
         force3D: true,
-        transformOrigin: "left center",
+        transformOrigin: 'left center',
       });
 
       if (progressBar) {
@@ -83,22 +83,19 @@ function initSnapshotsScroll() {
     }, 250);
   };
 
-  window.addEventListener("resize", handleResize);
-  window.addEventListener("orientationchange", () => {
+  window.addEventListener('resize', handleResize);
+  window.addEventListener('orientationchange', () => {
     setTimeout(handleResize, 500);
   });
 
   if (isIOS) {
     const setViewportHeight = () => {
-      document.documentElement.style.setProperty(
-        "--vh",
-        `${window.innerHeight * 0.01}px`
-      );
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
     };
 
     setViewportHeight();
-    window.addEventListener("resize", setViewportHeight);
-    window.addEventListener("orientationchange", () => {
+    window.addEventListener('resize', setViewportHeight);
+    window.addEventListener('orientationchange', () => {
       setTimeout(setViewportHeight, 500);
     });
   }

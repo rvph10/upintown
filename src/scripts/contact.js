@@ -1,11 +1,11 @@
-import gsap from "gsap";
-import { initAnimations } from "./anime.js";
+import gsap from 'gsap';
+import { initAnimations } from './anime.js';
 
 function flickerReveal(element, delay = 0) {
   gsap.set(element, {
     opacity: 0,
     scale: 0.98,
-    filter: "brightness(0.7) contrast(1.2)",
+    filter: 'brightness(0.7) contrast(1.2)',
   });
 
   const tl = gsap.timeline({ delay: delay });
@@ -24,17 +24,17 @@ function flickerReveal(element, delay = 0) {
       duration: 0.3,
       opacity: 1,
       scale: 1,
-      filter: "brightness(1) contrast(1)",
-      ease: "power2.out",
+      filter: 'brightness(1) contrast(1)',
+      ease: 'power2.out',
     });
 
   return tl;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
 
-  const contactGif = document.querySelector(".contact-gif");
+  const contactGif = document.querySelector('.contact-gif');
   if (contactGif) {
     flickerReveal(contactGif, 1);
   }
