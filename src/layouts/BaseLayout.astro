@@ -5,7 +5,7 @@ import Footer from '../components/Footer.astro';
 import SEO from '../components/SEO.astro';
 import ServiceSchema from '../components/ServiceSchema.astro';
 import { inject } from '@vercel/analytics';
-import { injectSpeedInsights } from '@vercel/speed-insights';
+import  SpeedInsights  from "@vercel/speed-insights/astro"
 import { SITE_URL } from '../data/seo-config';
 
 // Import global styles
@@ -36,7 +36,6 @@ const {
 
 // Initialize Vercel Analytics & Speed Insights
 inject();
-injectSpeedInsights();
 
 // Site URL for canonical and schema
 const siteUrl = Astro.site?.toString() || SITE_URL;
@@ -155,6 +154,7 @@ const websiteSchema = {
     <a href="#main-content" class="skip-link">Skip to main content</a>
 
     <Transition />
+    <SpeedInsights/>
     <Menu />
 
     <!-- Main content -->
