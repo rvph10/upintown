@@ -5,10 +5,10 @@ import path from 'node:path';
 export const GET: APIRoute = async () => {
   // Read the logo file from the public directory
   const logoPath = path.join(process.cwd(), 'public', 'global', 'logo.png');
-  
+
   try {
     const logoBuffer = fs.readFileSync(logoPath);
-    
+
     return new Response(logoBuffer, {
       status: 200,
       headers: {
@@ -26,4 +26,3 @@ export const GET: APIRoute = async () => {
     });
   }
 };
-

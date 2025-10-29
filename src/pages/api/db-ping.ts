@@ -7,7 +7,7 @@ export const prerender = false;
  * Database Ping Endpoint
  * Keeps Supabase free tier database active by performing a lightweight query
  * This endpoint should be called periodically (e.g., every 6 hours) to prevent auto-pause
- * 
+ *
  * SECURITY: Requires CRON_SECRET in Authorization header or x-vercel-cron header
  */
 export const GET: APIRoute = async ({ request }) => {
@@ -88,7 +88,7 @@ export const GET: APIRoute = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache, no-store, must-revalidate',
         },
@@ -109,4 +109,3 @@ export const GET: APIRoute = async ({ request }) => {
     );
   }
 };
-
