@@ -178,10 +178,12 @@ const websiteSchema = {
 
     <Footer />
 
-    <!-- Global scripts - defer for non-critical functionality -->
-    <script src="../scripts/lenis-scroll.js" defer></script>
-    <script src="../scripts/transition.js" defer></script>
-    <script src="../scripts/menu.js" defer></script>
+    <!-- Global scripts - loaded as modules so dependencies are bundled -->
+    <script>
+      import '/src/scripts/lenis-scroll.js';
+      import '/src/scripts/transition.js';
+      import '/src/scripts/menu.js';
+    </script>
   </body>
 </html>
 
