@@ -1,8 +1,4 @@
-/* Fonts optimisés - Chargement uniquement des poids utilisés (500, 600, 900) */
-/* Barlow Condensed: Utilisé pour les titres (font-weight: 900) */
-/* DM Mono: Utilisé pour les labels mono (font-weight: 500) */
-/* Host Grotesk: Utilisé pour le corps de texte (font-weight: 400-600) */
-@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@900&family=DM+Mono:wght@500&family=Host+Grotesk:wght@400;500;600&display=swap');
+/* Fonts are now loaded via <link> tags in BaseLayout.astro for better performance */
 
 :root {
   --base-100: #f9f4eb;

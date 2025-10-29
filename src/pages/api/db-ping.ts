@@ -59,7 +59,7 @@ export const GET: APIRoute = async ({ request }) => {
 
     // Perform a lightweight query - just count subscribers
     // This is enough to keep the database active
-    const { count, error } = await supabase
+    const { error } = await supabase
       .from('newsletter_subscribers')
       .select('*', { count: 'exact', head: true });
 

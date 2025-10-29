@@ -17,7 +17,7 @@ export const GET: APIRoute = async () => {
         'Access-Control-Allow-Origin': '*',
       },
     });
-  } catch (error) {
+  } catch {
     return new Response('Logo not found', {
       status: 404,
       headers: {

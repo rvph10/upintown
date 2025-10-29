@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // If user prefers reduced motion, skip Lenis initialization
   if (prefersReducedMotion) {
-    console.log('Smooth scroll disabled: user prefers reduced motion');
     return;
   }
 
