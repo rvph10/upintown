@@ -6,7 +6,8 @@ export const prerender = false;
 /**
  * Database Ping Endpoint
  * Keeps Supabase free tier database active by performing a lightweight query
- * This endpoint should be called periodically (e.g., every 6 hours) to prevent auto-pause
+ * This endpoint runs once daily (at 2 AM UTC) to prevent auto-pause
+ * Note: Hobby plan limitation requires daily cron jobs (once per day max)
  *
  * SECURITY: Requires CRON_SECRET in Authorization header or x-vercel-cron header
  */
