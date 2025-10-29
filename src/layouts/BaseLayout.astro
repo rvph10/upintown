@@ -139,6 +139,9 @@ const websiteSchema = {
       />
     </noscript>
 
+    <!-- Preload critical logo image to prevent layout shift -->
+    <link rel="preload" href="/global/logo.png" as="image" type="image/png" />
+
     <!-- Favicon -->
     <link rel="icon" href="/favicon.ico" sizes="48x48" />
     <link rel="icon" href="/global/favicon.svg" type="image/svg+xml" />
