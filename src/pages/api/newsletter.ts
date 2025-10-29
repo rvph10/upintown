@@ -1,11 +1,44 @@
 import type { APIRoute } from 'astro';
 import { createClient } from '@supabase/supabase-js';
 import { Resend } from 'resend';
+import { checkRateLimit, getClientIP, createRateLimitResponse } from '../../utils/rate-limiter';
 
 export const prerender = false;
 
 export const POST: APIRoute = async ({ request }) => {
   try {
+    // CORS check - only allow requests from your domain
+    const origin = request.headers.get('origin');
+    const allowedOrigins = [
+      'https://upintown.dev',
+      'https://www.upintown.dev',
+      'http://localhost:4321', // For development
+      'http://localhost:3000',
+    ];
+
+    const isAllowedOrigin = origin && allowedOrigins.includes(origin);
+
+    // Rate limiting - 3 requests per IP per hour
+    const clientIP = getClientIP(request);
+    const rateLimitResult = checkRateLimit(clientIP, {
+      maxRequests: 3,
+      windowMs: 60 * 60 * 1000, // 1 hour
+    });
+
+    if (!rateLimitResult.allowed) {
+      return createRateLimitResponse(rateLimitResult);
+    }
+
+    // Request size limit check
+    const contentLength = request.headers.get('content-length');
+    if (contentLength && parseInt(contentLength) > 1024) {
+      // Max 1KB
+      return new Response(JSON.stringify({ success: false, error: 'Request too large' }), {
+        status: 413,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     const { email } = await request.json();
 
     // Validation email
@@ -314,6 +347,20 @@ export const POST: APIRoute = async ({ request }) => {
       }
     }
 
+    const responseHeaders: Record<string, string> = {
+      'Content-Type': 'application/json',
+      'X-RateLimit-Limit': '3',
+      'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+      'X-RateLimit-Reset': new Date(rateLimitResult.resetTime).toISOString(),
+    };
+
+    // Add CORS headers if origin is allowed
+    if (isAllowedOrigin && origin) {
+      responseHeaders['Access-Control-Allow-Origin'] = origin;
+      responseHeaders['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
+      responseHeaders['Access-Control-Allow-Headers'] = 'Content-Type';
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -321,7 +368,7 @@ export const POST: APIRoute = async ({ request }) => {
       }),
       {
         status: 200,
-        headers: { 'Content-Type': 'application/json' },
+        headers: responseHeaders,
       }
     );
   } catch (error) {
@@ -329,7 +376,7 @@ export const POST: APIRoute = async ({ request }) => {
     return new Response(
       JSON.stringify({
         success: false,
-        error: 'An error occurred',
+        error: 'Unable to process subscription. Please try again later.',
       }),
       {
         status: 500,
@@ -337,4 +384,31 @@ export const POST: APIRoute = async ({ request }) => {
       }
     );
   }
+};
+
+// Handle OPTIONS requests for CORS preflight
+export const OPTIONS: APIRoute = async ({ request }) => {
+  const origin = request.headers.get('origin');
+  const allowedOrigins = [
+    'https://upintown.dev',
+    'https://www.upintown.dev',
+    'http://localhost:4321',
+    'http://localhost:3000',
+  ];
+
+  const responseHeaders: Record<string, string> = {
+    'Content-Length': '0',
+  };
+
+  if (origin && allowedOrigins.includes(origin)) {
+    responseHeaders['Access-Control-Allow-Origin'] = origin;
+    responseHeaders['Access-Control-Allow-Methods'] = 'POST, OPTIONS';
+    responseHeaders['Access-Control-Allow-Headers'] = 'Content-Type';
+    responseHeaders['Access-Control-Max-Age'] = '86400'; // 24 hours
+  }
+
+  return new Response(null, {
+    status: 204,
+    headers: responseHeaders,
+  });
 };
