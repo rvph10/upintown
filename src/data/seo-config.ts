@@ -136,4 +136,17 @@ export const PAGE_SEO = {
     ],
     image: '/og-contact.jpg',
   },
+  mentionsLegales: {
+    title: 'Mentions Légales | upintown',
+    description:
+      'Mentions légales du site upintown.dev. Informations sur l\'éditeur, l\'hébergement, la propriété intellectuelle et les conditions d\'utilisation.',
+    keywords: [
+      'mentions légales',
+      'upintown',
+      'éditeur du site',
+      'propriété intellectuelle',
+      'Raphaël Genu',
+    ],
+    image: '/og-image.jpg',
+  },
 };

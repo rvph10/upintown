@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { PAGE_SEO } from '../data/seo-config';
+
+import '../styles/legal.css';
+---
+
+<BaseLayout
+  title={PAGE_SEO.mentionsLegales.title}
+  description={PAGE_SEO.mentionsLegales.description}
+  image={PAGE_SEO.mentionsLegales.image}
+  keywords={PAGE_SEO.mentionsLegales.keywords}
+>
+  <section class="legal" aria-labelledby="legal-heading">
+    <div class="home-spotlight-top-bar">
+      <div class="container">
+        <div class="symbols-container"></div>
+        <div class="symbols-container"></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="legal-header">
+        <div class="legal-callout">
+          <p class="mono" data-animate-type="scramble" data-animate-delay="0.2">
+            <span aria-hidden="true">&#9654;</span> Informations légales
+          </p>
+        </div>
+        <h1 id="legal-heading" data-animate-type="line-reveal" data-animate-delay="0.25">
+          Mentions <span class="accent-text">Légales</span>
+        </h1>
+      </div>
+    </div>
+    <div class="home-spotlight-bottom-bar">
+      <div class="container">
+        <p class="mono" data-animate-type="scramble" data-animate-delay="0.2">
+          <span aria-hidden="true">&#9654;</span> upintown.dev
+        </p>
+        <p class="mono" data-animate-type="scramble" data-animate-delay="0.25">
+          / Belgique
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="legal-content" aria-label="Contenu des mentions légales">
+    <div class="container">
+      <div class="legal-grid">
+
+        <article class="legal-block" aria-labelledby="section-1">
+          <div class="legal-block-header">
+            <p class="mono">01.</p>
+            <h2 id="section-1">Éditeur du site</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>Le site web <strong>upintown.dev</strong> (ainsi que l'ensemble de ses sous-domaines) est édité et géré par :</p>
+            <ul>
+              <li><strong>Propriétaire et Responsable de la publication :</strong> Raphaël Genu</li>
+              <li><strong>Dénomination commerciale :</strong> UPINTOWN</li>
+              <li><strong>Forme juridique :</strong> Entité enregistrée personne physique (Indépendant)</li>
+              <li><strong>Siège social :</strong> Kerkedelle 51 boîte A, 1200 Woluwe-Saint-Lambert, Belgique</li>
+              <li><strong>Numéro d'entreprise (BCE) :</strong> 1034.448.184</li>
+              <li><strong>Numéro de TVA :</strong> BE 1034.448.184</li>
+              <li><strong>Régime TVA :</strong> Petite entreprise soumise au régime de la franchise de taxe. La TVA n'est pas applicable.</li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="legal-block" aria-labelledby="section-2">
+          <div class="legal-block-header">
+            <p class="mono">02.</p>
+            <h2 id="section-2">Nous contacter</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>Pour toute question ou demande d'information, vous pouvez nous joindre :</p>
+            <ul>
+              <li>
+                Par email :
+                <a href="mailto:contact@upintown.dev">contact@upintown.dev</a>
+              </li>
+              <li>Par téléphone : <a href="tel:+32456972848">+32 456 97 28 48</a></li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="legal-block" aria-labelledby="section-3">
+          <div class="legal-block-header">
+            <p class="mono">03.</p>
+            <h2 id="section-3">Hébergement du site</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>L'hébergement technique du site web est assuré par la société Vercel :</p>
+            <ul>
+              <li><strong>Hébergeur :</strong> Vercel Inc.</li>
+              <li><strong>Adresse :</strong> 440 N Barranca Ave #4133, Covina, CA 91723, États-Unis</li>
+              <li>
+                <strong>Contact :</strong>
+                <a href="mailto:privacy@vercel.com">privacy@vercel.com</a>
+              </li>
+            </ul>
+          </div>
+        </article>
+
+        <article class="legal-block" aria-labelledby="section-4">
+          <div class="legal-block-header">
+            <p class="mono">04.</p>
+            <h2 id="section-4">Propriété intellectuelle</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>
+              L'ensemble des éléments figurant sur le site upintown.dev (textes, images, logotypes,
+              code source, animations GSAP, maquettes graphiques) sont, sauf mention contraire, la
+              propriété exclusive de Raphaël Genu / UPINTOWN. Toute reproduction, représentation,
+              modification, publication, adaptation de tout ou partie des éléments du site, quel que
+              soit le moyen ou le procédé utilisé, est interdite, sauf autorisation écrite préalable.
+            </p>
+          </div>
+        </article>
+
+        <article class="legal-block" aria-labelledby="section-5">
+          <div class="legal-block-header">
+            <p class="mono">05.</p>
+            <h2 id="section-5">Responsabilité</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>
+              UPINTOWN s'efforce de fournir sur le site des informations aussi précises que possible.
+              Toutefois, l'entreprise ne pourra être tenue responsable des omissions, des inexactitudes
+              et des carences dans la mise à jour, qu'elles soient de son fait ou du fait des tiers
+              partenaires qui lui fournissent ces informations.
+            </p>
+          </div>
+        </article>
+
+        <article class="legal-block" aria-labelledby="section-6">
+          <div class="legal-block-header">
+            <p class="mono">06.</p>
+            <h2 id="section-6">Règlement des litiges</h2>
+          </div>
+          <div class="legal-block-body">
+            <p>
+              Les présentes mentions légales sont soumises au droit belge. En cas de litige, et à
+              défaut de résolution amiable, les tribunaux de l'arrondissement judiciaire de Bruxelles
+              (Belgique) seront seuls compétents.
+            </p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import '/src/scripts/anime.js';
+</script>
