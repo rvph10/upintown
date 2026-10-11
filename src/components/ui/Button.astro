@@ -1,0 +1,246 @@
+---
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type'> & {
+  href?: string;
+  type?: 'button' | 'submit' | 'reset';
+  tone?: 'ink' | 'volt' | 'surface';
+  size?: 'md' | 'lg';
+  icon?: boolean;
+  full?: boolean;
+  disabled?: boolean;
+};
+
+const {
+  href,
+  type = 'button',
+  tone = 'ink',
+  size = 'md',
+  icon = true,
+  full = false,
+  disabled = false,
+  class: className,
+  ...rest
+} = Astro.props;
+
+const Tag = href ? 'a' : 'button';
+const label = await Astro.slots.render('default');
+---
+
+<Tag
+  class:list={['btn', `btn-${tone}`, `btn-${size}`, { 'btn-with-icon': icon, 'btn-full': full }, className]}
+  href={href}
+  type={href ? undefined : type}
+  disabled={href ? undefined : disabled}
+  {...rest}
+>
+  <span class="btn-fill" aria-hidden="true"></span>
+  <span class="btn-label">
+    <span class="btn-roll">
+      <span set:html={label} />
+      <span class="btn-roll-copy" aria-hidden="true" set:html={label} />
+    </span>
+  </span>
+  {
+    icon && (
+      <span class="btn-dot" aria-hidden="true">
+        <span class="btn-arrow">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
+          </svg>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
+          </svg>
+        </span>
+      </span>
+    )
+  }
+</Tag>
+
+<style>
+  .btn {
+    --h: 3rem;
+    --dot: 2.25rem;
+    --duration: 0.5s;
+    --origin: 50% 100%;
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    height: var(--h);
+    padding-inline: 1.75rem;
+    border: 0;
+    border-radius: 9999px;
+    overflow: hidden;
+    background: var(--bg);
+    color: var(--fg);
+    box-shadow: inset 0 0 0 1px var(--ring, transparent);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    text-decoration: none;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: transform 0.2s ease;
+  }
+
+  .btn-lg {
+    --h: 3.5rem;
+    --dot: 2.75rem;
+    padding-inline: 2rem;
+    font-size: 1.0625rem;
+  }
+
+  .btn-with-icon {
+    --origin: calc(100% - var(--h) / 2) 50%;
+    padding-right: calc((var(--h) - var(--dot)) / 2);
+  }
+
+  .btn-full {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .btn-ink {
+    --bg: var(--color-ink);
+    --fg: var(--color-paper);
+    --dot-bg: var(--color-volt);
+    --dot-fg: var(--color-ink);
+  }
+
+  .btn-volt {
+    --bg: var(--color-volt);
+    --fg: var(--color-ink);
+    --dot-bg: var(--color-ink);
+    --dot-fg: var(--color-paper);
+  }
+
+  .btn-surface {
+    --bg: var(--color-surface);
+    --fg: var(--color-ink);
+    --ring: var(--color-ash-200);
+    --dot-bg: var(--color-ink);
+    --dot-fg: var(--color-paper);
+  }
+
+  .btn-fill {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--dot-bg);
+    clip-path: circle(0 at var(--origin));
+    transition: clip-path var(--duration) var(--ease-curtain);
+  }
+
+  .btn-with-icon .btn-fill {
+    clip-path: circle(calc(var(--dot) / 2) at var(--origin));
+  }
+
+  .btn-label {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.15em;
+    line-height: 1.25;
+  }
+
+  .btn-roll {
+    position: relative;
+    display: block;
+    transition: transform var(--duration) var(--ease-curtain);
+  }
+
+  .btn-roll-copy {
+    position: absolute;
+    top: calc(100% + 0.3em);
+    left: 0;
+    color: var(--dot-fg);
+  }
+
+  .btn-dot {
+    display: grid;
+    place-items: center;
+    flex: none;
+    width: var(--dot);
+    height: var(--dot);
+    color: var(--dot-fg);
+  }
+
+  .btn-arrow {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    overflow: hidden;
+  }
+
+  .btn-lg .btn-arrow {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+
+  .btn-arrow svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    transition: transform var(--duration) var(--ease-curtain);
+  }
+
+  .btn-arrow svg + svg {
+    transform: translate(-110%, 110%);
+  }
+
+  @media (hover: hover) {
+    .btn:not(:disabled):hover .btn-fill {
+      clip-path: circle(150% at var(--origin));
+    }
+    .btn:not(:disabled):hover .btn-roll {
+      transform: translateY(calc(-100% - 0.3em));
+    }
+    .btn:not(:disabled):hover .btn-arrow svg:first-child {
+      transform: translate(110%, -110%);
+    }
+    .btn:not(:disabled):hover .btn-arrow svg + svg {
+      transform: translate(0, 0);
+    }
+  }
+
+  .btn:focus-visible {
+    outline: 2px solid var(--color-iris-strong);
+    outline-offset: 3px;
+  }
+
+  .btn:focus-visible .btn-fill {
+    clip-path: circle(150% at var(--origin));
+  }
+  .btn:focus-visible .btn-roll {
+    transform: translateY(calc(-100% - 0.3em));
+  }
+  .btn:focus-visible .btn-arrow svg:first-child {
+    transform: translate(110%, -110%);
+  }
+  .btn:focus-visible .btn-arrow svg + svg {
+    transform: translate(0, 0);
+  }
+
+  .btn:not(:disabled):active {
+    transform: scale(0.98);
+  }
+
+  .btn:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .btn,
+    .btn-fill,
+    .btn-roll,
+    .btn-arrow svg {
+      transition-duration: 0.01ms;
+    }
+  }
+</style>

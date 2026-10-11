@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/ui/Button.astro';
+import TextField from '../components/ui/TextField.astro';
+
+export const prerender = false;
+
+if (import.meta.env.PROD) return new Response(null, { status: 404 });
+
+const tones = ['ink', 'volt', 'surface'] as const;
+const sizes = ['md', 'lg'] as const;
+---
+
+<Layout locale="fr" title="Components" description="Component library" alternates={{}} noindex>
+  <div class="grid gap-20 py-16">
+    <header class="grid gap-2">
+      <h1 class="text-5xl font-bold tracking-tight">Components</h1>
+      <p class="text-ash-600">Development only. Not available in production builds.</p>
+    </header>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Button</h2>
+      {
+        tones.map((tone) => (
+          <div class="grid gap-6 rounded-3xl bg-surface p-8 shadow-[inset_0_0_0_1px_var(--color-ash-200)]">
+            <h3 class="text-lg font-semibold">Tone: {tone}</h3>
+            {sizes.map((size) => (
+              <div class="flex flex-wrap items-center gap-4">
+                <span class="w-24 text-sm text-ash-600">Size {size}</span>
+                <Button tone={tone} size={size} href="#">Demander un devis</Button>
+                <Button tone={tone} size={size} icon={false}>Voir les tarifs</Button>
+                <Button tone={tone} size={size} disabled>Désactivé</Button>
+              </div>
+            ))}
+          </div>
+        ))
+      }
+      <div class="grid gap-6 rounded-3xl bg-ink p-8">
+        <h3 class="text-lg font-semibold text-paper">On dark background</h3>
+        <div class="flex flex-wrap items-center gap-4">
+          <Button tone="volt" size="lg" href="#">Demander un devis</Button>
+          <Button tone="surface" size="lg" icon={false}>Voir les tarifs</Button>
+        </div>
+      </div>
+      <div class="grid max-w-md gap-4">
+        <h3 class="text-lg font-semibold">Full width</h3>
+        <Button full size="lg" type="submit">Envoyer le message</Button>
+        <Button full size="lg" tone="surface" icon={false}>Annuler</Button>
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Text field</h2>
+      <div class="grid gap-8 md:grid-cols-2">
+        <TextField id="demo-name" label="Nom" autocomplete="name" />
+        <TextField id="demo-email" label="E-mail" type="email" placeholder="vous@entreprise.be" />
+        <TextField id="demo-filled" label="Entreprise" value="Cabinet Dupont" />
+        <TextField id="demo-hint" label="Site actuel (facultatif)" type="url" hint="Laissez vide si vous n'en avez pas encore." />
+        <TextField id="demo-error" label="E-mail" type="email" value="dupont@" error="Cette adresse e-mail n'est pas valide." />
+        <TextField id="demo-disabled" label="Formule" value="Visibilité" disabled />
+        <TextField id="demo-message" class="md:col-span-2" label="Message" multiline placeholder="Décrivez votre activité et ce dont vous avez besoin." />
+        <TextField id="demo-message-error" class="md:col-span-2" label="Message" multiline error="Ce champ est obligatoire." />
+      </div>
+      <div class="flex flex-wrap items-end gap-4">
+        <TextField id="demo-inline" class="min-w-72 flex-1" label="Votre e-mail" type="email" />
+        <Button size="lg" type="button">Envoyer</Button>
+      </div>
+    </section>
+  </div>
+</Layout>
