@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-white: #ffffff;
+  --color-paper: #fefff9;
+  --color-ink: #010001;
+  --color-volt: #b7f50e;
+  --color-iris: #9261ff;
+  --color-iris-strong: #7a45f0;
+  --color-ash-100: #f4f5ee;
+  --color-ash-200: #e3e4dc;
+  --color-ash-400: #8a8b82;
+  --color-ash-600: #6b6c64;
+  --color-ash-800: #2a2b27;
+}
+
+@layer base {
+  body {
+    @apply bg-paper text-ink antialiased;
+  }
+}
