@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Deployment tooling
+.vercel/
+.netlify/
+.wrangler/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Test and audit artifacts
+coverage/
+.lighthouseci/
+playwright-report/
+test-results/
+
+# Editors and OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
+
+# Local knowledge files
+.vscode/
+docs/
+
+# Local Claude Code settings
+.claude/settings.local.json
+CLAUDE.md
