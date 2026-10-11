@@ -31,24 +31,21 @@ const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
   id,
   name,
   class: 'field-control',
-  // A non-empty placeholder is required for the floating label (:placeholder-shown).
-  placeholder: placeholder || ' ',
+  placeholder,
   'aria-invalid': error ? true : undefined,
   'aria-describedby': describedBy,
 };
 ---
 
 <div class:list={['field', { 'field-multiline': multiline, 'field-invalid': error }, className]}>
-  <div class="field-box">
-    {
-      multiline ? (
-        <textarea {...shared} rows={rows} {...(rest as HTMLAttributes<'textarea'>)}>{value}</textarea>
-      ) : (
-        <input {...shared} value={value} {...rest} />
-      )
-    }
-    <label for={id} class="field-label">{label}</label>
-  </div>
+  <label for={id} class="field-label">{label}</label>
+  {
+    multiline ? (
+      <textarea {...shared} rows={rows} {...(rest as HTMLAttributes<'textarea'>)}>{value}</textarea>
+    ) : (
+      <input {...shared} value={value} {...rest} />
+    )
+  }
   {
     error && (
       <p id={`${id}-error`} class="field-message field-error">
@@ -69,21 +66,23 @@ const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
     --pad: 1.5rem;
     --ring: var(--color-ash-200);
     --ring-width: 1px;
-    --label-y: calc(var(--h) / 2);
-    --float: 0.7rem;
     display: grid;
     gap: 0.5rem;
   }
 
-  .field-box {
-    position: relative;
+  .field-label {
+    padding-inline: var(--pad);
+    color: var(--color-ink);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
   }
 
   .field-control {
     display: block;
     width: 100%;
     height: var(--h);
-    padding: 1.375rem var(--pad) 0.375rem;
+    padding-inline: var(--pad);
     border: 0;
     border-radius: 9999px;
     background: var(--color-surface);
@@ -95,57 +94,17 @@ const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
     transition: box-shadow 0.2s ease;
   }
 
-  .field-multiline {
-    --label-y: 2.5rem;
-    --float: 1.3rem;
-  }
-
   .field-multiline .field-control {
     height: auto;
     min-height: 8rem;
-    padding-top: 1.75rem;
-    padding-bottom: 1rem;
+    padding-block: 1rem;
     border-radius: 1.75rem;
     line-height: 1.5;
     resize: vertical;
   }
 
   .field-control::placeholder {
-    color: transparent;
-    transition: color 0.2s ease;
-  }
-
-  .field-control:focus::placeholder {
     color: var(--color-ash-600);
-  }
-
-  .field-label {
-    position: absolute;
-    top: var(--label-y);
-    left: var(--pad);
-    max-width: calc(100% - var(--pad) * 2);
-    overflow: hidden;
-    color: var(--color-ash-600);
-    font-size: 1rem;
-    line-height: 1.25;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    pointer-events: none;
-    transform: translateY(-50%);
-    transform-origin: left center;
-    transition:
-      transform 0.25s var(--ease-curtain),
-      color 0.2s ease;
-  }
-
-  .field-control:focus + .field-label,
-  .field-control:not(:placeholder-shown) + .field-label,
-  .field-control:autofill + .field-label {
-    transform: translateY(calc(-50% - var(--float))) scale(0.75);
-  }
-
-  .field-control:focus + .field-label {
-    color: var(--color-iris-strong);
   }
 
   @media (hover: hover) {
@@ -164,18 +123,13 @@ const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
     --ring-width: 2px;
   }
 
-  .field-invalid .field-label,
-  .field-invalid .field-control:focus + .field-label {
+  .field-invalid .field-label {
     color: var(--color-danger);
   }
 
   .field-control:disabled {
     opacity: 0.5;
     cursor: not-allowed;
-  }
-
-  .field-control:disabled + .field-label {
-    opacity: 0.5;
   }
 
   .field-message {
@@ -204,9 +158,7 @@ const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .field-label,
-    .field-control,
-    .field-control::placeholder {
+    .field-control {
       transition-duration: 0.01ms;
     }
   }
