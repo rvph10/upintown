@@ -1,5 +1,11 @@
 ---
 import Contact from '../../views/Contact.astro';
+import { handleContact } from '../../lib/contact';
+
+export const prerender = false;
+
+const result = await handleContact(Astro, 'en');
+if (result instanceof Response) return result;
 ---
 
-<Contact locale="en" />
+<Contact locale="en" {...result} />

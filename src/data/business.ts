@@ -6,6 +6,7 @@ export const business = {
   name: 'UpInTown',
   url: 'https://upintown.dev',
   email: 'hello@upintown.dev',
+  noReplyEmail: 'no-reply@upintown.dev',
   phone: { display: '+32 456 97 28 48', e164: phone },
   areaServed: ['BE'],
   languages: ['fr', 'en'],
