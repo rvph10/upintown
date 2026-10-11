@@ -2,17 +2,22 @@ import type { Localized } from './i18n';
 import type { RouteId } from './routes';
 
 export const policies = {
-  replyWorkingDays: 2,
+  inquiryReplyWorkingDays: 1,
+  changeReplyWorkingDays: 2,
   noticeMonths: 1,
   handoverDays: 14,
   mailboxesIncluded: 1,
   extraMailbox: 5,
   extraMailboxLarge: 10,
+  hourlyRate: 50,
 } as const;
 
 export const website = {
   fromPrice: 1200,
+  extraPage: 150,
+  weeks: { min: 3, max: 5 },
   correctionRounds: 1,
+  planRequired: false,
   stages: [
     { name: { fr: 'Cadrage', en: 'Planning' }, share: 25 },
     { name: { fr: 'Textes', en: 'Content' }, share: 25 },
@@ -21,7 +26,10 @@ export const website = {
   ],
 } as const satisfies {
   fromPrice: number;
+  extraPage: number;
+  weeks: { min: number; max: number };
   correctionRounds: number;
+  planRequired: boolean;
   stages: readonly { name: Localized; share: number }[];
 };
 
@@ -29,36 +37,40 @@ export type PlanId = 'essentiel' | 'visibilite' | 'croissance';
 
 export type Plan = {
   id: PlanId;
-  name: string;
+  name: Localized;
   monthly: number;
   setupFee: number;
   minimumMonths: number;
+  googlePostsPerMonth: number;
   job: Localized;
 };
 
 export const plans: readonly Plan[] = [
   {
     id: 'essentiel',
-    name: 'Essentiel',
+    name: { fr: 'Essentiel', en: 'Essential' },
     monthly: 89,
     setupFee: 0,
     minimumMonths: 0,
+    googlePostsPerMonth: 0,
     job: { fr: 'Tout reste en ordre de marche', en: 'Everything keeps running' },
   },
   {
     id: 'visibilite',
-    name: 'Visibilité',
+    name: { fr: 'Visibilité', en: 'Visibility' },
     monthly: 159,
     setupFee: 150,
     minimumMonths: 0,
+    googlePostsPerMonth: 0,
     job: { fr: 'Être trouvé près de chez vous', en: 'Get found locally' },
   },
   {
     id: 'croissance',
-    name: 'Croissance',
+    name: { fr: 'Croissance', en: 'Growth' },
     monthly: 279,
     setupFee: 150,
     minimumMonths: 3,
+    googlePostsPerMonth: 2,
     job: { fr: 'Progresser sur Google', en: 'Grow on Google' },
   },
 ];

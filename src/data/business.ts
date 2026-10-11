@@ -5,10 +5,16 @@ const phone = '+32456972848';
 export const business = {
   name: 'UpInTown',
   url: 'https://upintown.dev',
-  email: 'contact@upintown.dev',
+  email: 'hello@upintown.dev',
   phone: { display: '+32 456 97 28 48', e164: phone },
   areaServed: ['BE'],
   languages: ['fr', 'en'],
+  openingDays: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+  social: {
+    instagram: 'https://www.instagram.com/upintown.dev',
+    linkedin: 'https://www.linkedin.com/in/raphael-genu',
+    github: 'https://github.com/rvph10',
+  },
 } as const;
 
 export const contactLinks = {
@@ -51,6 +57,11 @@ export const processors = [
     name: 'Resend',
     purpose: { fr: 'Envoi des messages du formulaire de contact', en: 'Delivery of contact form messages' },
     country: { fr: 'États-Unis', en: 'United States' },
+  },
+  {
+    name: 'Stripe',
+    purpose: { fr: 'Paiement des abonnements mensuels', en: 'Monthly subscription payments' },
+    country: { fr: 'Irlande', en: 'Ireland' },
   },
   {
     name: 'Zoho',
