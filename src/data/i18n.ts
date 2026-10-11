@@ -13,3 +13,8 @@ export function formatPrice(amount: number, locale: Locale): string {
     maximumFractionDigits: 0,
   }).format(amount);
 }
+
+export function workingDays(count: number, locale: Locale): string {
+  if (locale === 'fr') return `${count} jour${count > 1 ? 's' : ''} ouvrable${count > 1 ? 's' : ''}`;
+  return count === 1 ? 'one working day' : `${count} working days`;
+}
