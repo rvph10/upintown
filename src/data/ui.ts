@@ -21,7 +21,6 @@ export const ui = {
   mainNavLabel: { fr: 'Navigation principale', en: 'Main navigation' },
   requestQuote: { fr: 'Demander un devis', en: 'Request a quote' },
   languageName: { fr: 'Français', en: 'English' },
-  otherLanguageLabel: { fr: 'Read this page in English', en: 'Lire cette page en français' },
   phone: { fr: 'Téléphone', en: 'Phone' },
   email: { fr: 'E-mail', en: 'Email' },
   whatsapp: { fr: 'WhatsApp', en: 'WhatsApp' },
