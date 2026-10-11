@@ -1,0 +1,25 @@
+---
+import '../styles/global.css';
+import { business } from '../data/business';
+import { htmlLang, type Locale } from '../data/i18n';
+
+interface Props {
+  locale: Locale;
+  title: string;
+}
+
+const { locale, title } = Astro.props;
+---
+
+<html lang={htmlLang[locale]}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <title>{title === business.name ? title : `${title} | ${business.name}`}</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
