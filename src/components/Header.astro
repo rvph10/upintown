@@ -1,5 +1,4 @@
 ---
-import Logo from './Logo.astro';
 import { business } from '../data/business';
 import { locales, type Locale, type Localized } from '../data/i18n';
 import { path } from '../data/routes';
@@ -14,87 +13,34 @@ const { locale, alternates } = Astro.props;
 const current = Astro.url.pathname;
 const otherLocale = locales.find((l) => l !== locale)!;
 const otherPath = alternates[otherLocale];
-const menuLabel = { fr: 'Menu', en: 'Menu' };
-
-const links = mainNav.map((route) => {
-  const href = path(route, locale);
-  return { href, label: pageNames[route][locale], current: current === href || current.startsWith(`${href}/`) };
-});
 ---
 
-<header class="sticky top-0 z-50 border-b border-ash-200/60 bg-paper/80 backdrop-blur-xl">
-  <a href="#content" class="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:btn-secondary">
-    {ui.skipToContent[locale]}
-  </a>
-  <div class="page flex h-16 items-center gap-6">
-    <a href={path('home', locale)} class="flex items-center gap-2.5 font-display text-lg font-semibold tracking-tight">
-      <Logo class="h-6 w-auto" />
-      {business.name}
-    </a>
-
-    <nav aria-label={ui.mainNavLabel[locale]} class="ml-auto hidden md:block">
-      <ul class="flex items-center gap-1">
-        {
-          links.map((link) => (
-            <li>
-              <a
-                href={link.href}
-                aria-current={link.current ? 'page' : undefined}
-                class="rounded-full px-4 py-2 text-[0.9375rem] text-ash-600 transition-colors hover:text-ink aria-[current=page]:bg-ash-100 aria-[current=page]:text-ink"
-              >
-                {link.label}
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </nav>
-
-    <div class="ml-auto flex items-center gap-2 md:ml-0">
+<header>
+  <a href="#content">{ui.skipToContent[locale]}</a>
+  <a href={path('home', locale)}>{business.name}</a>
+  <nav aria-label={ui.mainNavLabel[locale]}>
+    <ul>
       {
-        otherPath && (
-          <a
-            href={otherPath}
-            hreflang={otherLocale}
-            lang={otherLocale}
-            aria-label={`${otherLocale.toUpperCase()}, ${ui.otherLanguageLabel[locale]}`}
-            class="rounded-full px-3 py-2 text-[0.9375rem] text-ash-600 uppercase hover:text-ink"
-          >
-            {otherLocale}
-          </a>
-        )
-      }
-      <a href={path('contact', locale)} class="btn-primary hidden min-h-10 px-5 text-[0.9375rem] sm:inline-flex">
-        {ui.requestQuote[locale]}
-      </a>
-
-      <details class="group relative md:hidden">
-        <summary class="btn-secondary min-h-10 cursor-pointer list-none px-4 text-[0.9375rem] [&::-webkit-details-marker]:hidden">
-          {menuLabel[locale]}
-        </summary>
-        <nav aria-label={ui.mainNavLabel[locale]} class="card absolute top-12 right-0 w-64 p-3 sm:p-3">
-          <ul class="flex flex-col">
-            {
-              links.map((link) => (
-                <li>
-                  <a
-                    href={link.href}
-                    aria-current={link.current ? 'page' : undefined}
-                    class="block rounded-2xl px-4 py-3 hover:bg-ash-100 aria-[current=page]:bg-ash-100"
-                  >
-                    {link.label}
-                  </a>
-                </li>
-              ))
-            }
-            <li class="mt-2">
-              <a href={path('contact', locale)} class="btn-primary w-full">
-                {ui.requestQuote[locale]}
+        mainNav.map((route) => {
+          const href = path(route, locale);
+          const isCurrent = current === href || current.startsWith(`${href}/`);
+          return (
+            <li>
+              <a href={href} aria-current={isCurrent ? 'page' : undefined}>
+                {pageNames[route][locale]}
               </a>
             </li>
-          </ul>
-        </nav>
-      </details>
-    </div>
-  </div>
+          );
+        })
+      }
+    </ul>
+  </nav>
+  {
+    otherPath && (
+      <a href={otherPath} hreflang={otherLocale} lang={otherLocale} aria-label={ui.otherLanguageLabel[locale]}>
+        {ui.languageName[otherLocale]}
+      </a>
+    )
+  }
+  <a href={path('contact', locale)}>{ui.requestQuote[locale]}</a>
 </header>
