@@ -1,0 +1,34 @@
+---
+import { Image } from 'astro:assets';
+import { render } from 'astro:content';
+import Layout from '../layouts/Layout.astro';
+import type { Locale } from '../data/i18n';
+import { services } from '../data/offer';
+import { projectAlternates, type Project } from '../data/projects';
+import { path } from '../data/routes';
+import { ui } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+  project: Project;
+}
+
+const { locale, project } = Astro.props;
+const { Content } = await render(project);
+const alternates = await projectAlternates(project.slug);
+const usedServices = services.filter((s) => project.data.services.includes(s.id));
+---
+
+<Layout locale={locale} title={project.data.title} description={project.data.summary} alternates={alternates}>
+  <article>
+    <h1>{project.data.title}</h1>
+    <p>{project.data.sector}</p>
+    <Image src={project.data.cover} alt={project.data.coverAlt} width={1600} />
+    <ul>
+      {usedServices.map((s) => <li><a href={path(s.route, locale)}>{s.name[locale]}</a></li>)}
+    </ul>
+    <Content />
+    {project.data.url && <a href={project.data.url}>{project.data.url}</a>}
+  </article>
+  <a href={path('contact', locale)}>{ui.requestQuote[locale]}</a>
+</Layout>
