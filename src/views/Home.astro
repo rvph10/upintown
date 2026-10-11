@@ -1,0 +1,40 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business } from '../data/business';
+import { formatPrice, type Locale } from '../data/i18n';
+import { descriptions } from '../data/meta';
+import { services } from '../data/offer';
+import { path, routes } from '../data/routes';
+import { pageNames, ui } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<Layout locale={locale} title={business.name} description={descriptions.home[locale]} alternates={routes.home}>
+  <h1>{business.name}</h1>
+  <p>{descriptions.home[locale]}</p>
+  <p>
+    <a href={path('contact', locale)}>{ui.requestQuote[locale]}</a>
+    <a href={path('pricing', locale)}>{pageNames.pricing[locale]}</a>
+  </p>
+  <section>
+    <h2>{pageNames.services[locale]}</h2>
+    <ul>
+      {
+        services.map((service) => (
+          <li>
+            <a href={path(service.route, locale)}>{service.name[locale]}</a>
+            <span>
+              {ui.from[locale]} {formatPrice(service.fromPrice, locale)}
+              {service.monthly && ui.perMonth[locale]}
+            </span>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+</Layout>

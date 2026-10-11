@@ -1,0 +1,56 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business, contactLinks, legal } from '../data/business';
+import type { Locale } from '../data/i18n';
+import { descriptions } from '../data/meta';
+import { routes } from '../data/routes';
+import { pageNames } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const t = {
+  publisher: { fr: 'Éditeur du site', en: 'Site publisher' },
+  tradeName: { fr: 'Nom commercial', en: 'Trade name' },
+  owner: { fr: 'Responsable', en: 'Owner' },
+  form: { fr: 'Forme juridique', en: 'Legal form' },
+  address: { fr: 'Siège', en: 'Registered address' },
+  companyNumber: { fr: "Numéro d'entreprise (BCE)", en: 'Company number (CBE)' },
+  vat: { fr: 'TVA', en: 'VAT' },
+  contact: { fr: 'Contact', en: 'Contact' },
+  host: { fr: 'Hébergement', en: 'Hosting' },
+};
+---
+
+<Layout locale={locale} title={pageNames.legalNotice[locale]} description={descriptions.legalNotice[locale]} alternates={routes.legalNotice}>
+  <h1>{pageNames.legalNotice[locale]}</h1>
+  <section>
+    <h2>{t.publisher[locale]}</h2>
+    <dl>
+      <dt>{t.tradeName[locale]}</dt>
+      <dd>{business.name}</dd>
+      <dt>{t.owner[locale]}</dt>
+      <dd>{legal.owner}</dd>
+      <dt>{t.form[locale]}</dt>
+      <dd>{legal.form[locale]}</dd>
+      <dt>{t.address[locale]}</dt>
+      <dd>
+        {legal.address.street}, {legal.address.postalCode} {legal.address.city}, {legal.address.country[locale]}
+      </dd>
+      <dt>{t.companyNumber[locale]}</dt>
+      <dd>{legal.companyNumber}</dd>
+      <dt>{t.vat[locale]}</dt>
+      <dd>{legal.vatNumber}{legal.vatExempt && <span>. {legal.vatMention[locale]}</span>}</dd>
+      <dt>{t.contact[locale]}</dt>
+      <dd>
+        <a href={contactLinks.email}>{business.email}</a>, <a href={contactLinks.phone}>{business.phone.display}</a>
+      </dd>
+    </dl>
+  </section>
+  <section>
+    <h2>{t.host[locale]}</h2>
+    <p>{legal.host.name}, {legal.host.address}. <a href={legal.host.url}>{legal.host.url}</a></p>
+  </section>
+</Layout>

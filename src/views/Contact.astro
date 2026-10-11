@@ -1,0 +1,24 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { business, contactLinks } from '../data/business';
+import type { Locale } from '../data/i18n';
+import { descriptions } from '../data/meta';
+import { routes } from '../data/routes';
+import { pageNames, ui } from '../data/ui';
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+---
+
+<Layout locale={locale} title={pageNames.contact[locale]} description={descriptions.contact[locale]} alternates={routes.contact}>
+  <h1>{pageNames.contact[locale]}</h1>
+  <p>{descriptions.contact[locale]}</p>
+  <ul>
+    <li>{ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a></li>
+    <li>{ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a></li>
+    <li><a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a></li>
+  </ul>
+</Layout>
