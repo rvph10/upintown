@@ -62,7 +62,8 @@ const label = await Astro.slots.render('default');
     --h: 3rem;
     --dot: 2.25rem;
     --duration: 0.5s;
-    --origin: 50% 100%;
+    --fill-rest: circle(0 at 50% 100%);
+    --fill-hover: circle(150% at 50% 100%);
     position: relative;
     isolation: isolate;
     display: inline-flex;
@@ -96,8 +97,10 @@ const label = await Astro.slots.render('default');
   }
 
   .btn-with-icon {
-    --origin: calc(100% - var(--h) / 2) 50%;
-    padding-right: calc((var(--h) - var(--dot)) / 2);
+    --gap: calc((var(--h) - var(--dot)) / 2);
+    --fill-rest: inset(var(--gap) var(--gap) var(--gap) calc(100% - var(--gap) - var(--dot)) round 9999px);
+    --fill-hover: inset(var(--gap) round 9999px);
+    padding-right: var(--gap);
   }
 
   .btn-full {
@@ -132,12 +135,8 @@ const label = await Astro.slots.render('default');
     inset: 0;
     z-index: -1;
     background: var(--dot-bg);
-    clip-path: circle(0 at var(--origin));
+    clip-path: var(--fill-rest);
     transition: clip-path var(--duration) var(--ease-curtain);
-  }
-
-  .btn-with-icon .btn-fill {
-    clip-path: circle(calc(var(--dot) / 2) at var(--origin));
   }
 
   .btn-label {
@@ -195,7 +194,7 @@ const label = await Astro.slots.render('default');
 
   @media (hover: hover) {
     .btn:not(:disabled):hover .btn-fill {
-      clip-path: circle(150% at var(--origin));
+      clip-path: var(--fill-hover);
     }
     .btn:not(:disabled):hover .btn-roll {
       transform: translateY(calc(-100% - 0.3em));
@@ -214,7 +213,7 @@ const label = await Astro.slots.render('default');
   }
 
   .btn:focus-visible .btn-fill {
-    clip-path: circle(150% at var(--origin));
+    clip-path: var(--fill-hover);
   }
   .btn:focus-visible .btn-roll {
     transform: translateY(calc(-100% - 0.3em));
