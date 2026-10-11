@@ -15,7 +15,7 @@ const otherLocale = locales.find((l) => l !== locale)!;
 const otherPath = alternates[otherLocale];
 ---
 
-<header>
+<header class="site-width">
   <a href="#content">{ui.skipToContent[locale]}</a>
   <a href={path('home', locale)}>{business.name}</a>
   <nav aria-label={ui.mainNavLabel[locale]}>

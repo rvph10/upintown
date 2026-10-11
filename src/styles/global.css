@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@theme {
+@theme static {
   --color-*: initial;
   --color-white: #ffffff;
   --color-paper: #fefff9;
@@ -9,15 +9,31 @@
   --color-volt: #b7f50e;
   --color-iris: #9261ff;
   --color-iris-strong: #7a45f0;
+  --color-danger: #d92d20;
   --color-ash-100: #f4f5ee;
   --color-ash-200: #e3e4dc;
   --color-ash-400: #8a8b82;
   --color-ash-600: #6b6c64;
   --color-ash-800: #2a2b27;
+
+  --container-site: 90rem;
+
+  --ease-curtain: cubic-bezier(0.65, 0, 0.35, 1);
 }
 
 @theme inline {
   --font-sans: var(--font-inter-tight);
+}
+
+@utility site-width {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+
+  @media (width >= 48rem) {
+    padding-inline: 2rem;
+  }
 }
 
 @layer base {
