@@ -1,37 +1,5 @@
 @import "tailwindcss";
 
-@font-face {
-  font-family: "Baflion Sans";
-  src: url("/fonts/baflion-sans-variable.woff2") format("woff2");
-  font-weight: 400 800;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kaluar";
-  src: url("/fonts/kaluar-regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kaluar";
-  src: url("/fonts/kaluar-medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Kaluar";
-  src: url("/fonts/kaluar-semibold.woff2") format("woff2");
-  font-weight: 600;
-  font-style: normal;
-  font-display: swap;
-}
-
 @theme {
   --color-*: initial;
   --color-white: #ffffff;
@@ -47,8 +15,8 @@
   --color-ash-600: #6b6c64;
   --color-ash-800: #2a2b27;
 
-  --font-sans: "Kaluar", ui-sans-serif, system-ui, sans-serif;
-  --font-display: "Baflion Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-sans);
 
   --text-display: clamp(2.5rem, 1.6rem + 3.6vw, 4.5rem);
   --text-display--line-height: 1.02;
@@ -74,7 +42,7 @@
   }
 
   body {
-    @apply bg-paper font-sans text-[1.0625rem] leading-relaxed tracking-[-0.01em] text-ink antialiased;
+    @apply bg-paper font-sans text-[1.0625rem] leading-relaxed text-ink antialiased;
   }
 
   h1,
