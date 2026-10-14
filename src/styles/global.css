@@ -3,41 +3,256 @@
 @theme static {
   --color-*: initial;
   --color-white: #ffffff;
-  --color-paper: #fefff9;
-  --color-surface: #ffffff;
-  --color-ink: #010001;
-  --color-volt: #b7f50e;
+  --color-paper: #f2f2f2;
+  --color-mist: #d3d3dd;
+  /* Cards and controls; one value with white, kept as a role so it can change on its own. */
+  --color-surface: var(--color-white);
+  --color-ink: #000000;
+  --color-volt: #60bf08;
+  --color-volt-soft: #dcffdb;
+  /* Ticks and icons on volt-soft (6:1). */
+  --color-volt-strong: #2e6b05;
   --color-iris: #9261ff;
   --color-iris-strong: #7a45f0;
-  --color-danger: #d92d20;
-  --color-ash-100: #f4f5ee;
-  --color-ash-200: #e3e4dc;
+  --color-sky: #66cbfd;
+  --color-sky-strong: #48bdf7;
+  --color-blush: #f9a9f0;
+  --color-tangerine: #ff8a3d;
+  --color-sun: #ffd23f;
+  --color-danger: #ff4f4f;
+  --color-danger-strong: #c8281c;
+  --color-ash-200: #e6e6e6;
+  --color-ash-250: #e3e3e3;
+  --color-ash-300: #cfcfcf;
   --color-ash-400: #8a8b82;
-  --color-ash-600: #6b6c64;
-  --color-ash-800: #2a2b27;
+  --color-ash-600: #333333;
+  --color-ash-800: #171717;
+  /* Brand colour for the WhatsApp button only. Darker WhatsApp green so the white logo stays above 3:1. */
+  --color-whatsapp: #128c7e;
 
-  --container-site: 90rem;
+  --container-site: 80rem;
 
+  /* Type scale on top of Tailwind's. `ui`: nav, badges, captions. `section` and `display` carry their own line height
+     and letter spacing, so headings only add a weight. */
+  --text-ui: 0.9375rem;
+  --text-ui-lg: 1.0625rem;
+  --text-quote: clamp(1.375rem, 2.4vw, 2.125rem);
+  --text-quote--line-height: 1.3;
+  --text-quote--letter-spacing: -0.02em;
+  --text-section: clamp(2.25rem, 5vw, 4rem);
+  --text-section--line-height: 1.05;
+  --text-section--letter-spacing: -0.035em;
+  --text-display: clamp(2.5rem, 6vw, 5rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+
+  /* `ui`: buttons and badges. `title`: card titles and large text. `display`: big numbers. */
+  --tracking-ui: -0.01em;
+  --tracking-title: -0.02em;
+  --tracking-display: -0.035em;
+
+  /* Cards and panels. Inner blocks use rounded-3xl, controls rounded-full. */
+  --radius-card: 2rem;
+
+  /* Motion system, see docs/motion.md. Curtain moves things between states, out-expo brings them in, in-quart takes them out. */
   --ease-curtain: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+
+  /* Press and field feedback. */
+  --duration-instant: 200ms;
+  --duration-quick: 300ms;
+  --duration-base: 500ms;
+  --duration-slow: 900ms;
+  /* Titles and images: the few movements meant to be noticed. */
+  --duration-expressive: 1100ms;
+  --stagger: 90ms;
+  --word-stagger: 35ms;
+  --reveal-distance: 2rem;
+  --reveal-distance-sm: 1.25rem;
 }
 
 @theme inline {
   --font-sans: var(--font-inter-tight);
 }
 
-@utility site-width {
-  width: 100%;
-  max-width: var(--container-site);
-  margin-inline: auto;
-  padding-inline: 1.25rem;
-
-  @media (width >= 48rem) {
-    padding-inline: 2rem;
+/* Hover (on devices that can hover) or keyboard focus on an enabled parent `group`. */
+@custom-variant group-hocus {
+  @media (hover: hover) {
+    &:where(.group:not(:disabled):hover *) {
+      @slot;
+    }
   }
+  &:where(.group:focus-visible *) {
+    @slot;
+  }
+}
+
+/* Side gutter grows with the screen; the max width keeps wide screens at the same content width as before. */
+@utility site-width {
+  --gutter: clamp(1rem, 3vw, 1.5rem);
+  width: 100%;
+  max-width: calc(var(--container-site) - 0.5rem + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Full-width paper background whose last 6rem fade into the white below. Keep at least 6rem of bottom padding. */
+@utility paper-fade-out {
+  background: linear-gradient(to bottom, var(--color-paper) calc(100% - 6rem), var(--color-white));
+}
+
+/* Full-width paper band behind a section that sits in the site width, faded into white at the top and bottom over
+   6rem like the shader edge. The border image paints out to the viewport edges without causing horizontal scroll.
+   Keep at least 6rem of vertical padding. */
+@utility bleed-paper-fade {
+  border-image: linear-gradient(
+      to bottom,
+      var(--color-white),
+      var(--color-paper) 6rem,
+      var(--color-paper) calc(100% - 6rem),
+      var(--color-white)
+    )
+    fill 0 / 0 / 0 100vmax;
 }
 
 @layer base {
   body {
-    @apply bg-paper text-ink antialiased;
+    @apply bg-white text-ink antialiased;
+  }
+
+  /* Every control has its own pressed and focus styles. */
+  a,
+  button,
+  label,
+  summary {
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Masked word (ui/Words.astro): each word is clipped at its own line so it can rise from below. The padding keeps
+   accents and descenders inside the mask, the negative margin keeps the line height unchanged. */
+@layer components {
+  .word {
+    display: inline-block;
+    overflow-x: visible;
+    overflow-y: clip;
+    padding-block: 0.14em;
+    margin-block: -0.14em;
+    vertical-align: top;
+  }
+
+  .word-inner {
+    display: inline-block;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Opening (hero and page headers): pure CSS, so it starts with the first paint and never waits for scripts.
+     Title words rise out of their lines, then each `data-opening-step` rises in after its `--delay`. */
+  [data-opening] .word-inner {
+    animation: word-rise var(--duration-expressive) var(--ease-out-expo) both;
+    animation-delay: calc(var(--words-delay, 80ms) + var(--i) * var(--word-stagger));
+  }
+
+  [data-opening-step] {
+    animation: rise var(--duration-slow) var(--ease-out-expo) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* An image at the top of a page opens with the opening rather than waiting for scripts. */
+  [data-opening-image] {
+    animation: unmask var(--duration-expressive) var(--ease-out-expo) both;
+    animation-delay: var(--delay, 0ms);
+
+    & img {
+      animation: settle calc(var(--duration-expressive) * 1.4) var(--ease-out-expo) both;
+      animation-delay: var(--delay, 0ms);
+    }
+  }
+
+  /* Scroll reveals start hidden only when scripts run (see src/lib/reveal.ts and docs/motion.md). */
+  html[data-motion] {
+    & [data-reveal=""] {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance)) scale(0.98);
+    }
+
+    & [data-reveal="fade"] {
+      opacity: 0;
+    }
+
+    & [data-reveal="group"] > * {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance-sm));
+    }
+
+    & [data-reveal="list"] > * {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+
+    & [data-reveal="sequence"] [data-reveal-step] {
+      opacity: 0;
+      transform: translateY(var(--reveal-distance-sm));
+    }
+
+    & [data-reveal="sequence"] .word-inner {
+      transform: translateY(125%);
+    }
+
+    & [data-reveal-image] {
+      clip-path: inset(100% 0% 0% 0%);
+    }
+  }
+
+  /* Cross-document page transitions: the old page fades out, the new one fades in while its header opens. */
+  @view-transition {
+    navigation: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: var(--duration-quick) var(--ease-in-quart) both fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation: var(--duration-base) var(--ease-out-expo) both fade-in;
+  }
+}
+
+@keyframes word-rise {
+  from {
+    translate: 0 125%;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    translate: 0 var(--rise, var(--reveal-distance-sm));
+  }
+}
+
+@keyframes unmask {
+  from {
+    clip-path: inset(100% 0% 0% 0%);
+  }
+}
+
+@keyframes settle {
+  from {
+    scale: 1.15;
+  }
+}
+
+@keyframes fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
   }
 }
