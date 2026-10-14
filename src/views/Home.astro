@@ -1,38 +1,435 @@
 ---
+import type { ComponentProps } from "astro/types";
 import Layout from "../layouts/Layout.astro";
-import { business } from "../data/business";
-import { formatPrice, type Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
-import { services } from "../data/offer";
-import { path, routes } from "../data/routes";
-import { pageNames, ui } from "../data/ui";
+import CallToAction from "../components/CallToAction.astro";
+import Comparison from "../components/Comparison.astro";
+import Faq from "../components/Faq.astro";
+import Hero from "../components/Hero.astro";
+import Plans from "../components/Plans.astro";
+import Process from "../components/Process.astro";
+import Projects from "../components/Projects.astro";
+import Services from "../components/Services.astro";
+import Testimonials from "../components/Testimonials.astro";
+import { formatPrice, workingDays, type Locale, type Localized } from "../data/i18n";
+import { answers } from "../data/answers";
+import { descriptions, titles } from "../data/meta";
+import { planById, plans, policies, website, type StageId } from "../data/offer";
+import { projectTags } from "../data/projectTags";
+import { highlights } from "../data/highlights";
+import { processMocks } from "../data/mocks";
+import { testimonials, testimonialsNote } from "../data/testimonials";
+import { getProjects } from "../data/projects";
+import { path, projectPath, routes, type RouteId } from "../data/routes";
+import { ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
+const fromMonthly = formatPrice(Math.min(...plans.map((plan) => plan.monthly)), locale);
+const changeDays = workingDays(policies.changeReplyWorkingDays, locale);
+const from = (amount: number, monthly = false) =>
+  `${ui.from[locale]} ${formatPrice(amount, locale)}${monthly ? ui.perMonth[locale] : ""}`;
+const weeks = `${website.weeks.min}-${website.weeks.max}`;
+
+// Home service tiles: each one links to the service page that covers it.
+const serviceLinks = [
+  { id: "website", icon: "desktop", route: "websiteCreation", price: website.fromPrice, monthly: false },
+  { id: "care", icon: "wrench", route: "websiteCare", price: planById("essentiel").monthly, monthly: true },
+  { id: "email", icon: "email", route: "websiteCare" },
+  { id: "google", icon: "location", route: "localSeo", price: planById("visibilite").monthly, monthly: true },
+  { id: "search", icon: "radar", route: "localSeo", price: planById("croissance").monthly, monthly: true },
+] as const satisfies readonly {
+  id: string;
+  icon: ComponentProps<typeof Services>["tiles"][number]["icon"];
+  route: RouteId;
+  price?: number;
+  monthly?: boolean;
+}[];
+type ServiceTile = (typeof serviceLinks)[number];
+const t = {
+  heroLabel: {
+    fr: "Création et suivi de sites internet",
+    en: "Websites built and looked after",
+  },
+  heroTitle: {
+    fr: "Un site qui travaille, même quand vous êtes occupé.",
+    en: "A website that works, even when you're busy.",
+  },
+  heroSubtitle: {
+    fr: "UpInTown crée et fait vivre le site, les e-mails et la présence Google des indépendants et petites entreprises. Vous faites votre métier, UpInTown s'occupe du reste.",
+    en: "UpInTown builds and runs the website, email and Google presence of independents and small businesses. You do your job, UpInTown handles the rest.",
+  },
+  seePricing: { fr: "Voir les tarifs", en: "See pricing" },
+  comparisonLabel: { fr: "Pourquoi UpInTown", en: "Why UpInTown" },
+  comparisonTitle: {
+    fr: "Votre site, sans avoir à vous en occuper.",
+    en: "Your website, without having to deal with it.",
+  },
+  comparison: {
+    fr: [
+      {
+        name: "Le faire soi-même",
+        points: [
+          "Vous apprenez l'outil vous-même",
+          "Le site passe après votre métier",
+          "E-mails et Google à gérer à part",
+          "Personne à appeler en cas de panne",
+          "Tout repose sur vous",
+        ],
+      },
+      {
+        name: "Une agence",
+        points: [
+          "Prix sur devis, difficiles à comparer",
+          "Souvent plusieurs interlocuteurs",
+          "Petites modifications souvent facturées",
+          "Délais longs pour les petits changements",
+          "Site parfois bloqué chez le prestataire",
+        ],
+      },
+      {
+        name: "UpInTown",
+        positive: true,
+        points: [
+          `Prix publics, dès ${fromMonthly}/mois`,
+          "Un seul contact : site, e-mails, Google",
+          `Modifications sous ${changeDays}`,
+          "Site surveillé en continu",
+          "Tout reste à votre nom",
+        ],
+      },
+    ],
+    en: [
+      {
+        name: "Doing it yourself",
+        points: [
+          "You learn the tool yourself",
+          "The site comes after your actual work",
+          "Email and Google handled separately",
+          "Nobody to call when it breaks",
+          "Everything is on you",
+        ],
+      },
+      {
+        name: "An agency",
+        points: [
+          "Quote-based prices, hard to compare",
+          "Often several contacts",
+          "Small changes often billed",
+          "Slow turnaround on small changes",
+          "Site sometimes locked in with the provider",
+        ],
+      },
+      {
+        name: "UpInTown",
+        positive: true,
+        points: [
+          `Public prices, from ${fromMonthly}/month`,
+          "One contact: site, email, Google",
+          `Changes within ${changeDays}`,
+          "Site monitored continuously",
+          "Everything stays in your name",
+        ],
+      },
+    ],
+  } as Localized<{ name: string; points: string[]; positive?: boolean }[]>,
+  servicesLabel: {
+    fr: "Ce dont UpInTown s'occupe",
+    en: "What UpInTown handles",
+  },
+  servicesCta: { fr: "En savoir plus", en: "Learn more" },
+  servicesTitle: {
+    fr: "Tout ce qu'il faut pour être en ligne et trouvé.",
+    en: "Everything you need to be online and found.",
+  },
+  services: {
+    fr: {
+      website: {
+        title: "Création de site internet",
+        text: "Souvent le premier contact avec vous. Un site clair et professionnel, qui rassure et permet de vous joindre en un clic. Textes rédigés pour vous.",
+        tags: [`En ligne en ${weeks} semaines`],
+      },
+      care: {
+        title: "Entretien du site",
+        text: "Sans entretien, un site finit par tomber en panne ou afficher des informations dépassées. Le vôtre reste en ligne, sécurisé et à jour.",
+      },
+      email: {
+        title: "E-mail professionnel",
+        text: "contact@votre\u2011entreprise.be inspire davantage confiance qu'une adresse Gmail. Configurée et gérée pour vous.",
+        tags: [`${policies.mailboxesIncluded} boîte incluse`],
+      },
+      google: {
+        title: "Fiche Google et avis",
+        text: "Sur Google, votre fiche est souvent vue avant votre site. Complète, avec des avis qui reçoivent une réponse, elle donne envie de vous appeler.",
+      },
+      search: {
+        title: "Être trouvé sur Google",
+        text: "Chaque mois, les vraies recherches de vos clients sont analysées et vos pages ajustées. Le but : plus de visiteurs, sans payer de publicité.",
+      },
+    },
+    en: {
+      website: {
+        title: "Website creation",
+        text: "Often the first contact people have with you. A clear, professional site that reassures them and lets them reach you in one click. Text written for you.",
+        tags: [`Live in ${weeks} weeks`],
+      },
+      care: {
+        title: "Website care",
+        text: "Without care, a website ends up broken or showing outdated information. Yours stays online, secure and up to date.",
+      },
+      email: {
+        title: "Professional email",
+        text: "contact@your\u2011business.com inspires more trust than a Gmail address. Set up and managed for you.",
+        tags: [`${policies.mailboxesIncluded} mailbox included`],
+      },
+      google: {
+        title: "Google profile and reviews",
+        text: "On Google, your profile is often seen before your website. Complete, with reviews that get a reply, it makes people want to call you.",
+      },
+      search: {
+        title: "Get found on Google",
+        text: "Every month, your customers' real searches are reviewed and your pages adjusted. The goal: more visitors, without paying for ads.",
+      },
+    },
+  } as Localized<Record<ServiceTile["id"], { title: string; text: string; tags?: string[] }>>,
+  processLabel: { fr: "Comment ça marche", en: "How it works" },
+  processTitle: {
+    fr: "Quatre étapes, et vous validez chacune.",
+    en: "Four steps, and you approve each one.",
+  },
+  process: {
+    fr: {
+      planning: {
+        tag: "Tout se fait à distance",
+        text: "Un court appel et un questionnaire simple pour comprendre votre activité et définir les pages de votre site.",
+      },
+      content: {
+        tag: "Rédigés pour vous",
+        text: "Les textes sont écrits à partir de vos réponses, sans rien inventer sur votre activité. Vous les validez avant le design.",
+      },
+      design: {
+        tag: "Avec vos vrais textes",
+        text: "Une maquette de la page d'accueil avec vos textes, pour voir le résultat avant que le site soit construit.",
+      },
+      launch: {
+        tag: `En ligne en ${weeks} semaines`,
+        text: "Le site est construit et vous le testez sur un lien d'aperçu. Une série de corrections, puis il est en ligne.",
+      },
+    },
+    en: {
+      planning: {
+        tag: "Fully remote",
+        text: "A short call and a simple questionnaire to understand your business and decide which pages your site needs.",
+      },
+      content: {
+        tag: "Written for you",
+        text: "The text is written from your answers, with nothing invented about your business. You approve it before the design.",
+      },
+      design: {
+        tag: "With your real text",
+        text: "A mockup of your homepage with your own text, so you see the result before the site is built.",
+      },
+      launch: {
+        tag: `Live in ${weeks} weeks`,
+        text: "The site is built and you test it on a preview link. One round of corrections, then it goes live.",
+      },
+    },
+  } as Localized<Record<StageId, { tag: string; text: string }>>,
+  plansLabel: { fr: "Formules", en: "Plans" },
+  plansTitle: {
+    fr: "Un prix fixe chaque mois, sans surprise.",
+    en: "One fixed monthly price, no surprises.",
+  },
+  plansSubtitle: {
+    fr: "Une fois votre site en ligne, choisissez jusqu'où UpInTown s'en occupe.",
+    en: "Once your site is live, choose how much UpInTown looks after it.",
+  },
+  testimonialsLabel: { fr: "Avis clients", en: "Client reviews" },
+  testimonialsTitle: {
+    fr: "Ce qu'en disent les clients.",
+    en: "What clients say.",
+  },
+  testimonialControls: {
+    fr: {
+      list: "Avis clients",
+      pause: "Mettre en pause le défilement des avis",
+      play: "Relancer le défilement des avis",
+    },
+    en: {
+      list: "Client reviews",
+      pause: "Pause the reviews slideshow",
+      play: "Resume the reviews slideshow",
+    },
+  },
+  // Real client words, lightly edited, with changed names.
+  projectsLabel: { fr: "Projets", en: "Projects" },
+  projectsTitle: {
+    fr: "Un aperçu du travail.",
+    en: "A look at the work.",
+  },
+  projectsAll: { fr: "Voir tous les projets", en: "See all projects" },
+  projectsPlaceholder: { fr: "Image du projet", en: "Project image" },
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Vos questions, des réponses claires.", en: "Your questions, clear answers." },
+  faqContact: {
+    fr: { text: "Une autre question ?", label: "Posez-la" },
+    en: { text: "Another question?", label: "Ask it" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Pourquoi ne pas faire mon site moi-même, avec Wix par exemple ?",
+        answer:
+          "C'est possible, et pour certains c'est le bon choix. La différence : vous n'avez pas d'outil à apprendre, les textes sont rédigés pour vous, et le site, l'e-mail et la fiche Google sont suivis par un seul contact. Tout reste à votre nom.",
+      },
+      {
+        question: "Dois-je écrire les textes moi-même ?",
+        answer:
+          "Non. Vous répondez à un court appel et à un questionnaire simple, puis les textes sont rédigés à partir de vos réponses, sans rien inventer sur votre activité. Vous les validez avant le design.",
+      },
+      {
+        question: "Combien coûte un site, et quand est-il en ligne ?",
+        answer: `À partir de ${formatPrice(website.fromPrice, "fr")}, payés en ${website.stages.length} fois ${website.stages[0].share} %, au fil des étapes. Le site est en ligne en ${weeks} semaines.`,
+      },
+      {
+        question: "Suis-je engagé sur la durée ?",
+        answer: answers.commitment.fr,
+      },
+      {
+        question: "Le site m'appartient-il ?",
+        answer: `Oui. ${answers.leaving.fr}`,
+      },
+      {
+        question: "J'ai déjà un site. Pouvez-vous le reprendre ?",
+        answer: answers.takeover.fr,
+      },
+    ],
+    en: [
+      {
+        question: "Why not build my site myself, with Wix for example?",
+        answer:
+          "You can, and for some people it's the right choice. The difference: there's no tool to learn, the text is written for you, and your site, email and Google profile are looked after by one contact. Everything stays in your name.",
+      },
+      {
+        question: "Do I have to write the text myself?",
+        answer:
+          "No. You answer a short call and a simple questionnaire, then the text is written from your answers, with nothing invented about your business. You approve it before the design.",
+      },
+      {
+        question: "How much does a website cost, and when is it live?",
+        answer: `From ${formatPrice(website.fromPrice, "en")}, paid in ${website.stages.length} parts of ${website.stages[0].share}% as the project moves forward. Your site is live in ${weeks} weeks.`,
+      },
+      {
+        question: "Am I locked in?",
+        answer: answers.commitment.en,
+      },
+      {
+        question: "Do I own my website?",
+        answer: `Yes. ${answers.leaving.en}`,
+      },
+      {
+        question: "I already have a website. Can you take it over?",
+        answer: answers.takeover.en,
+      },
+    ],
+  } as Localized<{ question: string; answer: string }[]>,
+};
+
+const serviceTiles = serviceLinks.map((link) => {
+  const copy = t.services[locale][link.id];
+  return {
+    ...copy,
+    icon: link.icon,
+    href: path(link.route, locale),
+    tags: ["price" in link ? [from(link.price, link.monthly)] : [], copy.tags ?? []].flat(),
+  };
+});
+
+const projectCards: ComponentProps<typeof Projects>["cards"] = (await getProjects(locale))
+  .slice(0, 3)
+  .map((project) => ({
+    title: project.data.title,
+    sector: project.data.sector,
+    summary: project.data.summary,
+    services: project.data.tags.map((id) => projectTags[id].name[locale]),
+    href: projectPath(project.slug, locale),
+    cover: project.data.cover,
+    coverAlt: project.data.coverAlt,
+  }));
+// Dev only: placeholder cards to preview the layout while no project is published.
+if (!projectCards.length && import.meta.env.DEV) {
+  for (let index = 0; index < 3; index++) {
+    projectCards.push({
+      title: locale === "fr" ? "Nom du projet" : "Project name",
+      sector: locale === "fr" ? "Secteur" : "Sector",
+      summary:
+        locale === "fr"
+          ? "Courte description du projet : le besoin du client et ce qui a été fait."
+          : "Short project description: what the client needed and what was done.",
+      services: [projectTags.website.name[locale]],
+      href: path("projects", locale),
+    });
+  }
+}
 ---
 
-<Layout locale={locale} title={business.name} description={descriptions.home[locale]} alternates={routes.home}>
-  <h1>{business.name}</h1>
-  <p>{descriptions.home[locale]}</p>
-  <p>
-    <a href={path("contact", locale)}>{ui.requestQuote[locale]}</a>
-    <a href={path("pricing", locale)}>{pageNames.pricing[locale]}</a>
-  </p>
-  <section>
-    <h2>{pageNames.services[locale]}</h2>
-    <ul>
-      {services.map((service) => (
-        <li>
-          <a href={path(service.route, locale)}>{service.name[locale]}</a>
-          <span>
-            {ui.from[locale]} {formatPrice(service.fromPrice, locale)}
-            {service.monthly && ui.perMonth[locale]}
-          </span>
-        </li>
-      ))}
-    </ul>
-  </section>
+<Layout locale={locale} title={titles.home[locale]} description={descriptions.home[locale]} alternates={routes.home}>
+  <Hero
+    slot="full-width"
+    label={t.heroLabel[locale]}
+    title={t.heroTitle[locale]}
+    subtitle={t.heroSubtitle[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    secondary={{ href: path("pricing", locale), label: t.seePricing[locale] }}
+    highlights={highlights[locale]}
+    videoControls={{ pause: ui.pauseVideo[locale], play: ui.playVideo[locale] }}
+  />
+  <Comparison label={t.comparisonLabel[locale]} title={t.comparisonTitle[locale]} columns={t.comparison[locale]} />
+  <Services
+    label={t.servicesLabel[locale]}
+    title={t.servicesTitle[locale]}
+    cta={t.servicesCta[locale]}
+    tiles={serviceTiles}
+  />
+  <Process
+    label={t.processLabel[locale]}
+    title={t.processTitle[locale]}
+    steps={website.stages.map((stage) => ({
+      id: stage.id,
+      title: stage.name[locale],
+      ...t.process[locale][stage.id],
+    }))}
+    mocks={processMocks[locale]}
+  />
+  <Plans locale={locale} label={t.plansLabel[locale]} title={t.plansTitle[locale]} subtitle={t.plansSubtitle[locale]} />
+  {projectCards.length > 0 && (
+    <Projects
+      label={t.projectsLabel[locale]}
+      title={t.projectsTitle[locale]}
+      all={{ href: path("projects", locale), label: t.projectsAll[locale] }}
+      placeholder={t.projectsPlaceholder[locale]}
+      cards={projectCards}
+    />
+  )}
+  <Testimonials
+    label={t.testimonialsLabel[locale]}
+    title={t.testimonialsTitle[locale]}
+    note={testimonialsNote[locale]}
+    controls={t.testimonialControls[locale]}
+    testimonials={testimonials[locale]}
+  />
+  <Faq
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+  />
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
 </Layout>

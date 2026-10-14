@@ -1,10 +1,22 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import Faq from "../components/Faq.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Plans from "../components/Plans.astro";
 import PlanTable from "../components/PlanTable.astro";
-import { formatPrice, type Locale } from "../data/i18n";
+import Chat from "../components/icons/Chat.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
+import Cursor from "../components/icons/Cursor.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Lightning from "../components/icons/Lightning.astro";
+import Quote from "../components/icons/Quote.astro";
+import Button from "../components/ui/Button.astro";
+import { formatPrice, workingDays, type Locale, type Localized } from "../data/i18n";
+import { answers } from "../data/answers";
 import { legal } from "../data/business";
-import { descriptions } from "../data/meta";
-import { policies, website } from "../data/offer";
+import { descriptions, titles } from "../data/meta";
+import { planById, policies, website, websiteIncluded, type StageId } from "../data/offer";
 import { path, routes } from "../data/routes";
 import { pageNames, ui } from "../data/ui";
 
@@ -13,58 +25,280 @@ interface Props {
 }
 
 const { locale } = Astro.props;
-const t = {
-  website: { fr: "Création de site internet", en: "Website creation" },
-  stages: { fr: "Payé en étapes", en: "Paid in stages" },
-  extras: { fr: "Options", en: "Extras" },
-  extraMailbox: { fr: "Boîte e-mail supplémentaire", en: "Extra mailbox" },
-  extraPage: { fr: "Page supplémentaire", en: "Extra page" },
-  hourly: { fr: "Travail sur demande", en: "Work on request" },
-  perHour: { fr: "/heure", en: "/hour" },
+
+const price = (amount: number) => formatPrice(amount, locale);
+const percent = (share: number) => (locale === "fr" ? `${share} %` : `${share}%`);
+const essentiel = planById("essentiel");
+const visibilite = planById("visibilite");
+const croissance = planById("croissance");
+const setupFee = visibilite.setupFee;
+const stages = website.stages;
+const weeks = {
+  fr: `${website.weeks.min} à ${website.weeks.max} semaines`,
+  en: `${website.weeks.min} to ${website.weeks.max} weeks`,
 };
+const changeDays = workingDays(policies.changeReplyWorkingDays, locale);
+
+// What the client receives or approves at each stage, see docs/decisions.md.
+const stageDetails: Record<StageId, { Icon: typeof Chat; text: Localized }> = {
+  planning: {
+    Icon: Chat,
+    text: {
+      fr: "Un court appel et un questionnaire simple, puis la liste des pages de votre site.",
+      en: "A short call and a simple questionnaire, then the list of pages for your site.",
+    },
+  },
+  content: {
+    Icon: Quote,
+    text: {
+      fr: "Vos textes sont rédigés à partir de vos réponses, puis validés par écrit avant le design.",
+      en: "Your text is written from your answers, then approved in writing before the design.",
+    },
+  },
+  design: {
+    Icon: Cursor,
+    text: {
+      fr: "Une maquette de la page d'accueil avec vos vrais textes, pour voir le résultat avant la suite.",
+      en: "A homepage mockup with your real text, so you see the result before going further.",
+    },
+  },
+  launch: {
+    Icon: Lightning,
+    text: {
+      fr: `Un lien d'aperçu pour tester, ${website.correctionRounds} série de corrections, puis la mise en ligne.`,
+      en: `A preview link to test, ${website.correctionRounds} round of corrections, then the site goes live.`,
+    },
+  },
+};
+
+const t = {
+  title: { fr: "Des prix clairs, affichés avant tout appel.", en: "Clear prices, shown before any call." },
+  subtitle: {
+    fr: "Votre site est créé une fois. Ensuite, si vous le souhaitez, une formule mensuelle le garde en ligne, à jour et visible sur Google.",
+    en: "Your website is built once. Then, if you want, a monthly plan keeps it online, up to date and visible on Google.",
+  },
+
+  websiteName: { fr: "Création de site internet", en: "Website creation" },
+  websiteTagline: { fr: "Un site professionnel, textes compris.", en: "A professional website, text included." },
+  oneOff: { fr: "paiement unique", en: "one-off" },
+  websiteTerms: {
+    fr: [`Payé en ${stages.length} étapes`, `En ligne en ${weeks.fr}`],
+    en: [`Paid in ${stages.length} stages`, `Live in ${weeks.en}`],
+  },
+  howItWorks: { fr: "Voir comment ça se passe", en: "See how it works" },
+  includedTitle: { fr: "Compris dans le prix", en: "Included in the price" },
+  stagesTitle: { fr: "Payé au fil des étapes", en: "Paid as the work moves forward" },
+  stagesText: {
+    fr: "Vous validez chaque étape avant de passer à la suivante. Le site est mis en ligne après le dernier paiement.",
+    en: "You approve each stage before the next one starts. The site goes live after the final payment.",
+  },
+  stage: { fr: "Étape", en: "Stage" },
+
+  plansLabel: { fr: "Formules mensuelles", en: "Monthly plans" },
+  plansTitle: { fr: "Un prix fixe chaque mois.", en: "One fixed price every month." },
+  plansSubtitle: {
+    fr: "Une fois votre site en ligne, choisissez jusqu'où UpInTown s'en occupe. Aucune formule n'est obligatoire.",
+    en: "Once your site is live, choose how much UpInTown looks after it. No plan is required.",
+  },
+
+  faqLabel: { fr: "Questions sur les prix", en: "Pricing questions" },
+  faqTitle: { fr: "Avant de vous décider.", en: "Before you decide." },
+  faqContact: {
+    fr: { text: "Un cas particulier ?", label: "Posez votre question" },
+    en: { text: "A special case?", label: "Ask your question" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Que comptent les « petites modifications » ?",
+        answer: `Textes, photos, horaires, prix : faits sous ${changeDays}, sans décompte, dans toutes les formules. Une nouvelle page coûte ${price(website.extraPage)}. Une nouvelle fonctionnalité fait l'objet d'un devis, et les autres demandes sont facturées ${price(policies.hourlyRate)} de l'heure, estimées avant de commencer.`,
+      },
+      {
+        question: "Pourquoi des frais de mise en place ?",
+        answer: `Pour ${visibilite.name.fr} et ${croissance.name.fr}, ${price(setupFee)} une seule fois : votre fiche Google est vérifiée et complétée, votre entreprise est inscrite dans les annuaires et un lien pour les avis est préparé. Le montant est le même si vous avez déjà une fiche, car elle doit quand même être vérifiée.`,
+      },
+      {
+        question: "Comment se passe le paiement ?",
+        answer: `Pour un site : ${stages.length} factures de ${percent(stages[0].share)}, une par étape. Pour une formule : un abonnement mensuel, payé en ligne via Stripe. ${legal.vatMention.fr} Le prix affiché est le prix que vous payez.`,
+      },
+      {
+        question: "Puis-je changer de formule ou arrêter ?",
+        answer: `Oui. Passer à une formule supérieure s'applique tout de suite, au prorata (${price(setupFee)} de mise en place en partant d'${essentiel.name.fr}). Descendre s'applique le mois suivant. ${essentiel.name.fr} et ${visibilite.name.fr} s'arrêtent avec ${policies.noticeMonths} mois de préavis, ${croissance.name.fr} après ${croissance.minimumMonths} mois minimum.`,
+      },
+      {
+        question: "Que se passe-t-il si je pars ?",
+        answer: answers.leaving.fr,
+      },
+      {
+        question: "J'ai déjà un site. Puis-je prendre une formule ?",
+        answer: `Oui. ${answers.takeover.fr}`,
+      },
+    ],
+    en: [
+      {
+        question: 'What counts as a "small change"?',
+        answer: `Text, photos, opening hours, prices: done within ${changeDays}, as often as you need, in every plan. A new page costs ${price(website.extraPage)}. A new feature is quoted separately, and other requests are billed ${price(policies.hourlyRate)} an hour, estimated up front.`,
+      },
+      {
+        question: "Why is there a setup fee?",
+        answer: `For ${visibilite.name.en} and ${croissance.name.en}, ${price(setupFee)} once: your Google profile is checked and completed, your business is listed in directories and a review link is prepared. The fee is the same if you already have a profile, since it still needs checking.`,
+      },
+      {
+        question: "How does payment work?",
+        answer: `For a website: ${stages.length} invoices of ${percent(stages[0].share)}, one per stage. For a plan: a monthly subscription, paid online through Stripe. ${legal.vatMention.en} The price shown is the price you pay.`,
+      },
+      {
+        question: "Can I change plans or stop?",
+        answer: `Yes. Moving up a plan applies right away, prorated (${price(setupFee)} setup fee when coming from ${essentiel.name.en}). Moving down applies from the next month. ${essentiel.name.en} and ${visibilite.name.en} end with ${policies.noticeMonths} month's notice, ${croissance.name.en} after a ${croissance.minimumMonths}-month minimum.`,
+      },
+      {
+        question: "What happens if I leave?",
+        answer: answers.leaving.en,
+      },
+      {
+        question: "I already have a website. Can I take a plan?",
+        answer: `Yes. ${answers.takeover.en}`,
+      },
+    ],
+  },
+};
+
+const panel = "rounded-3xl bg-surface p-7 sm:p-10";
 ---
 
 <Layout
   locale={locale}
-  title={pageNames.pricing[locale]}
+  title={titles.pricing[locale]}
   description={descriptions.pricing[locale]}
   alternates={routes.pricing}
 >
-  <h1>{pageNames.pricing[locale]}</h1>
-  <section>
-    <h2>{t.website[locale]}</h2>
-    <p>
-      {ui.from[locale]} {formatPrice(website.fromPrice, locale)}
-    </p>
-    <h3>{t.stages[locale]}</h3>
-    <ol>
-      {website.stages.map((stage) => (
-        <li>
-          {stage.name[locale]} ({stage.share}%)
-        </li>
-      ))}
-    </ol>
-    <a href={path("websiteCreation", locale)}>{pageNames.websiteCreation[locale]}</a>
+  <PageHeader
+    slot="full-width"
+    label={pageNames.pricing[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  />
+
+  {/* Website project: price and action, what is included, then how the price is paid across the stages. */}
+  <section id="website" aria-labelledby="website-title" class="pt-8 sm:pt-12">
+    <div
+      data-reveal
+      class="grid gap-2 rounded-card bg-paper p-2 inset-ring inset-ring-ash-200 sm:gap-3 sm:p-3 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"
+    >
+      <div class:list={[panel, "flex flex-col"]}>
+        <span class="grid size-14 place-items-center rounded-full bg-paper">
+          <Desktop class="size-7 text-ink" />
+        </span>
+        <h2 id="website-title" class="mt-10 text-3xl font-medium tracking-title text-ink">
+          {t.websiteName[locale]}
+        </h2>
+        <p class="mt-2 text-lg text-ash-600">{t.websiteTagline[locale]}</p>
+
+        <div class="pt-10 lg:mt-auto">
+          <p class="text-ash-600">{ui.from[locale]}</p>
+          <p class="mt-1 flex flex-wrap items-baseline gap-x-2 text-ink">
+            <span class="text-5xl font-semibold tracking-display">{price(website.fromPrice)}</span>
+            <span class="text-lg whitespace-nowrap text-ash-600">{t.oneOff[locale]}</span>
+          </p>
+          <ul class="mt-4 flex flex-col gap-1 text-sm text-ash-600 sm:flex-row sm:gap-2">
+            {t.websiteTerms[locale].map((term, index) => (
+              <li class="flex items-center gap-2">
+                {index > 0 && <span class="size-1 rounded-full bg-ash-400 max-sm:hidden" aria-hidden="true" />}
+                {term}
+              </li>
+            ))}
+          </ul>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <Button href={`${path("contact", locale)}?need=website`}>{ui.requestQuote[locale]}</Button>
+            <Button href={path("websiteCreation", locale)} tone="surface">
+              {t.howItWorks[locale]}
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      <div class={panel}>
+        <h3 class="text-lg font-medium text-ink">{t.includedTitle[locale]}</h3>
+        <ul class="mt-8 grid gap-5 text-lg text-ink">
+          {websiteIncluded.map((item) => (
+            <li class="flex items-start gap-3">
+              <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+              {item[locale]}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Each stage owns a quarter of the bar; the bars fill one after another when the block comes into view. */}
+      <div data-stages class:list={[panel, "lg:col-span-2"]}>
+        <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between md:gap-10">
+          <h3 class="text-lg font-medium text-ink">{t.stagesTitle[locale]}</h3>
+          <p class="max-w-md text-pretty text-ash-600 md:text-right">{t.stagesText[locale]}</p>
+        </div>
+        <ol class="mt-10 grid gap-x-3 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          {stages.map((stage, index) => {
+            const { Icon, text } = stageDetails[stage.id];
+            return (
+              <li class="flex flex-col">
+                <span class="h-2 overflow-hidden rounded-full bg-paper" aria-hidden="true">
+                  <span data-stage-fill class="block size-full origin-left rounded-full bg-volt" />
+                </span>
+                <span class="mt-6 grid size-12 place-items-center rounded-full bg-paper">
+                  <Icon class="size-5 text-ink" />
+                </span>
+                <span class="mt-6 text-sm text-ash-600">
+                  {t.stage[locale]} {index + 1}
+                </span>
+                <h4 class="mt-1 text-lg font-medium text-pretty text-ink">{stage.name[locale]}</h4>
+                <p class="mt-2 text-pretty text-ash-600">{text[locale]}</p>
+              </li>
+            );
+          })}
+        </ol>
+      </div>
+    </div>
   </section>
-  <section>
-    <PlanTable locale={locale} />
-  </section>
-  <section>
-    <h2>{t.extras[locale]}</h2>
-    <dl>
-      <dt>{t.extraMailbox[locale]}</dt>
-      <dd>
-        {formatPrice(policies.extraMailbox, locale)}
-        {ui.perMonth[locale]}
-      </dd>
-      <dt>{t.extraPage[locale]}</dt>
-      <dd>{formatPrice(website.extraPage, locale)}</dd>
-      <dt>{t.hourly[locale]}</dt>
-      <dd>
-        {formatPrice(policies.hourlyRate, locale)}
-        {t.perHour[locale]}
-      </dd>
-    </dl>
-  </section>
-  {legal.vatExempt && <p>{legal.vatMention[locale]}</p>}
+
+  <Plans
+    id="plans"
+    locale={locale}
+    label={t.plansLabel[locale]}
+    title={t.plansTitle[locale]}
+    subtitle={t.plansSubtitle[locale]}
+    websitePrompt={false}
+    cardsClass="lg:hidden"
+  >
+    <PlanTable locale={locale} class="max-lg:hidden" />
+  </Plans>
+
+  <Faq
+    id="pricing-faq"
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+    class="pb-24 sm:pb-32"
+  />
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
 </Layout>
+
+<script>
+  import { duration, gsap, withMotion } from "../lib/motion";
+
+  // The stage bars fill in order once, showing the price being paid step by step. Full without motion.
+  withMotion(() => {
+    gsap.from("[data-stage-fill]", {
+      scaleX: 0,
+      duration: duration.slow,
+      ease: "curtain",
+      stagger: 0.35,
+      scrollTrigger: { trigger: "[data-stages]", start: "top 75%", once: true },
+    });
+  });
+</script>

@@ -1,0 +1,210 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import Pause from "./icons/Pause.astro";
+import Play from "./icons/Play.astro";
+import Quote from "./icons/Quote.astro";
+import Avatar from "./ui/Avatar.astro";
+import type { Testimonial } from "../data/testimonials";
+
+interface Props {
+  label: string;
+  title: string;
+  /** Tells visitors the names are changed. */
+  note: string;
+  /** Accessible names for the slideshow and its pause button. */
+  controls: { list: string; pause: string; play: string };
+  testimonials: Testimonial[];
+}
+
+const { label, title, note, controls, testimonials } = Astro.props;
+---
+
+<section aria-labelledby="testimonials-title" class="bleed-paper-fade py-24 sm:py-32">
+  <SectionHeading id="testimonials-title" label={label} title={title} />
+
+  <div
+    data-reveal
+    data-reviews
+    role="region"
+    aria-roledescription="carousel"
+    aria-label={controls.list}
+    class="reviews group/reviews mt-16 grid gap-3 sm:mt-20 lg:grid-cols-[1fr_22rem]"
+  >
+    {/* Every slide sits in the same cell, so the card keeps the height of the longest review. */}
+    <div data-slides aria-live="off" class="grid min-w-0 rounded-card bg-surface p-7 sm:p-12 lg:p-16">
+      {testimonials.map((testimonial, index) => (
+        <figure
+          data-slide
+          data-active={index === 0 ? "" : undefined}
+          inert={index !== 0}
+          aria-roledescription="slide"
+          aria-label={`${index + 1} / ${testimonials.length}`}
+          class="col-start-1 row-start-1 flex flex-col gap-10 opacity-0 data-active:opacity-100"
+        >
+          <div class="flex items-center justify-between gap-6">
+            <Quote class="h-9 w-auto flex-none text-iris sm:h-11" />
+            <p class="text-ui font-semibold text-ash-600">{testimonial.topic}</p>
+          </div>
+          <blockquote class="text-quote font-medium text-pretty text-ink">
+            <p>{testimonial.quote}</p>
+          </blockquote>
+          <figcaption class="mt-auto flex items-center gap-4">
+            <Avatar name={testimonial.name} class="size-12 flex-none" />
+            <span class="grid">
+              <span class="font-semibold text-ink">{testimonial.name}</span>
+              <span class="text-ui text-ash-600">{testimonial.sector}</span>
+            </span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+
+    {/* Picker: a list of names on large screens, a row of avatars on smaller ones. */}
+    <div class="flex min-w-0 items-center gap-3 rounded-card bg-surface p-3 lg:flex-col lg:items-stretch">
+      <ul class="flex min-w-0 flex-1 gap-1 overflow-x-auto lg:flex-col">
+        {testimonials.map((testimonial, index) => (
+          <li class="flex-none">
+            <button
+              type="button"
+              data-pick
+              aria-current={index === 0 ? "true" : undefined}
+              class="group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-2xl p-2 text-left transition-colors duration-300 hover:bg-paper focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-iris-strong aria-[current=true]:bg-paper motion-reduce:transition-none lg:p-3"
+            >
+              <Avatar name={testimonial.name} class="size-10 flex-none" />
+              <span class="grid min-w-0 max-lg:sr-only">
+                <span class="text-ui font-semibold text-ink">{testimonial.name}</span>
+                <span class="truncate text-sm text-ash-600">{testimonial.topic}</span>
+              </span>
+              <span
+                class="absolute inset-x-3 bottom-1 h-0.5 overflow-hidden rounded-full max-lg:hidden"
+                aria-hidden="true"
+              >
+                <span data-progress class="block h-full origin-left rounded-full bg-ink [transform:scaleX(0)]" />
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <button
+        type="button"
+        data-toggle
+        data-pause-label={controls.pause}
+        data-play-label={controls.play}
+        class="grid size-10 flex-none cursor-pointer place-items-center self-center rounded-full bg-ink text-white transition-transform duration-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-iris-strong active:scale-95 motion-reduce:transition-none lg:mt-auto lg:mb-1"
+      >
+        <span data-toggle-label class="sr-only">
+          {controls.pause}
+        </span>
+        <Pause class="size-4 group-data-paused/reviews:hidden" />
+        <Play class="hidden size-4 group-data-paused/reviews:block" />
+      </button>
+    </div>
+  </div>
+
+  <p class="mt-6 text-center text-ui text-ash-600">{note}</p>
+</section>
+
+<script>
+  import { duration, gsap, reducedMotion, ScrollTrigger, stagger } from "../lib/motion";
+
+  const slideSeconds = 8;
+
+  document.querySelectorAll<HTMLElement>("[data-reviews]").forEach((root) => {
+    const slides = [...root.querySelectorAll<HTMLElement>("[data-slide]")];
+    const picks = [...root.querySelectorAll<HTMLButtonElement>("[data-pick]")];
+    const bars = picks.map((pick) => pick.querySelector<HTMLElement>("[data-progress]")!);
+    const live = root.querySelector<HTMLElement>("[data-slides]")!;
+    const toggle = root.querySelector<HTMLButtonElement>("[data-toggle]")!;
+    const toggleLabel = toggle.querySelector<HTMLElement>("[data-toggle-label]")!;
+    let index = 0;
+    let paused = false;
+    let offscreen = true;
+    let hovered = false;
+    let timer: gsap.core.Tween | undefined;
+
+    // The active bar fills over one slide's time; when it ends, the next review shows.
+    // It holds while paused, off screen, hovered or while a control has keyboard focus.
+    function update() {
+      timer?.paused(paused || offscreen || hovered || root.querySelector(":focus-visible") !== null);
+    }
+
+    function startTimer() {
+      timer?.kill();
+      gsap.set(bars, { scaleX: 0 });
+      timer = gsap.to(bars[index], {
+        scaleX: 1,
+        duration: slideSeconds,
+        ease: "none",
+        onComplete: () => show(index + 1),
+      });
+      update();
+    }
+
+    function show(next: number) {
+      const previous = slides[index];
+      index = (next + slides.length) % slides.length;
+      slides.forEach((slide, n) => {
+        slide.toggleAttribute("data-active", n === index);
+        slide.inert = n !== index;
+      });
+      picks.forEach((pick, n) => {
+        if (n === index) pick.setAttribute("aria-current", "true");
+        else pick.removeAttribute("aria-current");
+      });
+      const incoming = slides[index];
+      const parts = [...incoming.children];
+      gsap.killTweensOf([previous, incoming, ...parts]);
+      if (reducedMotion.matches) {
+        gsap.set(previous, { opacity: 0 });
+        gsap.set(incoming, { opacity: 1 });
+      } else {
+        // The old review leaves quickly as a whole; the new one comes in block by block (topic, quote,
+        // name) once the old one is mostly gone, so the two never read on top of each other.
+        if (previous !== incoming)
+          gsap.to(previous, {
+            opacity: 0,
+            y: "-0.5rem",
+            filter: "blur(4px)",
+            duration: duration.quick,
+            ease: "in-quart",
+          });
+        gsap.set(incoming, { opacity: 1, y: 0, filter: "none" });
+        gsap.fromTo(
+          parts,
+          { opacity: 0, y: "1rem", filter: "blur(6px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: duration.slow,
+            ease: "out-expo",
+            stagger,
+            delay: duration.quick * 0.6,
+            clearProps: "filter",
+          },
+        );
+      }
+      startTimer();
+    }
+
+    function setPaused(value: boolean) {
+      paused = value;
+      root.toggleAttribute("data-paused", paused);
+      toggleLabel.textContent = paused ? toggle.dataset.playLabel! : toggle.dataset.pauseLabel!;
+      // Announce changes only when the visitor drives them.
+      live.setAttribute("aria-live", paused ? "polite" : "off");
+      update();
+    }
+
+    picks.forEach((pick, n) => pick.addEventListener("click", () => n !== index && show(n)));
+    toggle.addEventListener("click", () => setPaused(!paused));
+    live.addEventListener("pointerenter", () => ((hovered = true), update()));
+    live.addEventListener("pointerleave", () => ((hovered = false), update()));
+    root.addEventListener("focusin", update);
+    root.addEventListener("focusout", () => requestAnimationFrame(update));
+    ScrollTrigger.create({ trigger: root, onToggle: (self) => ((offscreen = !self.isActive), update()) });
+
+    setPaused(reducedMotion.matches);
+    startTimer();
+  });
+</script>

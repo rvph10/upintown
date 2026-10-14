@@ -1,0 +1,45 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import Checkmark from "./icons/Checkmark.astro";
+import Cross from "./icons/Cross.astro";
+
+interface Column {
+  name: string;
+  points: string[];
+  /** The recommended option: points get a check instead of a cross. */
+  positive?: boolean;
+}
+
+interface Props {
+  label: string;
+  title: string;
+  columns: Column[];
+}
+
+const { label, title, columns } = Astro.props;
+---
+
+<section aria-labelledby="comparison-title" class="py-24 sm:py-32">
+  <SectionHeading id="comparison-title" label={label} title={title} />
+  <div data-reveal="group" class="mt-16 grid gap-3 sm:mt-20 lg:grid-cols-3">
+    {columns.map((column) => (
+      <div class="grid grid-rows-[auto_1fr] gap-3">
+        <h3 class="rounded-2xl bg-paper px-6 py-5 text-center text-2xl font-medium tracking-title text-ink inset-ring inset-ring-ash-200">
+          {column.name}
+        </h3>
+        <ul class="grid content-start gap-5 rounded-2xl bg-paper px-6 py-8 text-lg text-ink inset-ring inset-ring-ash-200 sm:px-8">
+          {column.points.map((point) => (
+            <li class="flex items-start gap-3">
+              {column.positive ? (
+                <Checkmark data-reveal-pop class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+              ) : (
+                <Cross class="mt-1.5 size-4 flex-none mx-1 text-ink" />
+              )}
+              {point}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>

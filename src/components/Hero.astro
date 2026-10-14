@@ -1,0 +1,170 @@
+---
+import { Image } from "astro:assets";
+import Highlights from "./Highlights.astro";
+import ShaderBackground from "./ShaderBackground.astro";
+import learningApp from "../assets/mockups/phones/learning-app-in-hand.jpg";
+import dashboardApp from "../assets/mockups/phones/dashboard-on-foam-cubes.jpg";
+import financeApp from "../assets/mockups/phones/finance-app-on-rock.jpg";
+import recipeApp from "../assets/mockups/phones/recipe-app-on-beam.jpg";
+import Badge from "./ui/Badge.astro";
+import Button from "./ui/Button.astro";
+import LoopVideo from "./ui/LoopVideo.astro";
+import Words from "./ui/Words.astro";
+import type { Highlight } from "../data/highlights";
+
+interface Action {
+  href: string;
+  label: string;
+}
+
+interface Props {
+  label: string;
+  title: string;
+  subtitle: string;
+  primary: Action;
+  secondary: Action;
+  /** Measured client results shown in the marquee, e.g. { value: "+40 %", label: "d'appels" }. */
+  highlights: Highlight[];
+  /** Accessible names of the video's pause button. */
+  videoControls: { pause: string; play: string };
+}
+
+const { label, title, subtitle, primary, secondary, highlights, videoControls } = Astro.props;
+
+// Placeholder pictures around the video (index 2), which widens to 16:9 on scroll. The outer two hide on phones, so they load lazily.
+// `position` keeps the subject in view once the landscape picture is cropped to the tall box.
+const pictures = [
+  { src: learningApp, position: "object-center" },
+  { src: dashboardApp, position: "object-center" },
+  null,
+  { src: financeApp, position: "object-center" },
+  { src: recipeApp, position: "object-[47%_50%]" },
+];
+---
+
+{/* Opening: the title rises line by line, the rest follows in reading order, the reel last from its centre. */}
+<section
+  aria-labelledby="hero-title"
+  data-opening
+  class="relative isolate grid min-h-svh w-full grid-cols-1 place-items-center overflow-hidden bg-paper px-4 pt-32 pb-24"
+>
+  <ShaderBackground class="absolute inset-0 -z-10" />
+  <div class="flex w-full max-w-6xl flex-col items-center text-center">
+    <Badge tone="glass" data-opening-step>
+      {label}
+    </Badge>
+    <h1 id="hero-title" class="mt-8 text-display font-semibold text-balance text-ink">
+      <Words text={title} />
+    </h1>
+    <p
+      data-opening-step
+      style="--delay: 300ms"
+      class="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600 sm:text-xl"
+    >
+      {subtitle}
+    </p>
+    <div data-opening-step style="--delay: 420ms" class="mt-10 flex flex-wrap justify-center gap-3">
+      <Button href={primary.href} size="lg">
+        {primary.label}
+      </Button>
+      <Button href={secondary.href} size="lg" tone="surface">
+        {secondary.label}
+      </Button>
+    </div>
+    <ul data-reel class="reel @container mt-16 flex w-full justify-center" role="presentation">
+      {pictures.map((picture, index) => (
+        <li
+          class:list={[
+            "reel-box flex-none rounded-3xl inset-ring inset-ring-ash-200",
+            picture
+              ? "relative overflow-hidden bg-ash-300/60"
+              : "reel-main flex items-center justify-center bg-mist p-3",
+            (index === 0 || index === 4) && "max-sm:hidden",
+          ]}
+          aria-hidden={picture ? "true" : undefined}
+          data-opening-step
+          style={`--delay: ${520 + Math.abs(index - 2) * 80}ms; --rise: 4rem`}
+        >
+          {picture && (
+            <Image
+              src={picture.src}
+              alt=""
+              widths={[320, 480, 640, 960]}
+              sizes="(min-width: 74rem) 311px, (min-width: 40rem) 29vw, 46vw"
+              loading={index === 0 || index === 4 ? "lazy" : "eager"}
+              class:list={["absolute inset-0 size-full object-cover", picture.position]}
+            />
+          )}
+          {!picture && (
+            <LoopVideo
+              name="real-estate-site"
+              pauseButton={videoControls}
+              class="aspect-[3/2] h-full max-w-full rounded-2xl"
+            />
+          )}
+        </li>
+      ))}
+    </ul>
+    <div data-opening-step style="--delay: 800ms" class="w-full">
+      <Highlights items={highlights} class="mt-16" />
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --w: side box width, sized so all boxes fit the row before expanding. */
+  .reel {
+    --gap: 0.75rem;
+    --gaps: 2;
+    --units: 3.25;
+    --w: calc((100cqw - var(--gaps) * var(--gap)) / var(--units));
+    gap: var(--gap);
+  }
+
+  @media (width >= 40rem) {
+    .reel {
+      --gap: 1rem;
+      --gaps: 4;
+      --units: 5.25;
+    }
+  }
+
+  /* Side boxes are 15% wider than the row was sized for, so the row spills past the edges (clipped by the section). */
+  .reel-box {
+    width: calc(var(--w) * 1.5);
+    height: calc(var(--w) * 2);
+  }
+
+  /* With reduced motion the video box is shown fully expanded. */
+  @media (prefers-reduced-motion: reduce) {
+    .reel {
+      --progress: 1;
+    }
+  }
+
+  /* From 1.25x a side box to 16:9 at the same height (2 * 16 / 9 = 3.5556). */
+  .reel-main {
+    width: calc(var(--w) * (1.25 + 2.3056 * var(--progress, 0)));
+  }
+</style>
+
+<script>
+  import { gsap, withMotion } from "../lib/motion";
+
+  // --progress goes from 0 at the top of the page (or when the row enters the viewport, if it starts below
+  // the fold) to 1 when the row's bottom is 40% down the viewport. The long scrub lets the
+  // box glide after the scroll and settle softly.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-reel]").forEach((reel) => {
+      gsap.fromTo(
+        reel,
+        { "--progress": 0 },
+        {
+          "--progress": 1,
+          ease: "curtain",
+          scrollTrigger: { trigger: reel, start: "clamp(top bottom)", end: "clamp(bottom 40%)", scrub: 1.2 },
+        },
+      );
+    });
+  });
+</script>
