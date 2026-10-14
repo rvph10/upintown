@@ -24,7 +24,12 @@ const translations = new Map(
 export default defineConfig({
   site: business.url,
   trailingSlash: "never",
-  adapter: node({ mode: "standalone" }),
+  // The contact form is the only request body, a few kB at most.
+  adapter: node({ mode: "standalone", bodySizeLimit: 64 * 1024 }),
+  // Behind the proxy, lets Astro trust the forwarded host and protocol so the form's origin check sees the real site.
+  security: {
+    allowedDomains: [{ hostname: new URL(business.url).hostname, protocol: "https" }],
+  },
   fonts: [
     {
       provider: fontProviders.google(),

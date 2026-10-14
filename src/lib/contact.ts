@@ -65,12 +65,31 @@ const attempts = new Map<string, number[]>();
 const windowMs = contract.ipMemoryHours * 60 * 60 * 1000;
 const maxAttempts = 5;
 
+// Sends from all visitors together in one window: caps the mail a script spread over many addresses can trigger.
+const sends: number[] = [];
+const maxSends = 20;
+
 export function isRateLimited(ip: string): boolean {
   const now = Date.now();
+  // IPs are forgotten once their window has passed, as the privacy policy says.
+  for (const [key, times] of attempts) if (now - times[times.length - 1] >= windowMs) attempts.delete(key);
   const recent = (attempts.get(ip) ?? []).filter((t) => now - t < windowMs);
   recent.push(now);
   attempts.set(ip, recent);
   return recent.length > maxAttempts;
+}
+
+function isOverSendLimit(): boolean {
+  const now = Date.now();
+  while (sends.length && now - sends[0] >= windowMs) sends.shift();
+  if (sends.length >= maxSends) return true;
+  sends.push(now);
+  return false;
+}
+
+/** The proxy (Traefik) appends the address it sees, so only the last entry cannot be set by the visitor. */
+function clientIp(request: Request, fallback: string): string {
+  return request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() || fallback;
 }
 
 // One token per displayed form. A token is claimed before sending, so a double click or a resubmitted form never
@@ -91,6 +110,8 @@ async function send(email: Record<string, unknown>): Promise<void> {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
     body: JSON.stringify(email),
+    // A hung request would keep the token claimed, and a retry would then show "sent" without sending.
+    signal: AbortSignal.timeout(10_000),
   });
   if (!response.ok) throw new Error(`Resend ${response.status}: ${await response.text()}`);
 }
@@ -138,7 +159,13 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
     return { form, errors: {}, status: url.searchParams.has("sent") ? "sent" : "idle", token: crypto.randomUUID() };
   }
 
-  const data = await request.formData();
+  // Not sent by the form: another content type, or a body over the adapter's size limit.
+  let data: FormData;
+  try {
+    data = await request.formData();
+  } catch {
+    return new Response(null, { status: 400 });
+  }
   const form = readForm(data);
   const token = String(data.get("token") ?? "");
   if (data.get("fax")) return astro.redirect(`${url.pathname}?sent`, 303);
@@ -146,11 +173,15 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
   const errors = validate(form);
   if (Object.keys(errors).length) return { form, errors, status: "idle", token };
 
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || astro.clientAddress;
-  if (isRateLimited(ip)) return { form, errors, status: "limited", token };
+  if (isRateLimited(clientIp(request, astro.clientAddress))) return { form, errors, status: "limited", token };
 
   // Already sent (or being sent) with this token: show the confirmation without sending again.
   if (!claimToken(token)) return astro.redirect(`${url.pathname}?sent`, 303);
+
+  if (isOverSendLimit()) {
+    usedTokens.delete(token);
+    return { form, errors, status: "failed", token };
+  }
 
   try {
     await sendContact(form, locale, request.headers.get("referer") ?? url.pathname);
