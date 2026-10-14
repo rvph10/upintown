@@ -1,0 +1,161 @@
+---
+import { Image } from "astro:assets";
+import Cursor from "./icons/Cursor.astro";
+import client from "../assets/people/portrait-cap.jpg";
+
+interface Props {
+  /** Cursor label for the visitor, e.g. "Vous". */
+  you: string;
+  /** Questionnaire line and the visitor's answer, e.g. "Que faites-vous ?" / "Kiné à domicile". */
+  question: string;
+  answer: string;
+  /** Heading written from that answer. */
+  heading: string;
+  /** Pill shown once the text is approved. */
+  approved: string;
+}
+
+const { you, question, answer, heading, approved } = Astro.props;
+
+const lines = ["w-full", "w-11/12", "w-full", "w-3/4", "w-10/12"];
+---
+
+<!-- Decorative mock: a questionnaire answer becomes a written page, the visitor reviews it, then approves. -->
+<div data-writing class="flex h-full w-full items-center justify-center gap-4 p-6 sm:gap-6" aria-hidden="true">
+  <div class="writing-answer w-40 flex-none -rotate-2 rounded-2xl bg-white p-4 shadow-sm max-sm:hidden">
+    <p class="text-xs text-ash-600">{question}</p>
+    <p class="mt-2 w-fit rounded-full bg-sky px-3 py-1 text-sm font-medium text-ink">{answer}</p>
+    <div class="writing-next mt-4 grid gap-2">
+      <span class="h-1.5 w-3/4 rounded-full bg-ash-200"></span>
+      <span class="h-5 w-1/2 rounded-full bg-paper"></span>
+    </div>
+  </div>
+
+  {/* The spark carries the answer into the page. */}
+  <span class="writing-arrow relative h-0.5 w-8 flex-none rounded-full bg-ash-300 max-sm:hidden">
+    <span class="writing-spark absolute -top-0.5 left-0 size-1.5 rounded-full bg-sky-strong"></span>
+  </span>
+
+  <div class="relative w-52 flex-none sm:w-56">
+    <div class="rotate-1 rounded-2xl bg-white p-5 shadow-sm">
+      <p class="writing-heading text-base leading-snug font-semibold tracking-title text-ink">
+        {heading}
+        <span class="writing-caret ml-0.5 inline-block h-[1.1em] w-0.5 rounded-full bg-iris-strong align-[-0.2em]"></span>
+      </p>
+      <div class="relative mt-4 grid gap-2">
+        <span class="writing-highlight absolute -inset-x-1.5 top-3 h-8 rounded-md bg-iris/20"></span>
+        {lines.map((width) => (
+          <span class:list={["writing-line relative block h-2 rounded-full bg-ash-200", width]} />
+        ))}
+      </div>
+      <span class="writing-line mt-4 block h-6 w-1/2 rounded-full bg-blush"></span>
+    </div>
+    <span class="writing-approved absolute -bottom-4 -left-5 flex items-center gap-2 rounded-full bg-white py-1 pr-3 pl-1 text-sm font-medium whitespace-nowrap text-ink shadow-md">
+      <Image src={client} alt="" width={64} class="size-7 rounded-full object-cover object-top" />
+      <span class="size-2.5 rounded-full bg-volt"></span>
+      {approved}
+    </span>
+    <span class="writing-cursor absolute top-full left-1/4 z-10 flex items-start">
+      <Cursor class="size-5 text-iris-strong" />
+      <span class="mt-4 -ml-1 rounded-full bg-iris-strong px-2 py-0.5 text-xs font-medium whitespace-nowrap text-white">
+        {you}
+      </span>
+    </span>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: the approved page. */
+  .writing-spark,
+  .writing-caret,
+  .writing-cursor {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible } from "../lib/motion";
+
+  // One 10s loop: the answer arrives and flows into the page, the heading types itself, lines fill in,
+  // the visitor highlights a passage, then clicks to approve. Phones hide the answer card, so their loop
+  // skips that part and starts with the heading.
+  gsap
+    .matchMedia()
+    .add({ motion: "(prefers-reduced-motion: no-preference)", phone: "(max-width: 39.99rem)" }, (context) => {
+      const { motion, phone } = context.conditions!;
+      if (!motion) return;
+      const skip = phone ? 1.9 : 0;
+      const at = (seconds: number) => seconds - skip;
+
+      document.querySelectorAll<HTMLElement>("[data-writing]").forEach((root) => {
+        const q = gsap.utils.selector(root);
+        const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+
+        loop
+          .set(q(".writing-line, .writing-highlight"), { transformOrigin: "left center" }, 0)
+          .set(q(".writing-heading"), { clipPath: "inset(0% 100% 0% 0%)", opacity: 1 }, 0)
+          .set(q(".writing-caret"), { opacity: 0 }, 0)
+          .set(q(".writing-line"), { scaleX: 0, opacity: 1 }, 0)
+          .set(q(".writing-highlight"), { scaleX: 0, opacity: 1 }, 0)
+          .set(q(".writing-cursor"), { left: "90%", top: "115%", opacity: 0, scale: 1 }, 0)
+          .set(q(".writing-approved"), { scale: 0.6, opacity: 0 }, 0);
+
+        if (!phone) {
+          // The answer card arrives, then the spark carries it into the page.
+          loop
+            .set(q(".writing-arrow"), { transformOrigin: "left center", scaleX: 0, opacity: 1 }, 0)
+            .set(q(".writing-next"), { y: "0.5rem", opacity: 0 }, 0)
+            .set(q(".writing-spark"), { x: "-0.25rem", opacity: 0 }, 0)
+            .fromTo(
+              q(".writing-answer"),
+              { y: "0.75rem", opacity: 0 },
+              { y: 0, opacity: 1, duration: 0.7, ease: "out-expo" },
+              0,
+            )
+            .to(q(".writing-next"), { y: 0, opacity: 1, duration: 0.6, ease: "out-expo" }, 0.9)
+            .to(q(".writing-arrow"), { scaleX: 1, duration: 0.5 }, 1.1)
+            .to(q(".writing-spark"), { opacity: 1, duration: 0.1 }, 1.6)
+            .to(q(".writing-spark"), { x: "1.75rem", duration: 0.6 }, 1.6)
+            .to(q(".writing-spark"), { x: "2rem", opacity: 0, duration: 0.2 }, 2.2)
+            .to(
+              q(".writing-answer, .writing-next, .writing-arrow"),
+              { opacity: 0, duration: 0.8, ease: "out-expo" },
+              8.8,
+            );
+        }
+
+        loop
+          // The heading types itself, then the lines fill in.
+          .to(q(".writing-caret"), { opacity: 1, duration: 0.1, ease: "none" }, at(1.9))
+          .to(q(".writing-heading"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1.6, ease: "steps(24)" }, at(2))
+          .to(q(".writing-line"), { scaleX: 1, duration: 0.6, ease: "out-expo", stagger: 0.15 }, at(3.4))
+          .to(q(".writing-caret"), { opacity: 0, duration: 0.1, ease: "none" }, at(5.5))
+          // The visitor's cursor comes in, sweeps the highlighted passage and clicks to approve.
+          .to(q(".writing-cursor"), { opacity: 1, duration: 0.4 }, at(4.8))
+          .to(q(".writing-cursor"), { left: "4%", top: "46%", duration: 0.8 }, at(4.8))
+          .to(q(".writing-highlight"), { scaleX: 1, duration: 0.6 }, at(5.7))
+          .to(q(".writing-cursor"), { left: "86%", top: "50%", duration: 0.7 }, at(5.6))
+          .to(q(".writing-cursor"), { left: "8%", top: "95%", duration: 0.6 }, at(6.3))
+          .to(q(".writing-cursor"), { scale: 0.85, duration: 0.2 }, at(6.9))
+          .to(q(".writing-cursor"), { scale: 1, duration: 0.2 }, at(7.1))
+          .to(q(".writing-approved"), { scale: 1, opacity: 1, duration: 0.5, ease: "out-expo" }, at(7))
+          // Everything clears before the loop restarts.
+          .to(q(".writing-cursor"), { opacity: 0, duration: 0.6 }, at(8.2))
+          .to(q(".writing-highlight"), { opacity: 0, duration: 0.6 }, at(8.6))
+          .to(q(".writing-line"), { opacity: 0, duration: 0.6, ease: "out-expo", stagger: 0.15 }, at(8.6))
+          .to(q(".writing-heading"), { opacity: 0, duration: 0.8, ease: "steps(24)" }, at(8.8))
+          .to(q(".writing-approved"), { scale: 0.9, opacity: 0, duration: 0.6, ease: "out-expo" }, at(8.8))
+          .set({}, {}, at(10));
+
+        // The caret blinks on its own rhythm.
+        const blink = gsap
+          .timeline({ repeat: -1 })
+          .set(q(".writing-caret"), { visibility: "visible" }, 0)
+          .set(q(".writing-caret"), { visibility: "hidden" }, 0.45)
+          .set({}, {}, 0.9);
+
+        playWhileVisible(root, loop);
+        playWhileVisible(root, blink);
+      });
+    });
+</script>

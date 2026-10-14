@@ -1,0 +1,140 @@
+---
+import { Image } from "astro:assets";
+import Lock from "./icons/Lock.astro";
+import Logo from "./Logo.astro";
+import client from "../assets/people/portrait-cap.jpg";
+
+interface Props {
+  /** Site address in the browser bar, e.g. "votre-entreprise.be". */
+  address: string;
+  /** Heading of the example site. */
+  heading: string;
+  /** Title of the opening hours block, e.g. "Horaires". */
+  hours: string;
+  /** Rows that stay the same, as [days, hours]. */
+  rows: [string, string][];
+  /** The row that changes: its days, the old value and the new one. */
+  change: { days: string; before: string; after: string };
+  /** The client's request and UpInTown's reply. */
+  request: string;
+  reply: string;
+}
+
+const { address, heading, hours, rows, change, request, reply } = Astro.props;
+
+const bubble =
+  "w-fit max-w-48 text-balance sm:max-w-none sm:whitespace-nowrap rounded-2xl bg-white px-4 py-2.5 text-ui leading-tight text-ink shadow-md";
+---
+
+<!-- Decorative mock: the client asks for a change, the opening hours update on the live site, then UpInTown confirms. -->
+<div data-care class="flex h-full w-full items-center justify-center px-6 py-20" aria-hidden="true">
+  <div class="relative w-full max-w-64 sm:scale-110 xl:scale-125">
+    <div class="rounded-2xl bg-white p-4 shadow-sm">
+      <div class="flex items-center gap-2 rounded-full bg-paper px-3 py-2 text-sm">
+        <Lock class="size-4 flex-none text-ink" />
+        <span class="flex-1 truncate font-medium text-ink">{address}</span>
+        <span class="relative size-2 flex-none rounded-full bg-volt">
+          <span class="care-halo absolute inset-0 rounded-full bg-volt"></span>
+        </span>
+      </div>
+
+      <p class="mt-4 text-sm leading-snug font-semibold tracking-title text-ink">{heading}</p>
+      <div class="mt-3 grid gap-1.5">
+        <span class="h-1.5 w-full rounded-full bg-ash-200"></span>
+        <span class="h-1.5 w-3/4 rounded-full bg-ash-200"></span>
+      </div>
+
+      <div class="mt-4 rounded-xl bg-paper p-3">
+        <p class="text-xs font-medium text-ink">{hours}</p>
+        <dl class="mt-2 grid gap-1 text-xs">
+          {rows.map(([days, time]) => (
+            <div class="flex justify-between gap-3 px-1.5 py-0.5">
+              <dt class="text-ash-600">{days}</dt>
+              <dd class="text-ink">{time}</dd>
+            </div>
+          ))}
+          <div class="relative flex justify-between gap-3 px-1.5 py-0.5">
+            <span class="care-flash absolute inset-0 rounded-md bg-volt-soft"></span>
+            <dt class="relative text-ash-600">{change.days}</dt>
+            <dd class="relative h-4 overflow-hidden">
+              <span class="care-swap grid text-right">
+                <span class="h-4 leading-4 text-ash-600">{change.before}</span>
+                <span class="h-4 leading-4 font-medium text-ink">{change.after}</span>
+              </span>
+            </dd>
+          </div>
+        </dl>
+      </div>
+      <span class="mt-4 block h-6 w-1/2 rounded-full bg-blush"></span>
+    </div>
+
+    {/* The request overlaps the top left corner of the site, the reply the bottom right one. */}
+    <div class="care-request absolute -top-12 -left-4 flex items-end gap-2 sm:-left-16">
+      <Image src={client} alt="" width={80} class="size-9 flex-none rounded-full object-cover object-top" />
+      <p class={bubble}>{request}</p>
+    </div>
+    <div class="care-reply absolute -right-4 -bottom-10 flex items-end gap-2 sm:-right-16">
+      <p class:list={[bubble, "flex items-center gap-2"]}>
+        <span class="size-2.5 flex-none rounded-full bg-volt"></span>
+        {reply}
+      </p>
+      <span class="grid size-9 flex-none place-items-center rounded-full bg-ink text-white">
+        <Logo class="size-4" />
+      </span>
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: the change is done and confirmed. */
+  .care-flash,
+  .care-halo {
+    opacity: 0;
+  }
+
+  .care-swap {
+    transform: translateY(-50%);
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible, withMotion } from "../lib/motion";
+
+  // One 9s loop: the request arrives, the old hours slide out and the new ones in with a soft flash,
+  // then the reply confirms. The live dot pulses throughout: the site stays online.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-care]").forEach((root) => {
+      const q = gsap.utils.selector(root);
+      const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+
+      loop
+        .set(q(".care-request"), { opacity: 0, y: "0.75rem" }, 0)
+        .set(q(".care-reply"), { opacity: 0, y: "0.75rem" }, 0)
+        .set(q(".care-swap"), { yPercent: 0 }, 0)
+        .set(q(".care-flash"), { opacity: 0 }, 0)
+        // The client asks.
+        .to(q(".care-request"), { opacity: 1, y: 0, duration: 0.7, ease: "out-expo" }, 0.3)
+        // The row lights up and the new hours replace the old ones.
+        .to(q(".care-flash"), { opacity: 1, duration: 0.4 }, 2)
+        .to(q(".care-swap"), { yPercent: -50, duration: 0.64 }, 2.4)
+        .to(q(".care-flash"), { opacity: 0, duration: 1.2 }, 3.6)
+        // UpInTown confirms.
+        .to(q(".care-reply"), { opacity: 1, y: 0, duration: 0.7, ease: "out-expo" }, 3.4)
+        // Everything clears before the loop restarts.
+        .to(q(".care-request, .care-reply"), { opacity: 0, y: "0.5rem", duration: 0.6, ease: "out-expo" }, 7.6)
+        .to(q(".care-swap"), { opacity: 0, duration: 0.4 }, 7.8)
+        .set(q(".care-swap"), { yPercent: 0 }, 8.2)
+        .to(q(".care-swap"), { opacity: 1, duration: 0.4 }, 8.4)
+        .set({}, {}, 9);
+
+      const pulse = gsap.fromTo(
+        q(".care-halo"),
+        { opacity: 0.6, scale: 1 },
+        { opacity: 0, scale: 2.5, duration: 1.6, ease: "out-expo", repeat: -1 },
+      );
+
+      playWhileVisible(root, loop);
+      playWhileVisible(root, pulse);
+    });
+  });
+</script>

@@ -1,0 +1,50 @@
+---
+import Checkmark from "./icons/Checkmark.astro";
+import SectionHeading from "./ui/SectionHeading.astro";
+
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  subtitle?: string;
+  included: { title: string; items: string[] };
+  /** What costs extra, with its price or "on quote". */
+  extra: { title: string; items: { label: string; value: string }[] };
+}
+
+const { id, label, title, subtitle, included, extra } = Astro.props;
+
+const panel = "rounded-3xl bg-surface p-7 sm:p-10";
+---
+
+{/* What the price covers next to what is billed on top, so nothing comes as a surprise. */}
+<section id={id} aria-labelledby={`${id}-title`} class="scroll-mt-28 py-12 sm:py-16">
+  <SectionHeading id={`${id}-title`} label={label} title={title} subtitle={subtitle} />
+  <div
+    data-reveal
+    class="mt-16 grid gap-2 rounded-card bg-paper p-2 inset-ring inset-ring-ash-200 sm:mt-20 sm:gap-3 sm:p-3 lg:grid-cols-2"
+  >
+    <div class={panel}>
+      <h3 class="text-lg font-medium text-ink">{included.title}</h3>
+      <ul class="mt-8 grid gap-5 text-lg text-ink">
+        {included.items.map((item) => (
+          <li class="flex items-start gap-3">
+            <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class={panel}>
+      <h3 class="text-lg font-medium text-ink">{extra.title}</h3>
+      <dl class="mt-4 divide-y divide-ash-200 text-lg">
+        {extra.items.map((item) => (
+          <div class="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 py-4">
+            <dt class="text-ink">{item.label}</dt>
+            <dd class="font-medium whitespace-nowrap text-ink">{item.value}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>

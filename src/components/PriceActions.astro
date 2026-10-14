@@ -1,0 +1,46 @@
+---
+import Button from "./ui/Button.astro";
+
+interface Props {
+  /** e.g. "À partir de". */
+  from: string;
+  price: string;
+  /** e.g. "paiement unique" or "par mois". */
+  unit: string;
+  /** Short terms under the price. */
+  terms?: string[];
+  primary: { href: string; label: string };
+  secondary?: { href: string; label: string };
+}
+
+const { from, price, unit, terms = [], primary, secondary } = Astro.props;
+---
+
+{/* Price and actions under a service page title. */}
+<div class="mt-10 flex flex-col items-center">
+  <p class="flex flex-wrap items-baseline justify-center gap-x-2 text-ink">
+    <span class="text-lg text-ash-600">{from}</span>
+    <span class="text-4xl font-semibold tracking-display">{price}</span>
+    <span class="text-lg text-ash-600">{unit}</span>
+  </p>
+  {terms.length > 0 && (
+    <ul class="mt-3 flex flex-wrap justify-center gap-x-2 text-sm text-ash-600">
+      {terms.map((term, index) => (
+        <li class="flex items-center gap-2">
+          {index > 0 && <span class="size-1 rounded-full bg-ash-400" aria-hidden="true" />}
+          {term}
+        </li>
+      ))}
+    </ul>
+  )}
+  <div class="mt-8 flex flex-wrap justify-center gap-3">
+    <Button href={primary.href} size="lg">
+      {primary.label}
+    </Button>
+    {secondary && (
+      <Button href={secondary.href} size="lg" tone="surface">
+        {secondary.label}
+      </Button>
+    )}
+  </div>
+</div>

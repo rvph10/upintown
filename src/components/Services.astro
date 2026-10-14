@@ -1,0 +1,110 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import ArrowUpRight from "./icons/ArrowUpRight.astro";
+import Desktop from "./icons/Desktop.astro";
+import Email from "./icons/Email.astro";
+import Location from "./icons/Location.astro";
+import Radar from "./icons/Radar.astro";
+import Wrench from "./icons/Wrench.astro";
+import Badge from "./ui/Badge.astro";
+import RollText from "./ui/RollText.astro";
+
+const icons = { desktop: Desktop, email: Email, location: Location, radar: Radar, wrench: Wrench };
+
+interface Tile {
+  icon: keyof typeof icons;
+  title: string;
+  text: string;
+  href: string;
+  /** Short facts shown top right. */
+  tags: string[];
+}
+
+interface Props {
+  label: string;
+  title: string;
+  /** Short call to action revealed next to the arrow on hover, e.g. "En savoir plus". */
+  cta: string;
+  /** The first tile spans two columns on large screens. */
+  tiles: Tile[];
+  /** Vertical spacing, tighter on pages with many sections. */
+  class?: string;
+}
+
+const { label, title, cta, tiles, class: className = "pb-24 sm:pb-32" } = Astro.props;
+
+// One hover colour per tile, all with ink text (iris is the darkest, at 5:1).
+const hoverColors = [
+  "hover:bg-sky focus-visible:bg-sky",
+  "hover:bg-blush focus-visible:bg-blush",
+  "hover:bg-iris focus-visible:bg-iris",
+  "hover:bg-tangerine focus-visible:bg-tangerine",
+  "hover:bg-sun focus-visible:bg-sun",
+];
+
+const motion = "transition-transform duration-500 ease-curtain motion-reduce:transition-none";
+---
+
+<section aria-labelledby="services-title" class={className}>
+  <SectionHeading id="services-title" label={label} title={title} />
+  {/* Each tile spans three shared rows (top, title, text) so titles line up across a row. */}
+  <ul data-reveal="group" class="mt-16 grid grid-cols-1 gap-3 sm:mt-20 md:grid-cols-2 lg:grid-cols-3">
+    {tiles.map((tile, index) => {
+      const Icon = icons[tile.icon];
+      return (
+        <li class:list={["row-span-3 grid grid-rows-subgrid", index === 0 && "md:col-span-2"]}>
+          <a
+            href={tile.href}
+            class:list={[
+              "group row-span-3 grid grid-rows-subgrid gap-y-0 rounded-card bg-paper p-6 transition-colors duration-500 ease-curtain focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-iris-strong motion-reduce:transition-none sm:p-8",
+              hoverColors[index % hoverColors.length],
+            ]}
+          >
+            <div class="flex min-h-24 flex-wrap items-start justify-between gap-4 sm:min-h-36">
+              {/* On hover the circle fills from the bottom, the icon gives way to an arrow and the call to action slides out. */}
+              <span class="relative flex items-center">
+                <span class="relative isolate grid size-14 flex-none place-items-center overflow-hidden rounded-full bg-white">
+                  <span
+                    class="absolute inset-0 -z-10 bg-ink [clip-path:circle(0_at_50%_100%)] transition-[clip-path] duration-500 ease-curtain group-hocus:[clip-path:circle(150%_at_50%_100%)] motion-reduce:transition-none"
+                    aria-hidden="true"
+                  />
+                  <span class="relative size-7 overflow-hidden">
+                    <Icon
+                      class:list={[
+                        "absolute inset-0 size-full text-ink group-hocus:translate-x-[120%] group-hocus:-translate-y-[120%]",
+                        motion,
+                      ]}
+                    />
+                    <ArrowUpRight
+                      class:list={[
+                        "absolute inset-0 size-full -translate-x-[120%] translate-y-[120%] text-white group-hocus:translate-0",
+                        motion,
+                      ]}
+                    />
+                  </span>
+                </span>
+                <span
+                  class="absolute top-1/2 left-full z-10 ml-2 inline-flex h-10 -translate-y-1/2 items-center rounded-full bg-white px-4 text-ui font-medium whitespace-nowrap text-ink [clip-path:inset(0_100%_0_0_round_9999px)] -translate-x-3 transition-[clip-path,translate] duration-500 ease-curtain group-hocus:translate-x-0 group-hocus:[clip-path:inset(0_0_0_0_round_9999px)] motion-reduce:transition-none"
+                  aria-hidden="true"
+                >
+                  {cta}
+                </span>
+              </span>
+              <span class="ml-auto flex flex-col items-end gap-2 transition-opacity duration-300 group-hocus:opacity-0 motion-reduce:transition-none">
+                {tile.tags.map((tag) => (
+                  <Badge as="span">{tag}</Badge>
+                ))}
+              </span>
+            </div>
+            <h3 class="self-end pt-10 text-2xl font-medium tracking-title text-ink">
+              <RollText tight>{tile.title}</RollText>
+            </h3>
+            <p class="max-w-xl pt-3 text-lg leading-relaxed text-pretty text-ash-600 transition-colors duration-500 group-hocus:text-ink motion-reduce:transition-none">
+              {tile.text}
+            </p>
+          </a>
+        </li>
+      );
+    })}
+  </ul>
+</section>

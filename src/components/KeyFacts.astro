@@ -1,0 +1,18 @@
+---
+interface Props {
+  /** Short figures, e.g. { value: "3 à 5 semaines", label: "jusqu'à la mise en ligne" }. */
+  facts: { value: string; label: string }[];
+  class?: string;
+}
+
+const { facts, class: className } = Astro.props;
+---
+
+<dl data-reveal="group" class:list={["grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4", className]}>
+  {facts.map((fact) => (
+    <div class="flex flex-col-reverse justify-end gap-2 rounded-card bg-paper p-6 inset-ring inset-ring-ash-200 sm:p-8">
+      <dt class="text-pretty text-ash-600">{fact.label}</dt>
+      <dd class="text-4xl font-semibold tracking-display text-ink">{fact.value}</dd>
+    </div>
+  ))}
+</dl>

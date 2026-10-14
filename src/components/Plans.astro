@@ -1,0 +1,181 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import Checkmark from "./icons/Checkmark.astro";
+import Location from "./icons/Location.astro";
+import Radar from "./icons/Radar.astro";
+import Wrench from "./icons/Wrench.astro";
+import Button from "./ui/Button.astro";
+import Tooltip from "./ui/Tooltip.astro";
+import { legal } from "../data/business";
+import { formatPrice, type Locale } from "../data/i18n";
+import { planFeatures, plans, policies, website, type PlanId } from "../data/offer";
+import { path } from "../data/routes";
+import { ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+  label: string;
+  title: string;
+  subtitle: string;
+  id?: string;
+  /** The "no website yet" prompt linking to pricing; off on the pricing page itself. Extra content goes in the slot. */
+  websitePrompt?: boolean;
+  /** Extra classes for the card grid, e.g. to show it on phones only when the slot holds a table. */
+  cardsClass?: string;
+  /** Vertical spacing, tighter on pages with many sections. */
+  class?: string;
+}
+
+const {
+  locale,
+  label,
+  title,
+  subtitle,
+  id,
+  websitePrompt = true,
+  cardsClass,
+  class: className = "py-24 sm:py-32",
+} = Astro.props;
+
+const icons: Record<PlanId, typeof Wrench> = { essentiel: Wrench, visibilite: Location, croissance: Radar };
+
+const t = {
+  choose: { fr: "Choisir", en: "Choose" },
+  moreAbout: { fr: "En savoir plus :", en: "More about:" },
+  included: { fr: "Inclus :", en: "Included:" },
+  everything: { fr: "Tout ce qu'il y a dans", en: "Everything in" },
+  plus: { fr: ", plus :", en: ", plus:" },
+  noSetup: { fr: "Sans frais de mise en place", en: "No setup fee" },
+  setup: { fr: "de mise en place", en: "setup fee" },
+  notice: {
+    fr: `Mensuel, ${policies.noticeMonths} mois de préavis`,
+    en: `Monthly, ${policies.noticeMonths} month's notice`,
+  },
+  minimum: { fr: (months: number) => `${months} mois minimum`, en: (months: number) => `${months} months minimum` },
+  noSite: { fr: "Pas encore de site ?", en: "No website yet?" },
+  website: {
+    fr: `La création commence à ${formatPrice(website.fromPrice, "fr")}, payée en ${website.stages.length} étapes.`,
+    en: `Creation starts at ${formatPrice(website.fromPrice, "en")}, paid in ${website.stages.length} stages.`,
+  },
+  allPrices: { fr: "Voir tous les tarifs", en: "See all pricing" },
+};
+
+// Each card lists only what it adds to the plan before it.
+const cards = plans.map((plan, index) => {
+  const previous = plans[index - 1];
+  const features = planFeatures
+    .filter((feature) => feature.plans[plan.id] && (!previous || feature.plans[plan.id] !== feature.plans[previous.id]))
+    .map((feature) => {
+      const value = feature.plans[plan.id];
+      return {
+        label: feature.label[locale],
+        details: feature.details?.[locale],
+        value: value === true ? undefined : value?.[locale],
+      };
+    });
+  return {
+    ...plan,
+    level: index + 1,
+    Icon: icons[plan.id],
+    features,
+    previousName: previous?.name[locale],
+    terms: [
+      plan.setupFee ? `${formatPrice(plan.setupFee, locale)} ${t.setup[locale]}` : t.noSetup[locale],
+      plan.minimumMonths ? t.minimum[locale](plan.minimumMonths) : t.notice[locale],
+    ],
+  };
+});
+const maxFeatures = Math.max(...cards.map((card) => card.features.length));
+---
+
+<section id={id} aria-labelledby="plans-title" class={className}>
+  <SectionHeading id="plans-title" label={label} title={title} subtitle={subtitle} />
+
+  {/* On large screens every card spans the same shared rows, one per block and one per feature, so all lines up. */}
+  <ul
+    data-reveal="group"
+    class:list={["mt-16 grid gap-3 sm:mt-20 lg:grid-cols-3", cardsClass]}
+    style={`--features: ${maxFeatures}; --rows: ${maxFeatures + 5}`}
+  >
+    {cards.map((card) => (
+      <li class="grid gap-y-0 rounded-card bg-paper p-7 inset-ring inset-ring-ash-200 sm:p-8 lg:row-span-(--rows) lg:grid-rows-subgrid">
+        <div class="flex items-start justify-between gap-4">
+          <span class="grid size-14 flex-none place-items-center rounded-full bg-white">
+            <card.Icon class="size-7 text-ink" />
+          </span>
+          {/* Coverage gauge: one bar per plan, filled up to this one. */}
+          <span class="flex items-end gap-1 pt-2" aria-hidden="true">
+            {plans.map((_, bar) => (
+              <span
+                data-reveal-grow={bar < card.level ? "" : undefined}
+                class:list={["w-2 rounded-full", bar < card.level ? "bg-ink" : "bg-ash-300"]}
+                style={`height: ${0.75 + bar * 0.5}rem`}
+              />
+            ))}
+          </span>
+        </div>
+
+        <div class="pt-10">
+          <h3 class="text-2xl font-medium tracking-title text-ink">{card.name[locale]}</h3>
+          <p class="mt-1 text-lg text-ash-600">{card.job[locale]}</p>
+        </div>
+
+        <p class="flex items-baseline gap-1 pt-8 text-ink">
+          <span class="text-5xl font-semibold tracking-display">{formatPrice(card.monthly, locale)}</span>
+          <span class="text-lg text-ash-600">{ui.perMonth[locale]}</span>
+        </p>
+
+        <div class="pt-8">
+          <Button href={`${path("contact", locale)}?plan=${card.id}`} full>
+            {`${t.choose[locale]} ${card.name[locale]}`}
+          </Button>
+          <ul class="mt-4 flex flex-wrap justify-center gap-x-2 text-sm text-ash-600">
+            {card.terms.map((term, termIndex) => (
+              <li class="flex items-center gap-2">
+                {termIndex > 0 && <span class="size-1 rounded-full bg-ash-400" aria-hidden="true" />}
+                {term}
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <p class="pt-10 pb-5 font-medium text-ink">
+          {card.previousName ? `${t.everything[locale]} ${card.previousName}${t.plus[locale]}` : t.included[locale]}
+        </p>
+        <ul class="grid content-start gap-y-4 text-ink lg:row-span-(--features) lg:grid-rows-subgrid">
+          {card.features.map((feature) => (
+            <li class="flex items-start gap-3">
+              <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+              <span class="flex-1">
+                {feature.label}
+                {feature.value && <span class="text-ui text-ash-600"> ({feature.value.toLowerCase()})</span>}
+              </span>
+              {feature.details && (
+                <Tooltip label={`${t.moreAbout[locale]} ${feature.label}`} align="end" class="flex-none">
+                  {feature.details}
+                </Tooltip>
+              )}
+            </li>
+          ))}
+        </ul>
+      </li>
+    ))}
+  </ul>
+
+  {websitePrompt && (
+    <div
+      data-reveal
+      class="mt-3 flex flex-col items-start gap-6 rounded-card bg-paper p-7 inset-ring inset-ring-ash-200 sm:p-8 md:flex-row md:items-center md:justify-between"
+    >
+      <p class="text-lg text-pretty text-ink">
+        <span class="font-medium">{t.noSite[locale]}</span> <span class="text-ash-600">{t.website[locale]}</span>
+      </p>
+      <Button href={path("pricing", locale)} tone="surface" class="flex-none">
+        {t.allPrices[locale]}
+      </Button>
+    </div>
+  )}
+  <slot />
+
+  {legal.vatExempt && <p class="mt-6 text-center text-ui text-ash-600">{legal.vatMention[locale]}</p>}
+</section>

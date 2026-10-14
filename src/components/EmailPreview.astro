@@ -1,0 +1,101 @@
+---
+import Email from "./icons/Email.astro";
+
+interface Props {
+  /** The professional address, e.g. "contact@votre-entreprise.be". */
+  address: string;
+  /** Chip shown once the address works. */
+  active: string;
+  /** Inbox title, e.g. "Boîte de réception". */
+  inbox: string;
+  /** Subjects of the messages that arrive, newest first. */
+  messages: string[];
+}
+
+const { address, active, inbox, messages } = Astro.props;
+
+// One soft colour per sender, all from the palette.
+const senders = ["bg-sky", "bg-blush", "bg-sun"];
+---
+
+<!-- Decorative mock: the professional address is set up, then customer messages arrive in the inbox. -->
+<div data-email class="flex h-full w-full items-center justify-center px-6 py-16" aria-hidden="true">
+  <div class="relative w-full max-w-72 sm:scale-110 xl:scale-125">
+    <div class="rounded-2xl bg-white p-4 shadow-sm">
+      <div class="flex items-center gap-2 rounded-full bg-paper px-3 py-2 text-sm">
+        <Email class="size-4 flex-none text-ink" />
+        <span class="email-address truncate font-medium text-ink">{address}</span>
+        <span class="email-caret -ml-1.5 inline-block h-4 w-0.5 flex-none rounded-full bg-iris-strong"></span>
+      </div>
+
+      <p class="mt-4 text-xs font-medium text-ash-600">{inbox}</p>
+      <ul class="mt-2 grid gap-1.5">
+        {messages.map((subject, index) => (
+          <li class="email-message relative flex items-center gap-3 rounded-xl px-2 py-2">
+            {index === 0 && <span class="email-read absolute inset-0 rounded-xl bg-volt-soft" />}
+            <span class:list={["relative size-7 flex-none rounded-full", senders[index % senders.length]]} />
+            <span class="relative min-w-0 flex-1">
+              <span class="block truncate text-xs font-medium text-ink">{subject}</span>
+              <span class="mt-1 block h-1.5 w-4/5 rounded-full bg-ash-200" />
+            </span>
+            <span class="email-unread relative size-2 flex-none rounded-full bg-iris-strong" />
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    {/* The address is live: the chip overlaps the card's top right corner. */}
+    <span class="email-active absolute -top-4 -right-3 flex items-center gap-2 rounded-full bg-white py-1.5 pr-3 pl-2 text-sm font-medium whitespace-nowrap text-ink shadow-md sm:-right-10">
+      <span class="size-2.5 rounded-full bg-volt"></span>
+      {active}
+    </span>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: the address works and the messages are in. */
+  .email-caret {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible, withMotion } from "../lib/motion";
+
+  // One 9s loop: the address types itself, the "active" chip pops, messages slide in one by one
+  // with their unread dot, then the newest one is opened.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-email]").forEach((root) => {
+      const q = gsap.utils.selector(root);
+      const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+
+      loop
+        .set(q(".email-address"), { clipPath: "inset(0% 100% 0% 0%)", opacity: 1 }, 0)
+        .set(q(".email-caret"), { opacity: 1 }, 0)
+        .set(q(".email-active"), { opacity: 0, scale: 0.6 }, 0)
+        .set(q(".email-message"), { opacity: 0, y: "-0.75rem" }, 0)
+        .set(q(".email-unread"), { scale: 1, opacity: 1 }, 0)
+        .set(q(".email-read"), { opacity: 0 }, 0)
+        // The address is typed, then confirmed.
+        .to(q(".email-address"), { clipPath: "inset(0% 0% 0% 0%)", duration: 1.3, ease: "steps(22)" }, 0.3)
+        .to(q(".email-caret"), { opacity: 0, duration: 0.1, ease: "none" }, 1.8)
+        .to(q(".email-active"), { opacity: 1, scale: 1, duration: 0.5, ease: "out-expo" }, 1.9)
+        // Messages arrive, oldest at the bottom first.
+        .to(
+          q(".email-message"),
+          { opacity: 1, y: 0, duration: 0.6, ease: "out-expo", stagger: { each: 0.6, from: "end" } },
+          2.6,
+        )
+        // The newest one is opened: highlighted, its dot goes.
+        .to(q(".email-read"), { opacity: 1, duration: 0.5 }, 5.2)
+        .to(q(".email-message:first-child .email-unread"), { scale: 0, opacity: 0, duration: 0.4 }, 5.4)
+        // Everything clears before the loop restarts.
+        .to(q(".email-message"), { opacity: 0, duration: 0.5, ease: "out-expo", stagger: 0.1 }, 8)
+        .to(q(".email-active"), { opacity: 0, scale: 0.9, duration: 0.5, ease: "out-expo" }, 8.1)
+        .to(q(".email-address"), { opacity: 0, duration: 0.4 }, 8.3)
+        .set({}, {}, 9);
+
+      playWhileVisible(root, loop);
+    });
+  });
+</script>

@@ -1,0 +1,60 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import CallPreview from "./CallPreview.astro";
+import DesignPreview from "./DesignPreview.astro";
+import LaunchPreview from "./LaunchPreview.astro";
+import WritingPreview from "./WritingPreview.astro";
+import { business } from "../data/business";
+import type { StageId } from "../data/offer";
+import Lightning from "./icons/Lightning.astro";
+import Badge from "./ui/Badge.astro";
+
+interface Step {
+  /** Picks the visual for the step. */
+  id: StageId;
+  /** Short fact shown above the visual. */
+  tag: string;
+  title: string;
+  text: string;
+}
+
+interface Props {
+  label: string;
+  title: string;
+  steps: Step[];
+  /** Text for the decorative mocks, one per step. */
+  /** Vertical spacing, tighter on pages with many sections. */
+  class?: string;
+  mocks: {
+    you: string;
+    call: { asked: string[]; replied: string[] };
+    text: { question: string; answer: string; heading: string; approved: string };
+    launch: { preview: string; live: string; publish: string; toast: string };
+  };
+}
+
+const { label, title, steps, mocks, class: className = "py-24 sm:py-32" } = Astro.props;
+---
+
+<section id="process" aria-labelledby="process-title" class:list={["bleed-paper-fade", className]}>
+  <SectionHeading id="process-title" label={label} title={title} />
+  <ol data-reveal="group" class="mt-16 grid grid-cols-1 gap-3 sm:mt-20 lg:grid-cols-2">
+    {steps.map((step) => (
+      <li class="flex flex-col rounded-card bg-surface p-3 sm:p-4">
+        <Badge as="span">
+          <Lightning slot="icon" class="size-full" />
+          {step.tag}
+        </Badge>
+        {/* Same fixed height for every step so the cards line up. */}
+        <div class="mt-3 grid h-80 place-items-center overflow-hidden rounded-3xl bg-paper sm:h-[22rem]">
+          {step.id === "planning" && <CallPreview you={mocks.you} {...mocks.call} />}
+          {step.id === "content" && <WritingPreview you={mocks.you} {...mocks.text} />}
+          {step.id === "design" && <DesignPreview you={mocks.you} brand={business.name} />}
+          {step.id === "launch" && <LaunchPreview {...mocks.launch} />}
+        </div>
+        <h3 class="mt-8 px-3 text-2xl font-medium tracking-title text-ink sm:px-4">{step.title}</h3>
+        <p class="mt-3 mb-3 max-w-xl px-3 text-lg leading-relaxed text-pretty text-ash-600 sm:px-4">{step.text}</p>
+      </li>
+    ))}
+  </ol>
+</section>

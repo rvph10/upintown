@@ -1,0 +1,54 @@
+---
+import Checkmark from "./icons/Checkmark.astro";
+import MediaFrame from "./MediaFrame.astro";
+import SectionHeading from "./ui/SectionHeading.astro";
+
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  paragraphs: string[];
+  /** Optional checklist under the text. */
+  points?: string[];
+  /** Placeholder label when there is no visual yet; otherwise the visual goes in the "media" slot. */
+  placeholder?: string;
+  /** Visual on the left on large screens. */
+  reverse?: boolean;
+}
+
+const { id, label, title, paragraphs, points, placeholder, reverse = false } = Astro.props;
+---
+
+{/* Text on one side, a visual on the other. Buttons go in the default slot, under the text. */}
+<section
+  id={id}
+  aria-labelledby={`${id}-title`}
+  class="grid scroll-mt-28 items-center gap-12 py-12 sm:py-16 lg:grid-cols-2 lg:gap-16"
+>
+  <div data-reveal="sequence" class:list={[reverse && "lg:order-last"]}>
+    <SectionHeading id={`${id}-title`} label={label} title={title} align="start" reveal={false} />
+    <div data-reveal-step class="mt-8 grid max-w-2xl gap-5 text-lg leading-relaxed text-pretty text-ash-600">
+      {paragraphs.map((paragraph) => (
+        <p>{paragraph}</p>
+      ))}
+    </div>
+    {points && (
+      <ul data-reveal-step class="mt-8 grid gap-4 text-lg text-ink">
+        {points.map((point) => (
+          <li class="flex items-start gap-3">
+            <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+            {point}
+          </li>
+        ))}
+      </ul>
+    )}
+    {Astro.slots.has("default") && (
+      <div data-reveal-step class="mt-10 flex flex-wrap gap-3">
+        <slot />
+      </div>
+    )}
+  </div>
+  <MediaFrame data-reveal-image placeholder={placeholder} class="lg:min-h-[32rem]">
+    <slot name="media" />
+  </MediaFrame>
+</section>

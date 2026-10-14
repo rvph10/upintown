@@ -1,0 +1,360 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import Callout from "../components/Callout.astro";
+import Faq from "../components/Faq.astro";
+import FeatureCards from "../components/FeatureCards.astro";
+import KeyFacts from "../components/KeyFacts.astro";
+import LocalSeoPreview from "../components/LocalSeoPreview.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Plans from "../components/Plans.astro";
+import PriceActions from "../components/PriceActions.astro";
+import RelatedServices from "../components/RelatedServices.astro";
+import ReportPreview from "../components/ReportPreview.astro";
+import ServiceSchema from "../components/ServiceSchema.astro";
+import SplitFeature from "../components/SplitFeature.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Info from "../components/icons/Info.astro";
+import Location from "../components/icons/Location.astro";
+import Radar from "../components/icons/Radar.astro";
+import Star from "../components/icons/Star.astro";
+import Button from "../components/ui/Button.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { descriptions, titles } from "../data/meta";
+import { reportMock, seoMock } from "../data/mocks";
+import { featuresOnlyIn, planById, type PlanId } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const price = (amount: number) => formatPrice(amount, locale);
+const visibilite = planById("visibilite");
+const croissance = planById("croissance");
+const choose = (plan: PlanId) => `${path("contact", locale)}?plan=${plan}`;
+
+const t = {
+  title: {
+    fr: "Être trouvé sur Google et Google Maps par les clients près de chez vous.",
+    en: "Get found on Google and Google Maps by customers near you.",
+  },
+  subtitle: {
+    fr: "Votre fiche Google, vos avis, les annuaires et les pages de votre site, suivis chaque mois. Le référencement local (SEO) sans jargon, avec un prix fixe.",
+    en: "Your Google profile, your reviews, directories and your site's pages, looked after every month. Local SEO without the jargon, at a fixed price.",
+  },
+  monthly: { fr: "par mois", en: "a month" },
+  choose: { fr: `Choisir ${visibilite.name.fr}`, en: `Choose ${visibilite.name.en}` },
+  chooseGrowth: { fr: `Choisir ${croissance.name.fr}`, en: `Choose ${croissance.name.en}` },
+  compare: { fr: "Comparer les formules", en: "Compare the plans" },
+
+  facts: {
+    fr: [
+      { value: price(visibilite.monthly), label: `par mois avec ${visibilite.name.fr}` },
+      { value: price(croissance.monthly), label: `par mois avec ${croissance.name.fr}` },
+      {
+        value: `${croissance.minimumMonths} mois`,
+        label: `minimum avec ${croissance.name.fr}, le temps de voir des résultats`,
+      },
+      {
+        value: `${croissance.googlePostsPerMonth} par mois`,
+        label: `publications sur votre fiche avec ${croissance.name.fr}`,
+      },
+    ],
+    en: [
+      { value: price(visibilite.monthly), label: `a month with ${visibilite.name.en}` },
+      { value: price(croissance.monthly), label: `a month with ${croissance.name.en}` },
+      {
+        value: `${croissance.minimumMonths} months`,
+        label: `minimum with ${croissance.name.en}, so results have time to build`,
+      },
+      { value: `${croissance.googlePostsPerMonth} a month`, label: `posts on your profile with ${croissance.name.en}` },
+    ],
+  },
+
+  howLabel: { fr: "Le référencement local", en: "Local SEO" },
+  howTitle: { fr: "Comment vos clients vous trouvent sur Google.", en: "How customers find you on Google." },
+  howSubtitle: {
+    fr: "Quand quelqu'un cherche votre métier près de chez lui, Google regarde surtout si votre activité correspond à la recherche, si vous êtes proche, et si vous êtes reconnu. Quatre choses jouent sur ces critères.",
+    en: "When someone searches for your trade near them, Google mainly looks at whether your business matches the search, whether you are close by, and whether you are well known. Four things shape those criteria.",
+  },
+  how: {
+    fr: [
+      {
+        Icon: Location,
+        title: "Votre fiche Google",
+        text: "La fiche d'établissement (anciennement Google My Business) qui apparaît sur Google Maps : catégorie, horaires, services, photos. Plus elle est complète, mieux Google sait quand vous montrer.",
+      },
+      {
+        Icon: Star,
+        title: "Vos avis",
+        text: "Le nombre d'avis, leur régularité et vos réponses comptent pour Google, et surtout pour les clients qui hésitent entre vous et un concurrent.",
+      },
+      {
+        Icon: Radar,
+        title: "Les annuaires",
+        text: "Votre nom, votre adresse et votre téléphone doivent être identiques partout en ligne. Des informations cohérentes rassurent Google sur votre activité.",
+      },
+      {
+        Icon: Desktop,
+        title: "Votre site",
+        text: "Des pages claires qui répondent aux mots que vos clients tapent vraiment, sur chacun de vos services.",
+      },
+    ],
+    en: [
+      {
+        Icon: Location,
+        title: "Your Google profile",
+        text: "The Business Profile (formerly Google My Business) shown on Google Maps: category, hours, services, photos. The more complete it is, the better Google knows when to show you.",
+      },
+      {
+        Icon: Star,
+        title: "Your reviews",
+        text: "How many reviews you have, how regularly they come and your replies matter to Google, and above all to customers choosing between you and a competitor.",
+      },
+      {
+        Icon: Radar,
+        title: "Directories",
+        text: "Your name, address and phone number should be identical everywhere online. Consistent details reassure Google about your business.",
+      },
+      {
+        Icon: Desktop,
+        title: "Your website",
+        text: "Clear pages that answer the words your customers actually type, for each of your services.",
+      },
+    ],
+  },
+
+  mapsLabel: {
+    fr: `${visibilite.name.fr}, ${price(visibilite.monthly)}${ui.perMonth.fr}`,
+    en: `${visibilite.name.en}, ${price(visibilite.monthly)}${ui.perMonth.en}`,
+  },
+  mapsTitle: { fr: "Bien présenté sur Google Maps.", en: "Well presented on Google Maps." },
+  maps: {
+    fr: [
+      "Votre fiche Google est souvent vue avant votre site. Elle est vérifiée, complétée puis tenue à jour : horaires, services, photos et coordonnées.",
+      "Chaque avis reçoit une réponse. Pour les métiers sensibles, comme la santé, vous validez chaque réponse avant qu'elle soit publiée. Votre entreprise est aussi inscrite dans les principaux annuaires, avec les mêmes coordonnées partout.",
+    ],
+    en: [
+      "Your Google profile is often seen before your website. It is checked, completed and then kept up to date: hours, services, photos and contact details.",
+      "Every review gets a reply. For sensitive trades, such as healthcare, you approve each reply before it is posted. Your business is also listed in the main directories, with the same details everywhere.",
+    ],
+  },
+
+  searchLabel: {
+    fr: `${croissance.name.fr}, ${price(croissance.monthly)}${ui.perMonth.fr}`,
+    en: `${croissance.name.en}, ${price(croissance.monthly)}${ui.perMonth.en}`,
+  },
+  searchTitle: { fr: "Progresser dans les résultats de recherche.", en: "Move up in the search results." },
+  search: {
+    fr: [
+      `Tout ce que comprend ${visibilite.name.fr}, plus un vrai suivi des recherches qui mènent à vous. Chaque mois, les recherches qui mènent vraiment à votre site sont analysées, puis les pages existantes de votre site sont ajustées pour mieux y répondre.`,
+      `Vous recevez aussi un lien direct et un QR code pour récolter des avis, et ${croissance.googlePostsPerMonth} publications par mois gardent votre fiche active. Un rapport mensuel résume ce qui a été fait.`,
+    ],
+    en: [
+      `Everything in ${visibilite.name.en}, plus a real review of the searches that find you. Every month, the searches that actually lead to your site are reviewed, then your site's existing pages are adjusted to answer them better.`,
+      `You also get a direct link and a QR code to collect reviews, and ${croissance.googlePostsPerMonth} posts a month keep your profile active. A monthly report sums up what was done.`,
+    ],
+  },
+
+  plansLabel: { fr: "Formules", en: "Plans" },
+  plansTitle: { fr: "Choisissez jusqu'où aller sur Google.", en: "Choose how far to go on Google." },
+  plansSubtitle: {
+    fr: `${visibilite.name.fr} et ${croissance.name.fr} comprennent aussi tout l'entretien de votre site et votre e-mail professionnel.`,
+    en: `${visibilite.name.en} and ${croissance.name.en} also include all the care of your website and your professional email.`,
+  },
+
+  setupTitle: { fr: "Les frais de mise en place, expliqués", en: "The setup fee, explained" },
+  setup: {
+    fr: [
+      `${price(visibilite.setupFee)} une seule fois, au début : votre fiche Google est vérifiée et complétée, votre entreprise est inscrite dans les annuaires et un lien pour les avis est préparé.`,
+      "Le montant est le même si vous avez déjà une fiche : elle doit quand même être vérifiée, et les annuaires mis en cohérence.",
+    ],
+    en: [
+      `${price(visibilite.setupFee)} once, at the start: your Google profile is checked and completed, your business is listed in directories and a review link is prepared.`,
+      "The fee is the same if you already have a profile: it still needs checking, and the directories still need aligning.",
+    ],
+  },
+  honestTitle: { fr: "Des attentes honnêtes", en: "Honest expectations" },
+  honest: {
+    fr: [
+      "Personne ne peut promettre la première place sur Google : Google décide seul de l'ordre des résultats. Ce qui est fait, c'est tout ce qui joue en votre faveur, chaque mois.",
+      `Les résultats se construisent sur plusieurs mois. C'est pourquoi ${croissance.name.fr} demande ${croissance.minimumMonths} mois minimum, et les rapports montrent ce qui a été fait.`,
+    ],
+    en: [
+      "Nobody can promise first place on Google: Google alone decides the order of results. What is done is everything that works in your favour, every month.",
+      `Results build over several months. That's why ${croissance.name.en} has a ${croissance.minimumMonths}-month minimum, and the reports show what was done.`,
+    ],
+  },
+
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Sur votre présence Google.", en: "About your presence on Google." },
+  faqContact: {
+    fr: { text: "Une autre question ?", label: "Posez-la" },
+    en: { text: "Another question?", label: "Ask it" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Ma fiche Google reste-t-elle à moi ?",
+        answer:
+          "Oui. Vous restez propriétaire principal de votre fiche, et UpInTown la gère pour vous. Si vous partez, l'accès d'UpInTown est retiré.",
+      },
+      {
+        question: "J'ai déjà une fiche Google. Pourquoi payer la mise en place ?",
+        answer: `Parce qu'elle doit quand même être vérifiée et complétée, les annuaires mis en cohérence et le lien pour les avis préparé. Les ${price(visibilite.setupFee)} sont payés une seule fois.`,
+      },
+      {
+        question: "Qui répond à mes avis ?",
+        answer:
+          "UpInTown, en votre nom. Pour les métiers sensibles, comme la santé, vous validez chaque réponse avant qu'elle soit publiée.",
+      },
+      {
+        question: "Achetez-vous des avis ?",
+        answer:
+          "Non. Les avis viennent de vos vrais clients, grâce à un lien direct et un QR code à partager. Google interdit d'acheter des avis ou de les récompenser.",
+      },
+      {
+        question: "Quelle différence avec la publicité Google ?",
+        answer:
+          "La publicité s'arrête dès que vous arrêtez de payer. Le référencement local travaille votre présence elle-même : votre fiche, vos avis et vos pages, pour apparaître sans payer chaque clic.",
+      },
+      {
+        question: "Et les assistants comme ChatGPT ?",
+        answer:
+          "Ils s'appuient sur les mêmes bases : des informations cohérentes partout, des avis et des pages claires sur votre site. Personne ne contrôle ce que ces outils répondent, mais ce sont les mêmes bases qui comptent.",
+      },
+    ],
+    en: [
+      {
+        question: "Does my Google profile stay mine?",
+        answer:
+          "Yes. You remain the primary owner of your profile, and UpInTown manages it for you. If you leave, UpInTown's access is removed.",
+      },
+      {
+        question: "I already have a Google profile. Why pay for setup?",
+        answer: `Because it still needs checking and completing, the directories need aligning and the review link needs preparing. The ${price(visibilite.setupFee)} is paid once.`,
+      },
+      {
+        question: "Who replies to my reviews?",
+        answer:
+          "UpInTown, on your behalf. For sensitive trades, such as healthcare, you approve each reply before it is posted.",
+      },
+      {
+        question: "Do you buy reviews?",
+        answer:
+          "No. Reviews come from your real customers, through a direct link and a QR code to share. Google forbids buying or rewarding reviews.",
+      },
+      {
+        question: "How is this different from Google Ads?",
+        answer:
+          "Ads stop as soon as you stop paying. Local SEO works on your presence itself: your profile, your reviews and your pages, to show up without paying per click.",
+      },
+      {
+        question: "What about assistants like ChatGPT?",
+        answer:
+          "They rely on the same foundations: consistent details everywhere, reviews and clear pages on your site. Nobody controls what these tools answer, but the same foundations count.",
+      },
+    ],
+  },
+};
+---
+
+<Layout
+  locale={locale}
+  title={titles.localSeo[locale]}
+  description={descriptions.localSeo[locale]}
+  alternates={routes.localSeo}
+>
+  <ServiceSchema
+    slot="head"
+    locale={locale}
+    name={pageNames.localSeo[locale]}
+    description={descriptions.localSeo[locale]}
+    price={visibilite.monthly}
+    monthly
+  />
+
+  <PageHeader
+    slot="full-width"
+    label={pageNames.localSeo[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  >
+    <PriceActions
+      from={ui.from[locale]}
+      price={price(visibilite.monthly)}
+      unit={t.monthly[locale]}
+      primary={{ href: choose("visibilite"), label: t.choose[locale] }}
+      secondary={{ href: "#plans", label: t.compare[locale] }}
+    />
+  </PageHeader>
+
+  <KeyFacts facts={t.facts[locale]} class="pt-8 sm:pt-12" />
+
+  <FeatureCards
+    id="how"
+    label={t.howLabel[locale]}
+    title={t.howTitle[locale]}
+    subtitle={t.howSubtitle[locale]}
+    items={t.how[locale]}
+    columns={4}
+  />
+
+  <SplitFeature
+    id="maps"
+    label={t.mapsLabel[locale]}
+    title={t.mapsTitle[locale]}
+    paragraphs={t.maps[locale]}
+    points={featuresOnlyIn("visibilite", locale, "essentiel")}
+  >
+    <Button href={choose("visibilite")}>{t.choose[locale]}</Button>
+    <LocalSeoPreview slot="media" {...seoMock[locale]} />
+  </SplitFeature>
+
+  <SplitFeature
+    id="search"
+    label={t.searchLabel[locale]}
+    title={t.searchTitle[locale]}
+    paragraphs={t.search[locale]}
+    points={featuresOnlyIn("croissance", locale, "visibilite")}
+    reverse
+  >
+    <Button href={choose("croissance")}>{t.chooseGrowth[locale]}</Button>
+    <ReportPreview slot="media" {...reportMock[locale]} />
+  </SplitFeature>
+
+  <div class="grid gap-3 py-12 sm:py-16 lg:grid-cols-2">
+    <Callout id="setup" Icon={Info} title={t.setupTitle[locale]} paragraphs={t.setup[locale]} />
+    <Callout id="expectations" Icon={Radar} title={t.honestTitle[locale]} paragraphs={t.honest[locale]} />
+  </div>
+
+  <Plans
+    id="plans"
+    locale={locale}
+    label={t.plansLabel[locale]}
+    title={t.plansTitle[locale]}
+    subtitle={t.plansSubtitle[locale]}
+    class="py-12 sm:py-16"
+  />
+
+  <Faq
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+    class="py-12 sm:py-16"
+  />
+
+  <RelatedServices locale={locale} current="google" />
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: choose("visibilite"), label: t.choose[locale] }}
+    call={ui.ctaCall[locale]}
+  />
+</Layout>

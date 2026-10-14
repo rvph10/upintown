@@ -1,0 +1,39 @@
+---
+import { business } from "../data/business";
+import type { Locale } from "../data/i18n";
+
+interface Props {
+  locale: Locale;
+  name: string;
+  description: string;
+  /** Lowest price in EUR, and whether it is billed monthly. */
+  price: number;
+  monthly: boolean;
+}
+
+const { locale, name, description, price, monthly } = Astro.props;
+
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name,
+  description,
+  serviceType: name,
+  url: new URL(Astro.url.pathname, Astro.site).href,
+  inLanguage: locale,
+  areaServed: business.areaServed,
+  provider: { "@type": "Organization", name: business.name, url: business.url },
+  offers: {
+    "@type": "Offer",
+    priceCurrency: "EUR",
+    priceSpecification: {
+      "@type": monthly ? "UnitPriceSpecification" : "PriceSpecification",
+      minPrice: price,
+      priceCurrency: "EUR",
+      ...(monthly && { unitCode: "MON" }),
+    },
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

@@ -1,0 +1,96 @@
+---
+import Checkmark from "./icons/Checkmark.astro";
+import Logo from "./Logo.astro";
+
+interface Props {
+  /** Report title, e.g. "Rapport du mois". */
+  title: string;
+  /** Label above the searches, e.g. "Recherches qui mènent à votre site". */
+  searchesLabel: string;
+  /** Real-looking searches for the example business. */
+  searches: string[];
+  /** Status before and after the page is worked on. */
+  reviewed: string;
+  adjusted: string;
+  /** Other work of the month, shown as chips at the bottom. */
+  done: string[];
+}
+
+const { title, searchesLabel, searches, reviewed, adjusted, done } = Astro.props;
+---
+
+<!-- Decorative mock: the monthly report lists the searches that lead to the site, each page gets adjusted,
+     then the rest of the month's work appears. It shows work done, not a promised result. -->
+<div data-report class="flex h-full w-full items-center justify-center px-6 py-16" aria-hidden="true">
+  <div class="w-full max-w-72 rounded-2xl bg-white p-4 shadow-sm sm:scale-110 xl:scale-125">
+    <div class="flex items-center gap-2">
+      <span class="grid size-8 flex-none place-items-center rounded-full bg-ink text-white">
+        <Logo class="size-3.5" />
+      </span>
+      <p class="text-sm font-semibold text-ink">{title}</p>
+    </div>
+
+    <p class="mt-4 text-xs font-medium text-ash-600">{searchesLabel}</p>
+    <ul class="mt-2 grid gap-1.5">
+      {searches.map((search) => (
+        <li class="report-row flex items-center justify-between gap-3 rounded-xl bg-paper px-3 py-2">
+          <span class="truncate text-xs text-ink">{search}</span>
+          <span class="relative h-5 flex-none overflow-hidden">
+            <span class="report-swap grid justify-items-end">
+              <span class="flex h-5 items-center rounded-full bg-white px-2 text-xs text-ash-600">{reviewed}</span>
+              <span class="flex h-5 items-center gap-1 rounded-full bg-volt-soft pr-2 pl-0.5 text-xs font-medium text-ink">
+                <Checkmark class="size-4 text-volt [--check:var(--color-white)]" />
+                {adjusted}
+              </span>
+            </span>
+          </span>
+        </li>
+      ))}
+    </ul>
+
+    <div class="mt-4 flex flex-wrap gap-1.5">
+      {done.map((item) => (
+        <span class="report-done flex items-center gap-1.5 rounded-full bg-paper py-1 pr-2.5 pl-1.5 text-xs font-medium text-ink">
+          <Checkmark class="size-4 text-volt [--check:var(--color-paper)]" />
+          {item}
+        </span>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: every page adjusted, the month's work listed. */
+  .report-swap {
+    transform: translateY(-50%);
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible, withMotion } from "../lib/motion";
+
+  // One 10s loop: the searches come in, each one's page is adjusted in turn, then the other work of the month appears.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-report]").forEach((root) => {
+      const q = gsap.utils.selector(root);
+      const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+
+      loop
+        .set(q(".report-row"), { opacity: 0, y: "0.5rem" }, 0)
+        .set(q(".report-swap"), { yPercent: 0, opacity: 1 }, 0)
+        .set(q(".report-done"), { opacity: 0, scale: 0.8 }, 0)
+        // The searches come in.
+        .to(q(".report-row"), { opacity: 1, y: 0, duration: 0.6, ease: "out-expo", stagger: 0.25 }, 0.3)
+        // Each page is adjusted, one after the other.
+        .to(q(".report-swap"), { yPercent: -50, duration: 0.6, stagger: 0.8 }, 2.2)
+        // The rest of the month's work.
+        .to(q(".report-done"), { opacity: 1, scale: 1, duration: 0.5, ease: "out-expo", stagger: 0.2 }, 5)
+        // Everything clears before the loop restarts.
+        .to(q(".report-done"), { opacity: 0, duration: 0.4, ease: "out-expo" }, 8.6)
+        .to(q(".report-row"), { opacity: 0, duration: 0.5, ease: "out-expo", stagger: 0.1 }, 8.8)
+        .set({}, {}, 10);
+
+      playWhileVisible(root, loop);
+    });
+  });
+</script>

@@ -1,0 +1,411 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import Callout from "../components/Callout.astro";
+import CarePreview from "../components/CarePreview.astro";
+import EmailPreview from "../components/EmailPreview.astro";
+import Faq from "../components/Faq.astro";
+import FeatureCards from "../components/FeatureCards.astro";
+import KeyFacts from "../components/KeyFacts.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Plans from "../components/Plans.astro";
+import PriceActions from "../components/PriceActions.astro";
+import RelatedServices from "../components/RelatedServices.astro";
+import ScopeLists from "../components/ScopeLists.astro";
+import ServiceSchema from "../components/ServiceSchema.astro";
+import SplitFeature from "../components/SplitFeature.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Email from "../components/icons/Email.astro";
+import Info from "../components/icons/Info.astro";
+import Lightning from "../components/icons/Lightning.astro";
+import Lock from "../components/icons/Lock.astro";
+import Wrench from "../components/icons/Wrench.astro";
+import { formatPrice, workingDays, type Locale } from "../data/i18n";
+import { descriptions, titles } from "../data/meta";
+import { careMock, emailMock } from "../data/mocks";
+import { planById, planFeatures, policies, website } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const price = (amount: number) => formatPrice(amount, locale);
+const essentiel = planById("essentiel");
+const changeDays = workingDays(policies.changeReplyWorkingDays, locale);
+const upgradeFee = price(planById("visibilite").setupFee);
+const choose = `${path("contact", locale)}?plan=essentiel`;
+
+// The Essentiel features, in the plan table order, each with an icon.
+const featureIcons = [Desktop, Email, Lock, Wrench];
+const covered = planFeatures
+  .filter((feature) => feature.plans.essentiel)
+  .map((feature, index) => ({
+    Icon: featureIcons[index % featureIcons.length],
+    title: feature.label[locale],
+    text: feature.details?.[locale] ?? "",
+  }));
+
+const t = {
+  title: {
+    fr: "Votre site entretenu chaque mois : en ligne, à jour, avec votre e-mail pro.",
+    en: "Your website looked after every month: online, up to date, with your pro email.",
+  },
+  subtitle: {
+    fr: "Hébergement, sécurité, nom de domaine, adresse e-mail professionnelle et petites modifications : tout ce qu'un webmaster ferait pour votre site, à prix fixe et avec un seul contact.",
+    en: "Hosting, security, domain name, professional email address and small changes: everything a web person would handle for your site, at a fixed price and with one point of contact.",
+  },
+  monthly: { fr: "par mois", en: "a month" },
+  choose: { fr: `Choisir ${essentiel.name.fr}`, en: `Choose ${essentiel.name.en}` },
+  seeIncluded: { fr: "Voir ce qui est compris", en: "See what's included" },
+
+  facts: {
+    fr: [
+      { value: changeDays, label: "pour vos petites modifications" },
+      { value: `${policies.mailboxesIncluded} boîte`, label: "e-mail professionnelle incluse" },
+      { value: `${policies.handoverDays} jours`, label: "pour tout vous remettre si vous partez" },
+      { value: `${policies.noticeMonths} mois`, label: "de préavis, sans durée minimale" },
+    ],
+    en: [
+      { value: changeDays, label: "for your small changes" },
+      { value: `${policies.mailboxesIncluded} mailbox`, label: "professional email included" },
+      { value: `${policies.handoverDays} days`, label: "to hand everything over if you leave" },
+      { value: `${policies.noticeMonths} month`, label: "notice, no minimum term" },
+    ],
+  },
+
+  risksLabel: { fr: "Pourquoi entretenir un site", en: "Why a site needs care" },
+  risksTitle: { fr: "Un site ne s'entretient pas tout seul.", en: "A website doesn't look after itself." },
+  risksSubtitle: {
+    fr: "Ce qui arrive à un site que personne ne suit, souvent sans que son propriétaire le sache.",
+    en: "What most often happens to a site nobody looks after, often without its owner knowing.",
+  },
+  risks: {
+    fr: [
+      {
+        Icon: Desktop,
+        title: "Le site tombe en panne",
+        text: "Sans surveillance, une panne peut durer des jours avant que quelqu'un la remarque. Pendant ce temps, vos visiteurs trouvent une page vide.",
+      },
+      {
+        Icon: Email,
+        title: "Le nom de domaine expire",
+        text: "S'il n'est pas renouvelé à temps, le site et les adresses e-mail qui l'utilisent s'arrêtent en même temps.",
+      },
+      {
+        Icon: Lightning,
+        title: "Les mises à jour sont oubliées",
+        text: "Un site et un serveur qui ne sont plus mis à jour deviennent plus faciles à pirater avec le temps.",
+      },
+      {
+        Icon: Info,
+        title: "Les informations ne sont plus à jour",
+        text: "Horaires, prix, services : quand ils changent et que le site ne suit pas, vos clients reçoivent de mauvaises informations.",
+      },
+    ],
+    en: [
+      {
+        Icon: Desktop,
+        title: "The site goes down",
+        text: "Without monitoring, an outage can last days before anyone notices. Meanwhile, your visitors find an empty page.",
+      },
+      {
+        Icon: Email,
+        title: "The domain expires",
+        text: "If it isn't renewed on time, the site and the email addresses that use it stop at the same time.",
+      },
+      {
+        Icon: Lightning,
+        title: "Updates get forgotten",
+        text: "A site and server that are no longer updated become easier to hack over time.",
+      },
+      {
+        Icon: Info,
+        title: "The information gets outdated",
+        text: "Opening hours, prices, services: when they change and the site doesn't follow, your customers get the wrong information.",
+      },
+    ],
+  },
+
+  coveredLabel: { fr: `Ce que couvre ${essentiel.name.fr}`, en: `What ${essentiel.name.en} covers` },
+  coveredTitle: {
+    fr: "Tout ce qui fait tourner votre site, au même endroit.",
+    en: "Everything that keeps your site running, in one place.",
+  },
+  coveredSubtitle: {
+    fr: "Hébergement, mises à jour, nom de domaine et e-mail professionnel : tout est suivi pour vous, avec un seul contact.",
+    en: "Hosting, updates, domain name and professional email: all looked after for you, with one point of contact.",
+  },
+  changesLabel: { fr: "Vos modifications", en: "Your changes" },
+  changesTitle: { fr: "Une modification ? Un message suffit.", en: "A change? One message is enough." },
+  changes: {
+    fr: [
+      "Vous changez vos horaires, ajoutez une photo ou mettez un prix à jour : envoyez simplement un e-mail, un message WhatsApp ou appelez.",
+      `La modification est faite sous ${changeDays}, sans compteur mensuel. Vous n'avez ni outil à apprendre, ni mot de passe à retenir.`,
+    ],
+    en: [
+      "You change your opening hours, add a photo or update a price: just send an email or a WhatsApp message, or call.",
+      `The change is made within ${changeDays}, with no monthly count. No tool to learn, no password to remember.`,
+    ],
+  },
+
+  scopeLabel: { fr: "Petites modifications", en: "Small changes" },
+  scopeTitle: { fr: "Ce qui est compris, et ce qui est sur devis.", en: "What's included, and what's quoted." },
+  scopeIncluded: { fr: "Compris, sans décompte", en: "Included, as often as you need" },
+  scopeIncludedItems: {
+    fr: ["Changer un texte", "Remplacer ou ajouter une photo", "Mettre à jour vos horaires", "Mettre à jour vos prix"],
+    en: ["Editing text", "Replacing or adding a photo", "Updating your opening hours", "Updating your prices"],
+  },
+  scopeExtra: { fr: "En supplément", en: "Charged separately" },
+  scopeExtraItems: {
+    fr: [
+      { label: "Une nouvelle page", value: price(website.extraPage) },
+      { label: "Une nouvelle section ou fonctionnalité", value: "Sur devis" },
+      { label: "Autres demandes, estimées avant de commencer", value: `${price(policies.hourlyRate)} / heure` },
+    ],
+    en: [
+      { label: "A new page", value: price(website.extraPage) },
+      { label: "A new section or feature", value: "Quoted separately" },
+      { label: "Other requests, estimated up front", value: `${price(policies.hourlyRate)} / hour` },
+    ],
+  },
+
+  emailLabel: { fr: "E-mail professionnel", en: "Professional email" },
+  emailTitle: {
+    fr: "Une adresse e\u2011mail au nom de votre entreprise.",
+    en: "An email address in your business name.",
+  },
+  email: {
+    fr: [
+      "Une adresse comme contact@votre-entreprise.be inspire davantage confiance qu'une adresse Gmail ou Hotmail, et elle reste la vôtre même si vous changez de fournisseur.",
+      `Une boîte est comprise dans la formule. Chaque boîte en plus coûte ${price(policies.extraMailbox)} par mois.`,
+    ],
+    en: [
+      "An address like contact@your-business.com inspires more trust than a Gmail or Hotmail address, and it stays yours even if you change provider.",
+      `One mailbox is included in the plan. Each extra mailbox costs ${price(policies.extraMailbox)} a month.`,
+    ],
+  },
+  emailPoints: {
+    fr: ["Configurée pour vous", "Vous en êtes l'administrateur", "Accès complet remis si vous partez"],
+    en: ["Set up for you", "You are its administrator", "Full access handed over if you leave"],
+  },
+
+  takeoverTitle: { fr: "Votre site a été créé par quelqu'un d'autre ?", en: "Was your site built by someone else?" },
+  takeover: {
+    fr: [
+      "C'est fréquent : la personne qui l'a créé n'est plus disponible, et plus personne ne s'en occupe.",
+      "Votre site est d'abord analysé gratuitement. Vous savez ensuite clairement s'il peut être repris tel quel ou s'il vaut mieux le refaire, et ce que cela coûte, avant tout engagement.",
+    ],
+    en: [
+      "It happens a lot: whoever built it has moved on, and nobody looks after it anymore.",
+      "Your site is reviewed first, free of charge. You then know clearly whether it can be taken over as it is or is better rebuilt, and what it costs, before you commit to anything.",
+    ],
+  },
+  describeSite: { fr: "Décrire mon site", en: "Describe my site" },
+  ownTitle: { fr: "Vous restez propriétaire", en: "You stay the owner" },
+  own: {
+    fr: [
+      "Votre nom de domaine est à votre nom, et vous êtes administrateur de votre e-mail.",
+      `Si vous arrêtez, tout vous est remis sous ${policies.handoverDays} jours après votre demande écrite, factures réglées : le code du site, les réglages du domaine et l'accès complet à votre e-mail.`,
+    ],
+    en: [
+      "Your domain is in your name, and you are the administrator of your email.",
+      `If you stop, everything is handed over within ${policies.handoverDays} days of your written request, once invoices are paid: the site's code, the domain settings and full access to your email.`,
+    ],
+  },
+
+  plansLabel: { fr: "Formules", en: "Plans" },
+  plansTitle: {
+    fr: `${essentiel.name.fr}, ou plus pour être trouvé sur Google.`,
+    en: `${essentiel.name.en}, or more to get found on Google.`,
+  },
+  plansSubtitle: {
+    fr: `Chaque formule comprend tout ${essentiel.name.fr}. Les suivantes s'occupent aussi de votre présence sur Google.`,
+    en: `Every plan includes all of ${essentiel.name.en}. The next ones also look after your presence on Google.`,
+  },
+
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Sur l'entretien de votre site.", en: "About looking after your site." },
+  faqContact: {
+    fr: { text: "Une autre question ?", label: "Posez-la" },
+    en: { text: "Another question?", label: "Ask it" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "L'hébergement et le nom de domaine sont-ils compris ?",
+        answer: `Oui. L'hébergement et le renouvellement de votre nom de domaine sont compris dans les ${price(essentiel.monthly)} par mois, avec une boîte e-mail. Le nom de domaine est choisi avec vous : si celui que vous voulez coûte plus cher que d'habitude, le prix est convenu avant.`,
+      },
+      {
+        question: "Puis-je modifier mon site moi-même ?",
+        answer: `Non, il n'y a pas d'espace d'administration à apprendre ni à sécuriser. Envoyez un message avec ce qui change, et c'est en ligne sous ${changeDays}.`,
+      },
+      {
+        question: "Pouvez-vous reprendre un site WordPress ou Wix ?",
+        answer:
+          "Un site Wix ou Squarespace ne peut pas être déplacé ailleurs : il faut le refaire, et c'est alors un projet de création. Un site WordPress ou fait sur mesure peut parfois être repris, selon son état. Dans tous les cas, l'analyse est gratuite et vous connaissez le prix avant de décider.",
+      },
+      {
+        question: "Que deviennent mes e-mails actuels ?",
+        answer:
+          "Vos anciens messages sont transférés dans votre nouvelle boîte lors de la mise en place. Vous gardez votre historique, sous votre nouvelle adresse.",
+      },
+      {
+        question: "Dois-je prendre une formule après la création de mon site ?",
+        answer: `Non. Une fois payé, votre site vous appartient et vous pouvez le faire héberger ailleurs. ${essentiel.name.fr} sert à ne plus avoir à vous en occuper.`,
+      },
+      {
+        question: "Puis-je changer de formule ?",
+        answer: `Oui, à tout moment. Une formule supérieure s'applique tout de suite (${upgradeFee} de mise en place en partant d'${essentiel.name.fr}), une formule inférieure à partir du mois suivant.`,
+      },
+    ],
+    en: [
+      {
+        question: "Are hosting and the domain name included?",
+        answer: `Yes. Hosting and your domain renewal are included in the ${price(essentiel.monthly)} a month, along with one mailbox. Your domain name is chosen with you: if the one you want costs more than usual, the price is agreed first.`,
+      },
+      {
+        question: "Can I edit my site myself?",
+        answer: `No, there is no admin panel to learn or keep secure. Send a message with what changes, and it's live within ${changeDays}.`,
+      },
+      {
+        question: "Can you take over a WordPress or Wix site?",
+        answer:
+          "A Wix or Squarespace site can't be moved elsewhere: it has to be rebuilt, which makes it a website project. A WordPress or custom-built site can sometimes be taken over, depending on its condition. Either way, the review is free and you know the price before you decide.",
+      },
+      {
+        question: "What happens to my current emails?",
+        answer:
+          "Your old messages are moved into your new mailbox during setup. You keep your history, under your new address.",
+      },
+      {
+        question: "Do I need a plan after my website is built?",
+        answer: `No. Once paid for, your site is yours and you can host it elsewhere. ${essentiel.name.en} is there so you don't have to deal with it.`,
+      },
+      {
+        question: "Can I change plans?",
+        answer: `Yes, at any time. Moving up applies straight away (${upgradeFee} setup fee when coming from ${essentiel.name.en}), moving down from the next month.`,
+      },
+    ],
+  },
+};
+---
+
+<Layout
+  locale={locale}
+  title={titles.websiteCare[locale]}
+  description={descriptions.websiteCare[locale]}
+  alternates={routes.websiteCare}
+>
+  <ServiceSchema
+    slot="head"
+    locale={locale}
+    name={pageNames.websiteCare[locale]}
+    description={descriptions.websiteCare[locale]}
+    price={essentiel.monthly}
+    monthly
+  />
+
+  <PageHeader
+    slot="full-width"
+    label={pageNames.websiteCare[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  >
+    <PriceActions
+      from={essentiel.name[locale]}
+      price={price(essentiel.monthly)}
+      unit={t.monthly[locale]}
+      primary={{ href: choose, label: t.choose[locale] }}
+      secondary={{ href: "#covered", label: t.seeIncluded[locale] }}
+    />
+  </PageHeader>
+
+  <KeyFacts facts={t.facts[locale]} class="pt-8 sm:pt-12" />
+
+  <FeatureCards
+    id="risks"
+    label={t.risksLabel[locale]}
+    title={t.risksTitle[locale]}
+    subtitle={t.risksSubtitle[locale]}
+    items={t.risks[locale]}
+    columns={4}
+  />
+
+  <FeatureCards
+    id="covered"
+    label={t.coveredLabel[locale]}
+    title={t.coveredTitle[locale]}
+    subtitle={t.coveredSubtitle[locale]}
+    items={covered}
+    columns={2}
+  />
+
+  <SplitFeature
+    id="changes"
+    label={t.changesLabel[locale]}
+    title={t.changesTitle[locale]}
+    paragraphs={t.changes[locale]}
+  >
+    <CarePreview slot="media" {...careMock[locale]} />
+  </SplitFeature>
+
+  <ScopeLists
+    id="small-changes"
+    label={t.scopeLabel[locale]}
+    title={t.scopeTitle[locale]}
+    included={{ title: t.scopeIncluded[locale], items: t.scopeIncludedItems[locale] }}
+    extra={{ title: t.scopeExtra[locale], items: t.scopeExtraItems[locale] }}
+  />
+
+  <SplitFeature
+    id="email"
+    label={t.emailLabel[locale]}
+    title={t.emailTitle[locale]}
+    paragraphs={t.email[locale]}
+    points={t.emailPoints[locale]}
+    reverse
+  >
+    <EmailPreview slot="media" {...emailMock[locale]} />
+  </SplitFeature>
+
+  <div class="grid gap-3 py-12 sm:py-16 lg:grid-cols-2">
+    <Callout
+      id="takeover"
+      Icon={Wrench}
+      title={t.takeoverTitle[locale]}
+      paragraphs={t.takeover[locale]}
+      action={{ href: `${path("contact", locale)}?need=care`, label: t.describeSite[locale] }}
+    />
+    <Callout id="ownership" Icon={Lock} title={t.ownTitle[locale]} paragraphs={t.own[locale]} />
+  </div>
+
+  <Plans
+    id="plans"
+    locale={locale}
+    label={t.plansLabel[locale]}
+    title={t.plansTitle[locale]}
+    subtitle={t.plansSubtitle[locale]}
+    class="py-12 sm:py-16"
+  />
+
+  <Faq
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+    class="py-12 sm:py-16"
+  />
+
+  <RelatedServices locale={locale} current="care" />
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: choose, label: t.choose[locale] }}
+    call={ui.ctaCall[locale]}
+  />
+</Layout>

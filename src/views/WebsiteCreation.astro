@@ -1,0 +1,438 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import Callout from "../components/Callout.astro";
+import Faq from "../components/Faq.astro";
+import FeatureCards from "../components/FeatureCards.astro";
+import KeyFacts from "../components/KeyFacts.astro";
+import LaunchPreview from "../components/LaunchPreview.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PriceActions from "../components/PriceActions.astro";
+import Process from "../components/Process.astro";
+import RelatedServices from "../components/RelatedServices.astro";
+import ScopeLists from "../components/ScopeLists.astro";
+import ServiceSchema from "../components/ServiceSchema.astro";
+import SplitFeature from "../components/SplitFeature.astro";
+import WritingPreview from "../components/WritingPreview.astro";
+import Chat from "../components/icons/Chat.astro";
+import Cursor from "../components/icons/Cursor.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Lock from "../components/icons/Lock.astro";
+import Phone from "../components/icons/Phone.astro";
+import Quote from "../components/icons/Quote.astro";
+import Wrench from "../components/icons/Wrench.astro";
+import Button from "../components/ui/Button.astro";
+import { formatPrice, type Locale, type Localized } from "../data/i18n";
+import { descriptions, titles } from "../data/meta";
+import { processMocks } from "../data/mocks";
+import { contract, planById, policies, website, websiteIncluded, type StageId } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const price = (amount: number) => formatPrice(amount, locale);
+const percent = (share: number) => (locale === "fr" ? `${share} %` : `${share}%`);
+const stages = website.stages;
+const weeks = {
+  fr: `${website.weeks.min} à ${website.weeks.max} semaines`,
+  en: `${website.weeks.min} to ${website.weeks.max} weeks`,
+};
+const quote = `${path("contact", locale)}?need=website`;
+
+const t = {
+  title: {
+    fr: "Un site vitrine clair, rédigé pour vous, en ligne en quelques semaines.",
+    en: "A clear business website, written for you, live in a few weeks.",
+  },
+  subtitle: {
+    fr: `Création ou refonte de site internet pour indépendants et petites entreprises : un prix affiché, ${stages.length} étapes que vous validez une à une, et des textes écrits à partir de vos réponses.`,
+    en: `A new website or a redesign for independents and small businesses: a published price, ${stages.length} stages you approve one by one, and text written from your answers.`,
+  },
+  oneOff: { fr: "paiement unique", en: "one-off" },
+  seeStages: { fr: "Voir les étapes", en: "See the stages" },
+
+  facts: {
+    fr: [
+      { value: price(website.fromPrice), label: "prix de départ d'un site vitrine, textes compris" },
+      { value: `${stages.length} étapes`, label: "que vous validez une à une" },
+      { value: weeks.fr, label: "jusqu'à la mise en ligne, en général" },
+      { value: `${website.correctionRounds} série`, label: "de corrections sur un lien d'aperçu" },
+    ],
+    en: [
+      { value: price(website.fromPrice), label: "starting price for a business website, text included" },
+      { value: `${stages.length} stages`, label: "that you approve one by one" },
+      { value: weeks.en, label: "until launch, usually" },
+      { value: `${website.correctionRounds} round`, label: "of corrections on a preview link" },
+    ],
+  },
+
+  includedLabel: { fr: "Ce que vous recevez", en: "What you get" },
+  includedTitle: {
+    fr: "Tout ce qu'un site vitrine doit faire, sans superflu.",
+    en: "Everything a business website should do, nothing extra.",
+  },
+  includedSubtitle: {
+    fr: "Un site vitrine présente votre activité, rassure vos visiteurs et leur permet de vous contacter. Voici ce que comprend le prix.",
+    en: "A business website presents what you do, reassures visitors and lets them contact you. Here is what the price includes.",
+  },
+  included: {
+    fr: [
+      {
+        Icon: Desktop,
+        title: "Accueil, services et une page par service",
+        text: "Chaque service a sa propre page, avec son titre et son texte. Vos visiteurs trouvent vite ce qu'ils cherchent, et Google comprend mieux ce que vous proposez.",
+      },
+      {
+        Icon: Chat,
+        title: "Formulaire de contact",
+        text: "Vos visiteurs vous écrivent en un clic, et le message arrive directement dans votre boîte e-mail.",
+      },
+      {
+        Icon: Quote,
+        title: "Textes rédigés pour vous",
+        text: "Vous répondez à un questionnaire simple, les textes sont écrits à partir de vos réponses. Vous les validez avant le design.",
+      },
+      {
+        Icon: Phone,
+        title: "Adapté aux téléphones",
+        text: "Beaucoup de vos visiteurs arrivent depuis un téléphone. Le site est pensé pour s'y lire et s'y utiliser facilement.",
+      },
+      {
+        Icon: Lock,
+        title: "Pages légales",
+        text: "Mentions légales et politique de confidentialité, mises en place à partir des informations que vous fournissez.",
+      },
+      {
+        Icon: Cursor,
+        title: "Un aperçu avant la mise en ligne",
+        text: `Vous testez votre site sur un lien d'aperçu et demandez vos ajustements : ${website.correctionRounds} série de corrections est comprise.`,
+      },
+    ],
+    en: [
+      {
+        Icon: Desktop,
+        title: "Home, services and a page per service",
+        text: "Each service gets its own page, with its own title and text. Visitors quickly find what they need, and Google gets a clearer idea of what you offer.",
+      },
+      {
+        Icon: Chat,
+        title: "Contact form",
+        text: "Visitors write to you in one click, and the message lands straight in your inbox.",
+      },
+      {
+        Icon: Quote,
+        title: "Text written for you",
+        text: "You answer a simple questionnaire, and the text is written from your answers. You approve it before the design.",
+      },
+      {
+        Icon: Phone,
+        title: "Works on phones",
+        text: "Many of your visitors arrive on a phone. The site is designed to read and work easily there.",
+      },
+      {
+        Icon: Lock,
+        title: "Legal pages",
+        text: "Legal notice and privacy policy, set up from the information you provide.",
+      },
+      {
+        Icon: Cursor,
+        title: "A preview before launch",
+        text: `You test your site on a preview link and ask for adjustments: ${website.correctionRounds} round of corrections is included.`,
+      },
+    ],
+  },
+
+  processLabel: { fr: "Les étapes", en: "The stages" },
+  processTitle: {
+    fr: `${stages.length} étapes, et vous validez chacune.`,
+    en: `${stages.length} stages, and you approve each one.`,
+  },
+  stage: { fr: "Étape", en: "Stage" },
+  process: {
+    fr: {
+      planning:
+        "Un court appel et un questionnaire simple pour comprendre votre activité, puis la liste des pages de votre site.",
+      content: "Vos textes sont rédigés à partir de vos réponses, puis validés par écrit avant de passer au design.",
+      design:
+        "Une maquette de la page d'accueil avec vos vrais textes, pour voir le résultat avant la construction du site.",
+      launch: `Le site est construit, vous le testez sur un lien d'aperçu, ${website.correctionRounds} série de corrections, puis la mise en ligne après le dernier paiement.`,
+    },
+    en: {
+      planning:
+        "A short call and a simple questionnaire to understand your business, then the list of pages for your site.",
+      content: "Your text is written from your answers, then approved in writing before moving on to the design.",
+      design: "A mockup of your homepage with your real text, so you see the result before the site is built.",
+      launch: `The site is built, you test it on a preview link, ${website.correctionRounds} round of corrections, then it goes live after the final payment.`,
+    },
+  } as Localized<Record<StageId, string>>,
+
+  writingLabel: { fr: "Les textes", en: "The text" },
+  writingTitle: { fr: "Vous n'avez rien à rédiger.", en: "You don't have to write anything." },
+  writing: {
+    fr: [
+      "Écrire les textes de son propre site est souvent ce qui bloque un projet pendant des mois. Ici, vous répondez à un questionnaire simple sur votre activité, vos services et vos clients, puis un court appel complète ce qui manque.",
+      "Les textes sont rédigés à partir de vos réponses, dans des mots que vos clients comprennent. Rien n'est inventé sur votre activité : chaque fait vient de vous.",
+    ],
+    en: [
+      "Writing the text for your own site is often what holds a project up for months. Here, you answer a simple questionnaire about your business, your services and your customers, then a short call fills in the gaps.",
+      "The text is written from your answers, in words your customers understand. Nothing is invented about your business: every fact comes from you.",
+    ],
+  },
+  writingPoints: {
+    fr: [
+      "Validés par écrit avant le design",
+      "Un e-mail ou un message WhatsApp suffit pour valider",
+      "Modifier un texte validé après cette étape est un travail en plus",
+    ],
+    en: [
+      "Approved in writing before the design",
+      "An email or a WhatsApp message is enough to approve",
+      "Changing approved text after this stage is extra work",
+    ],
+  },
+
+  scopeLabel: { fr: "Le prix", en: "The price" },
+  scopeTitle: { fr: "Ce qui est compris, et ce qui est en plus.", en: "What's included, and what costs extra." },
+  scopeSubtitle: {
+    fr: `À partir de ${price(website.fromPrice)}, payés en ${stages.length} fois ${percent(stages[0].share)}. Le prix affiché est le prix que vous payez, sans TVA à ajouter.`,
+    en: `From ${price(website.fromPrice)}, paid in ${stages.length} parts of ${percent(stages[0].share)}. The price shown is the price you pay, with no VAT added.`,
+  },
+  includedPanel: { fr: "Compris dans le prix", en: "Included in the price" },
+  extraPanel: { fr: "En plus, si vous en avez besoin", en: "Extra, if you need it" },
+  extras: {
+    fr: [
+      { label: "Une page supplémentaire", value: price(website.extraPage) },
+      { label: "Une nouvelle fonctionnalité", value: "Sur devis" },
+      { label: "Autres demandes, estimées avant de commencer", value: `${price(policies.hourlyRate)} / heure` },
+      { label: "Boutique en ligne", value: "Non proposée" },
+    ],
+    en: [
+      { label: "An extra page", value: price(website.extraPage) },
+      { label: "A new feature", value: "Quoted separately" },
+      { label: "Other requests, estimated up front", value: `${price(policies.hourlyRate)} / hour` },
+      { label: "Online shop", value: "Not offered" },
+    ],
+  },
+
+  afterLabel: { fr: "Après la mise en ligne", en: "After launch" },
+  afterTitle: { fr: "Votre site en ligne, et ensuite ?", en: "Your site is live. What next?" },
+  after: {
+    fr: [
+      `Aucune formule n'est obligatoire : votre site vous appartient une fois payé, et vous pouvez le faire héberger où vous voulez. Les erreurs dues à UpInTown sont corrigées gratuitement pendant ${contract.launchFixDays} jours après la mise en ligne.`,
+      `Un site a pourtant besoin de suivi pour rester en ligne, sécurisé et à jour. Les formules mensuelles s'en occupent, à partir de ${price(planById("essentiel").monthly)} par mois, avec votre e-mail professionnel et vos petites modifications comprises.`,
+    ],
+    en: [
+      `No plan is required: your site is yours once paid, and you can host it wherever you like. Errors caused by UpInTown are fixed free for ${contract.launchFixDays} days after launch.`,
+      `Still, a website needs looking after to stay online, secure and up to date. The monthly plans handle that, from ${price(planById("essentiel").monthly)} a month, with your professional email and small changes included.`,
+    ],
+  },
+  seeCare: { fr: "Voir l'entretien du site", en: "See website care" },
+
+  redesignTitle: { fr: "Vous avez déjà un site ?", en: "Already have a website?" },
+  redesign: {
+    fr: [
+      "Une refonte suit les mêmes étapes et le même prix de départ. Votre site actuel est d'abord analysé gratuitement, pour voir ce qui peut être gardé.",
+      "Vous avez déjà un nom de domaine ? Il peut être utilisé pour le nouveau site.",
+    ],
+    en: [
+      "A redesign follows the same stages and the same starting price. Your current site is reviewed first, free of charge, to see what can be kept.",
+      "Already have a domain name? It can be used for the new site.",
+    ],
+  },
+  ownTitle: { fr: "Tout est à vous", en: "It's all yours" },
+  own: {
+    fr: [
+      "Une fois le site entièrement payé, tout ce qui a été créé pour vous vous appartient : le design, les textes, les images et le code des pages.",
+      `Si vous partez un jour, tout vous est remis sous ${policies.handoverDays} jours après votre demande écrite, factures réglées.`,
+    ],
+    en: [
+      "Once your site is fully paid, everything made for you is yours: the design, the text, the images and the page code.",
+      `If you ever leave, everything is handed over within ${policies.handoverDays} days of your written request, once invoices are paid.`,
+    ],
+  },
+
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Avant de lancer votre site.", en: "Before you start your site." },
+  faqContact: {
+    fr: { text: "Une autre question ?", label: "Posez-la" },
+    en: { text: "Another question?", label: "Ask it" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Combien coûte la création d'un site internet ?",
+        answer: `À partir de ${price(website.fromPrice)} pour un site vitrine : accueil, services, une page par service, contact et pages légales, textes compris. Une page en plus coûte ${price(website.extraPage)}. Le prix est fixé dans le devis avant de commencer.`,
+      },
+      {
+        question: "Combien de temps faut-il pour créer mon site ?",
+        answer: `En général ${weeks.fr}. Les délais sont des estimations : si un contenu, une validation ou un accès se fait attendre, le calendrier se décale d'autant.`,
+      },
+      {
+        question: "Comment se passe le paiement ?",
+        answer: `En ${stages.length} factures de ${percent(stages[0].share)}, une par étape. Chaque étape commence une fois sa facture réglée, et le site est mis en ligne après le dernier paiement.`,
+      },
+      {
+        question: "Puis-je changer les textes après les avoir validés ?",
+        answer: `Oui, mais après l'étape des textes, un changement de texte validé est un travail en plus, facturé ${price(policies.hourlyRate)} de l'heure avec une estimation avant. La série de corrections avant la mise en ligne sert aux ajustements (textes, images, espacements).`,
+      },
+      {
+        question: "Que dois-je préparer ?",
+        answer:
+          "Votre logo et ce que vous avez déjà, comme des photos. Le questionnaire est envoyé avant l'appel de cadrage. Les photos manquantes sont à fournir avant l'étape du design.",
+      },
+      {
+        question: "Proposez-vous des boutiques en ligne ?",
+        answer:
+          "Non. UpInTown crée des sites vitrines : présenter votre activité et vous faire contacter. Une nouvelle fonctionnalité peut faire l'objet d'un devis.",
+      },
+    ],
+    en: [
+      {
+        question: "How much does a website cost?",
+        answer: `From ${price(website.fromPrice)} for a business website: home, services, a page per service, contact and legal pages, text included. An extra page costs ${price(website.extraPage)}. The price is set in the quote before starting.`,
+      },
+      {
+        question: "How long does it take to build my site?",
+        answer: `Usually ${weeks.en}. Timelines are estimates: if content, an approval or access is delayed, the schedule moves by the same amount.`,
+      },
+      {
+        question: "How does payment work?",
+        answer: `In ${stages.length} invoices of ${percent(stages[0].share)}, one per stage. Each stage starts once its invoice is paid, and the site goes live after the final payment.`,
+      },
+      {
+        question: "Can I change the text after approving it?",
+        answer: `Yes, but after the content stage, changing approved text is extra work, billed ${price(policies.hourlyRate)} an hour with an estimate first. The correction round before launch is for adjustments (text, images, spacing).`,
+      },
+      {
+        question: "What do I need to prepare?",
+        answer:
+          "Your logo and anything you already have, such as photos. The questionnaire is sent before the planning call. Missing photos are needed before the design stage.",
+      },
+      {
+        question: "Do you build online shops?",
+        answer:
+          "No. UpInTown builds business websites: presenting what you do and getting you contacted. A new feature can be quoted separately.",
+      },
+    ],
+  },
+};
+---
+
+<Layout
+  locale={locale}
+  title={titles.websiteCreation[locale]}
+  description={descriptions.websiteCreation[locale]}
+  alternates={routes.websiteCreation}
+>
+  <ServiceSchema
+    slot="head"
+    locale={locale}
+    name={pageNames.websiteCreation[locale]}
+    description={descriptions.websiteCreation[locale]}
+    price={website.fromPrice}
+    monthly={false}
+  />
+
+  <PageHeader
+    slot="full-width"
+    label={pageNames.websiteCreation[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  >
+    <PriceActions
+      from={ui.from[locale]}
+      price={price(website.fromPrice)}
+      unit={t.oneOff[locale]}
+      primary={{ href: quote, label: ui.requestQuote[locale] }}
+      secondary={{ href: "#process", label: t.seeStages[locale] }}
+    />
+  </PageHeader>
+
+  <KeyFacts facts={t.facts[locale]} class="pt-8 sm:pt-12" />
+
+  <FeatureCards
+    id="included"
+    label={t.includedLabel[locale]}
+    title={t.includedTitle[locale]}
+    subtitle={t.includedSubtitle[locale]}
+    items={t.included[locale]}
+  />
+
+  <Process
+    class="py-12 sm:py-16"
+    label={t.processLabel[locale]}
+    title={t.processTitle[locale]}
+    steps={stages.map((stage, index) => ({
+      id: stage.id,
+      tag: `${t.stage[locale]} ${index + 1}`,
+      title: stage.name[locale],
+      text: t.process[locale][stage.id],
+    }))}
+    mocks={processMocks[locale]}
+  />
+
+  <SplitFeature
+    id="writing"
+    label={t.writingLabel[locale]}
+    title={t.writingTitle[locale]}
+    paragraphs={t.writing[locale]}
+    points={t.writingPoints[locale]}
+  >
+    <WritingPreview slot="media" you={processMocks[locale].you} {...processMocks[locale].text} />
+  </SplitFeature>
+
+  <ScopeLists
+    id="price"
+    label={t.scopeLabel[locale]}
+    title={t.scopeTitle[locale]}
+    subtitle={t.scopeSubtitle[locale]}
+    included={{ title: t.includedPanel[locale], items: websiteIncluded.map((item) => item[locale]) }}
+    extra={{ title: t.extraPanel[locale], items: t.extras[locale] }}
+  />
+
+  <SplitFeature
+    id="after"
+    label={t.afterLabel[locale]}
+    title={t.afterTitle[locale]}
+    paragraphs={t.after[locale]}
+    reverse
+  >
+    <Button href={path("websiteCare", locale)} tone="surface">
+      {t.seeCare[locale]}
+    </Button>
+    <LaunchPreview slot="media" {...processMocks[locale].launch} />
+  </SplitFeature>
+
+  <div class="grid gap-3 py-12 sm:py-16 lg:grid-cols-2">
+    <Callout
+      id="redesign"
+      Icon={Wrench}
+      title={t.redesignTitle[locale]}
+      paragraphs={t.redesign[locale]}
+      action={{ href: quote, label: ui.requestQuote[locale] }}
+    />
+    <Callout id="ownership" Icon={Lock} title={t.ownTitle[locale]} paragraphs={t.own[locale]} />
+  </div>
+
+  <Faq
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+    class="py-12 sm:py-16"
+  />
+
+  <RelatedServices locale={locale} current="website" />
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: quote, label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
+</Layout>

@@ -1,0 +1,42 @@
+---
+import Services from "./Services.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { services, type ServiceId } from "../data/offer";
+import { path } from "../data/routes";
+import { ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+  /** The page's own service, left out of the list. */
+  current: ServiceId;
+}
+
+const { locale, current } = Astro.props;
+
+const icons = { website: "desktop", care: "wrench", google: "location" } as const;
+
+const t = {
+  label: { fr: "Les autres services", en: "Other services" },
+  title: { fr: "Tout se complète, avec un seul contact.", en: "It all fits together, with one contact." },
+  cta: { fr: "En savoir plus", en: "Learn more" },
+};
+
+const tiles = services
+  .filter((service) => service.id !== current)
+  .map((service) => ({
+    icon: icons[service.id],
+    title: service.name[locale],
+    text: descriptions[service.route][locale],
+    href: path(service.route, locale),
+    tags: [`${ui.from[locale]} ${formatPrice(service.fromPrice, locale)}${service.monthly ? ui.perMonth[locale] : ""}`],
+  }));
+---
+
+<Services
+  label={t.label[locale]}
+  title={t.title[locale]}
+  cta={t.cta[locale]}
+  tiles={tiles}
+  class="pt-12 pb-24 sm:pt-16 sm:pb-32"
+/>

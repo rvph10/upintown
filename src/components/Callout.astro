@@ -1,0 +1,43 @@
+---
+import type Desktop from "./icons/Desktop.astro";
+import Button from "./ui/Button.astro";
+
+interface Props {
+  id?: string;
+  Icon: typeof Desktop;
+  title: string;
+  paragraphs: string[];
+  action?: { href: string; label: string };
+  class?: string;
+}
+
+const { id, Icon, title, paragraphs, action, class: className } = Astro.props;
+const titleId = id ? `${id}-title` : undefined;
+---
+
+{/* A short aside with one point to make: an icon, a title, a few lines and an optional link. */}
+<section
+  id={id}
+  aria-labelledby={titleId}
+  data-reveal
+  class:list={["flex scroll-mt-28 flex-col rounded-card bg-paper p-7 inset-ring inset-ring-ash-200 sm:p-10", className]}
+>
+  <span class="grid size-14 place-items-center rounded-full bg-white">
+    <Icon class="size-7 text-ink" />
+  </span>
+  <h2 id={titleId} class="mt-10 text-3xl font-medium tracking-title text-balance text-ink">
+    {title}
+  </h2>
+  <div class="mt-4 grid gap-4 text-lg leading-relaxed text-pretty text-ash-600">
+    {paragraphs.map((paragraph) => (
+      <p>{paragraph}</p>
+    ))}
+  </div>
+  {action && (
+    <div class="pt-8 lg:mt-auto">
+      <Button href={action.href} tone="surface">
+        {action.label}
+      </Button>
+    </div>
+  )}
+</section>

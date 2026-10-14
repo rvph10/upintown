@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+import Logo from "./Logo.astro";
+import LoopVideo from "./ui/LoopVideo.astro";
+import client from "../assets/people/portrait-cap.jpg";
+import guestOne from "../assets/people/selfie-office.jpg";
+import guestTwo from "../assets/people/selfie-living-room.jpg";
+
+interface Props {
+  /** Name tag on the main video, e.g. "Vous". */
+  you: string;
+  /** Messages from the visitor, then the replies from UpInTown. */
+  asked: string[];
+  replied: string[];
+}
+
+const { you, asked, replied } = Astro.props;
+
+const bubble = "w-fit whitespace-nowrap rounded-full bg-white px-4 py-2 text-ui leading-tight text-ink";
+const tile = "overflow-hidden rounded-2xl bg-ash-300 ring-4 ring-white";
+---
+
+<!-- Decorative mock of a video call and a chat; the step text says the same thing. -->
+<div class="grid w-full items-center gap-8 p-5 sm:grid-cols-[1.1fr_1fr] sm:p-8" aria-hidden="true">
+  <div class="mx-auto grid w-full max-w-xs grid-cols-2 gap-2 sm:max-w-none">
+    <div class:list={["relative col-span-2 aspect-[16/10]", tile]}>
+      <LoopVideo name="video-call" class="size-full object-cover" />
+      <span class="absolute bottom-2 left-2 flex items-center gap-1.5 rounded-full bg-white/90 px-2.5 py-1 text-xs font-medium text-ink">
+        <span class="size-2 rounded-full bg-volt"></span>
+        {you}
+      </span>
+    </div>
+    <div class:list={["aspect-[3/2]", tile]}>
+      <Image src={guestOne} alt="" width={400} class="size-full object-cover" />
+    </div>
+    <div class:list={["aspect-[3/2]", tile]}>
+      <Image src={guestTwo} alt="" width={400} class="size-full object-cover" />
+    </div>
+  </div>
+  {/* The chat needs room: phones only show the call. */}
+  <div class="grid gap-8 max-sm:hidden">
+    <div class="flex items-end gap-3">
+      <Image src={client} alt="" width={96} class="size-12 flex-none rounded-full object-cover object-top" />
+      <div class="grid gap-2">
+        {asked.map((message) => (
+          <p class={bubble}>{message}</p>
+        ))}
+      </div>
+    </div>
+    <div class="flex items-end justify-end gap-3">
+      <div class="grid justify-items-end gap-2">
+        {replied.map((message) => (
+          <p class={bubble}>{message}</p>
+        ))}
+      </div>
+      <span class="grid size-12 flex-none place-items-center rounded-full bg-ink text-white">
+        <Logo class="size-5" />
+      </span>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import { formatPrice, type Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
-import { services } from "../data/offer";
+import CallToAction from "../components/CallToAction.astro";
+import Faq from "../components/Faq.astro";
+import CarePreview from "../components/CarePreview.astro";
+import LocalSeoPreview from "../components/LocalSeoPreview.astro";
+import PageHeader from "../components/PageHeader.astro";
+import LoopVideo from "../components/ui/LoopVideo.astro";
+import MediaFrame from "../components/MediaFrame.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Location from "../components/icons/Location.astro";
+import Wrench from "../components/icons/Wrench.astro";
+import Badge from "../components/ui/Badge.astro";
+import Button from "../components/ui/Button.astro";
+import { formatPrice, workingDays, type Locale, type Localized } from "../data/i18n";
+import { answers } from "../data/answers";
+import { descriptions, titles } from "../data/meta";
+import { careMock, seoMock } from "../data/mocks";
+import { planById, featuresOnlyIn, policies, services, website, websiteIncluded, type ServiceId } from "../data/offer";
 import { path, routes } from "../data/routes";
 import { pageNames, ui } from "../data/ui";
 
@@ -11,25 +26,324 @@ interface Props {
 }
 
 const { locale } = Astro.props;
+
+const price = (amount: number) => formatPrice(amount, locale);
+const visibilite = planById("visibilite");
+const croissance = planById("croissance");
+const planPrice = (plan: typeof visibilite) => `${plan.name[locale]}, ${price(plan.monthly)}${ui.perMonth[locale]}`;
+
+const t = {
+  title: {
+    fr: "Votre site, son entretien, votre place sur Google.",
+    en: "Your website, its upkeep, your place on Google.",
+  },
+  subtitle: {
+    fr: "Le site est créé une fois, puis entretenu et rendu visible chaque mois si vous le souhaitez. Un seul contact pour tout, et vous ne prenez que ce dont vous avez besoin.",
+    en: "Your site is built once, then looked after and made visible every month if you want. One contact for everything, and you only take what you need.",
+  },
+  jumpTo: { fr: "Aller au service", en: "Go to service" },
+  forYouIf: { fr: "Pour vous si", en: "For you if" },
+  included: { fr: "Ce qui est compris", en: "What's included" },
+  oneOff: { fr: "paiement unique", en: "one-off" },
+  monthly: { fr: "par mois", en: "a month" },
+  seeDetails: { fr: "Voir le détail", en: "See details" },
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Pour choisir le bon service.", en: "Choosing the right service." },
+  faqContact: {
+    fr: { text: "Votre cas est différent ?", label: "Décrivez-le" },
+    en: { text: "Your case is different?", label: "Describe it" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Dois-je prendre plusieurs services ?",
+        answer: `Non. Le site peut être créé seul, sans formule ensuite. Les formules s'additionnent : ${visibilite.name.fr} comprend tout ${planById("essentiel").name.fr}, et ${croissance.name.fr} comprend tout ${visibilite.name.fr}.`,
+      },
+      {
+        question: "J'ai déjà un site. Quel service me concerne ?",
+        answer: `L'entretien ou le référencement local, selon votre besoin. ${answers.takeover.fr}`,
+      },
+      {
+        question: `Quelle différence entre ${visibilite.name.fr} et ${croissance.name.fr} ?`,
+        answer: `${visibilite.name.fr} s'occupe de votre fiche Google, de vos avis et des annuaires, pour être bien présenté sur Google Maps. ${croissance.name.fr} y ajoute un suivi mensuel des recherches qui mènent à vous : les pages de votre site sont ajustées pour mieux apparaître dans les résultats.`,
+      },
+      {
+        question: "Serai-je premier sur Google ?",
+        answer: `Personne ne peut le promettre honnêtement : Google décide seul de l'ordre des résultats. Ce qui est fait, c'est tout ce qui joue en votre faveur : une fiche complète, des avis avec réponse et des pages qui répondent aux vraies recherches. Les résultats se construisent sur plusieurs mois, d'où ${croissance.minimumMonths} mois minimum pour ${croissance.name.fr}.`,
+      },
+      {
+        question: "Qu'est-ce qui est compris dans l'entretien, et qu'est-ce qui est en plus ?",
+        answer: `Les petites modifications (textes, photos, horaires, prix) sont comprises, sans décompte, et faites sous ${workingDays(policies.changeReplyWorkingDays, "fr")}. Une nouvelle page coûte ${formatPrice(website.extraPage, "fr")}, et une nouvelle fonctionnalité fait l'objet d'un devis.`,
+      },
+      {
+        question: "Suis-je engagé sur la durée ?",
+        answer: answers.commitment.fr,
+      },
+    ],
+    en: [
+      {
+        question: "Do I need to take several services?",
+        answer: `No. Your site can be built on its own, with no plan afterwards. The plans build on each other: ${visibilite.name.en} includes all of ${planById("essentiel").name.en}, and ${croissance.name.en} includes all of ${visibilite.name.en}.`,
+      },
+      {
+        question: "I already have a website. Which service is for me?",
+        answer: `Website care or local SEO, depending on what you need. ${answers.takeover.en}`,
+      },
+      {
+        question: `What's the difference between ${visibilite.name.en} and ${croissance.name.en}?`,
+        answer: `${visibilite.name.en} looks after your Google profile, your reviews and directory listings, so you are well presented on Google Maps. ${croissance.name.en} adds a monthly review of the searches that find you: your site's pages are adjusted to show up better in the results.`,
+      },
+      {
+        question: "Will I be first on Google?",
+        answer: `Nobody can honestly promise that: Google alone decides the order of results. What is done is everything that works in your favour: a complete profile, reviews with replies and pages that answer real searches. Results build over several months, hence a ${croissance.minimumMonths}-month minimum for ${croissance.name.en}.`,
+      },
+      {
+        question: "What does website care include, and what costs extra?",
+        answer: `Small changes (text, photos, opening hours, prices) are included, as often as you need, and done within ${workingDays(policies.changeReplyWorkingDays, "en")}. A new page costs ${formatPrice(website.extraPage, "en")}, and a new feature is quoted separately.`,
+      },
+      {
+        question: "Am I locked in?",
+        answer: answers.commitment.en,
+      },
+    ],
+  } as Localized<{ question: string; answer: string }[]>,
+  ctaTitle: { fr: "Pas sûr de ce qu'il vous faut ?", en: "Not sure what you need?" },
+  ctaText: {
+    fr: "Décrivez simplement votre activité et votre situation. La bonne formule se choisit ensemble, pendant un court appel.",
+    en: "Just describe your business and your situation. The right plan is chosen together, during a short call.",
+  },
+  ctaButton: { fr: "Décrire ma situation", en: "Describe my situation" },
+};
+
+// Page copy per service. Prices, names and included features come from offer.ts.
+const details: Record<
+  ServiceId,
+  {
+    Icon: typeof Desktop;
+    situation: Localized;
+    text: Localized;
+    terms: Localized<string[]>;
+    /** Lists in the bottom panel. A plan badge and intro are shown when a service spans several plans. */
+    groups: { title: Localized; plan?: string; intro?: Localized; items: string[] }[];
+  }
+> = {
+  website: {
+    Icon: Desktop,
+    situation: {
+      fr: "Vous n'avez pas encore de site, ou le vôtre ne vous ressemble plus.",
+      en: "You don't have a website yet, or yours no longer reflects your business.",
+    },
+    text: {
+      fr: "Souvent le premier contact avec vous. Un site clair et professionnel, qui rassure et permet de vous joindre en un clic. Les textes sont rédigés pour vous, et vous validez chaque étape.",
+      en: "Often the first contact people have with you. A clear, professional site that reassures them and lets them reach you in one click. The text is written for you, and you approve every stage.",
+    },
+    terms: {
+      fr: [
+        `Payé en ${website.stages.length} étapes`,
+        `En ligne en ${website.weeks.min} à ${website.weeks.max} semaines`,
+      ],
+      en: [`Paid in ${website.stages.length} stages`, `Live in ${website.weeks.min} to ${website.weeks.max} weeks`],
+    },
+    groups: [{ title: t.included, items: websiteIncluded.map((item) => item[locale]) }],
+  },
+  care: {
+    Icon: Wrench,
+    situation: {
+      fr: "Votre site existe, mais personne ne s'en occupe vraiment.",
+      en: "Your site exists, but nobody really looks after it.",
+    },
+    text: {
+      fr: "Sans entretien, un site finit par tomber en panne ou afficher des informations dépassées. Le vôtre reste en ligne, sécurisé et à jour, et vos demandes de modification sont prises en charge.",
+      en: "Without care, a website ends up broken or showing outdated information. Yours stays online, secure and up to date, and your change requests are handled.",
+    },
+    terms: {
+      fr: [`${policies.noticeMonths} mois de préavis`, `${policies.mailboxesIncluded} boîte e-mail incluse`],
+      en: [`${policies.noticeMonths} month's notice`, `${policies.mailboxesIncluded} mailbox included`],
+    },
+    groups: [{ title: t.included, items: featuresOnlyIn("essentiel", locale) }],
+  },
+  google: {
+    Icon: Location,
+    situation: {
+      fr: "Vous voulez que les clients près de chez vous vous trouvent sur Google.",
+      en: "You want customers near you to find you on Google.",
+    },
+    text: {
+      fr: "Le référencement local (SEO), c'est apparaître quand quelqu'un cherche votre métier près de chez vous. Cela se joue à deux endroits : votre fiche sur Google Maps, et les pages de votre site dans les résultats de recherche.",
+      en: "Local SEO means showing up when someone searches for your trade near them. It happens in two places: your profile on Google Maps, and your site's pages in the search results.",
+    },
+    terms: {
+      fr: [`+ ${price(visibilite.setupFee)} de mise en place`, `${policies.noticeMonths} mois de préavis`],
+      en: [`+ ${price(visibilite.setupFee)} setup`, `${policies.noticeMonths} month's notice`],
+    },
+    groups: [
+      {
+        title: { fr: "Sur Google Maps", en: "On Google Maps" },
+        plan: planPrice(visibilite),
+        intro: {
+          fr: "Votre fiche est souvent vue avant votre site. Complète, à jour et avec des avis qui reçoivent une réponse, elle donne envie de vous appeler.",
+          en: "Your profile is often seen before your website. Complete, current and with reviews that get a reply, it makes people want to call you.",
+        },
+        items: featuresOnlyIn("visibilite", locale, "essentiel"),
+      },
+      {
+        title: { fr: "Dans les résultats de recherche", en: "In the search results" },
+        plan: planPrice(croissance),
+        intro: {
+          fr: `Tout ce que comprend ${visibilite.name.fr}, plus un suivi des recherches qui mènent à vous : chaque mois, les pages existantes de votre site sont ajustées aux mots que vos clients tapent vraiment. Les résultats se construisent sur plusieurs mois, d'où ${croissance.minimumMonths} mois minimum.`,
+          en: `Everything in ${visibilite.name.en}, plus a review of the searches that find you: every month, your site's existing pages are adjusted to the words your customers actually type. Results build over several months, hence a ${croissance.minimumMonths}-month minimum.`,
+        },
+        items: featuresOnlyIn("croissance", locale, "visibilite"),
+      },
+    ],
+  },
+};
+
+const panel = "rounded-3xl bg-surface p-7 sm:p-10";
 ---
 
 <Layout
   locale={locale}
-  title={pageNames.services[locale]}
+  title={titles.services[locale]}
   description={descriptions.services[locale]}
   alternates={routes.services}
 >
-  <h1>{pageNames.services[locale]}</h1>
-  {services.map((service) => (
-    <section>
-      <h2>
-        <a href={path(service.route, locale)}>{service.name[locale]}</a>
-      </h2>
-      <p>{descriptions[service.route][locale]}</p>
-      <p>
-        {ui.from[locale]} {formatPrice(service.fromPrice, locale)}
-        {service.monthly && ui.perMonth[locale]}
-      </p>
-    </section>
-  ))}
+  <PageHeader
+    slot="full-width"
+    label={pageNames.services[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  >
+    <nav aria-label={t.jumpTo[locale]} class="mt-10">
+      <ul class="flex flex-wrap justify-center gap-2">
+        {services.map((service) => (
+          <li>
+            <Button href={`#${service.id}`} tone="surface" size="sm" icon={false}>
+              {service.name[locale]}
+            </Button>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </PageHeader>
+
+  {/* One block per service: who it is for and its price, a visual, then what is included. Visual side alternates. */}
+  <div class="flex flex-col gap-6 pt-8 pb-24 sm:gap-8 sm:pt-12 sm:pb-32">
+    {services.map((service, index) => {
+      const { Icon, ...detail } = details[service.id];
+      const titleId = `${service.id}-title`;
+      return (
+        <section id={service.id} aria-labelledby={titleId} class="scroll-mt-28">
+          <div
+            data-reveal
+            class="grid gap-2 rounded-card bg-paper p-2 inset-ring inset-ring-ash-200 sm:gap-3 sm:p-3 lg:grid-cols-2"
+          >
+            <div class:list={[panel, "flex flex-col"]}>
+              <span class="grid size-14 place-items-center rounded-full bg-paper">
+                <Icon class="size-7 text-ink" />
+              </span>
+              <h2 id={titleId} class="mt-10 text-3xl font-medium tracking-title text-ink">
+                {service.name[locale]}
+              </h2>
+              <p class="mt-6 text-sm text-ash-600">{t.forYouIf[locale]}</p>
+              <p class="mt-1 text-xl font-medium text-pretty text-ink">{detail.situation[locale]}</p>
+              <p class="mt-4 text-lg leading-relaxed text-pretty text-ash-600">{detail.text[locale]}</p>
+
+              <div class="pt-10 lg:mt-auto">
+                <p class="text-ash-600">{ui.from[locale]}</p>
+                <p class="mt-1 flex flex-wrap items-baseline gap-x-2 text-ink">
+                  <span class="text-5xl font-semibold tracking-display">{price(service.fromPrice)}</span>
+                  <span class="text-lg whitespace-nowrap text-ash-600">
+                    {service.monthly ? t.monthly[locale] : t.oneOff[locale]}
+                  </span>
+                </p>
+                <ul class="mt-4 flex flex-col gap-1 text-sm text-ash-600 sm:flex-row sm:gap-2">
+                  {detail.terms[locale].map((term, termIndex) => (
+                    <li class="flex items-center gap-2">
+                      {termIndex > 0 && (
+                        <span class="size-1 rounded-full bg-ash-400 max-sm:hidden" aria-hidden="true" />
+                      )}
+                      {term}
+                    </li>
+                  ))}
+                </ul>
+                <div class="mt-8 flex flex-wrap gap-3">
+                  <Button href={path(service.route, locale)}>{t.seeDetails[locale]}</Button>
+                  <Button href={`${path("contact", locale)}?need=${service.id}`} tone="surface">
+                    {ui.requestQuote[locale]}
+                  </Button>
+                </div>
+              </div>
+            </div>
+
+            <MediaFrame class:list={[index % 2 === 1 && "lg:order-first"]}>
+              {service.id === "care" && <CarePreview {...careMock[locale]} />}
+              {service.id === "google" && <LocalSeoPreview {...seoMock[locale]} />}
+              {/* A sample site scrolling in a browser window, kept at its own 16:9 so nothing is cropped. */}
+              {service.id === "website" && (
+                <div class="w-full p-6 sm:p-10">
+                  <div class="rounded-2xl bg-white p-2 shadow-sm">
+                    <div class="flex gap-1.5 px-2 pt-1 pb-2.5" aria-hidden="true">
+                      <span class="size-2.5 rounded-full bg-ash-300" />
+                      <span class="size-2.5 rounded-full bg-ash-300" />
+                      <span class="size-2.5 rounded-full bg-ash-300" />
+                    </div>
+                    <LoopVideo
+                      name="website-creation"
+                      pauseButton={{ pause: ui.pauseVideo[locale], play: ui.playVideo[locale] }}
+                      class="aspect-video rounded-xl"
+                    />
+                  </div>
+                </div>
+              )}
+            </MediaFrame>
+
+            <div
+              class:list={[
+                panel,
+                "grid gap-12 lg:col-span-2",
+                detail.groups.length > 1 && "lg:grid-cols-2 lg:gap-0 lg:divide-x lg:divide-ash-200",
+              ]}
+            >
+              {detail.groups.map((group, groupIndex) => {
+                const split = detail.groups.length > 1;
+                return (
+                  <div class:list={[split && (groupIndex === 0 ? "lg:pr-10" : "lg:pl-10")]}>
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                      <h3 class="text-lg font-medium text-ink">{group.title[locale]}</h3>
+                      {group.plan && <Badge>{group.plan}</Badge>}
+                    </div>
+                    {group.intro && <p class="mt-4 leading-relaxed text-pretty text-ash-600">{group.intro[locale]}</p>}
+                    <ul class:list={["mt-8 grid gap-5 text-lg text-ink", !split && "md:grid-cols-2 lg:grid-cols-3"]}>
+                      {group.items.map((item) => (
+                        <li class="flex items-start gap-3">
+                          <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
+
+  <Faq
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: `${path("contact", locale)}?need=other` }}
+    class="pb-24 sm:pb-32"
+  />
+
+  <CallToAction
+    title={t.ctaTitle[locale]}
+    text={t.ctaText[locale]}
+    primary={{ href: `${path("contact", locale)}?need=other`, label: t.ctaButton[locale] }}
+    call={ui.ctaCall[locale]}
+  />
 </Layout>

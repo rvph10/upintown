@@ -1,0 +1,146 @@
+---
+import Cursor from "./icons/Cursor.astro";
+
+interface Props {
+  /** Cursor labels: the visitor, then UpInTown. */
+  you: string;
+  brand: string;
+}
+
+const { you, brand } = Astro.props;
+---
+
+<!-- Decorative mock of a homepage being edited, mirrored live on a phone; the step text says the same thing. -->
+<div data-design class="flex h-full w-full items-center justify-center p-5 sm:p-6" aria-hidden="true">
+  <div class="editor relative aspect-[4/3] h-full max-w-full rounded-2xl bg-white ring-4 ring-white sm:h-[86%] sm:-translate-x-[9%]">
+    <div class="flex h-[10%] items-center gap-1.5 rounded-t-2xl bg-paper px-[4%]">
+      <span class="size-2 rounded-full bg-ash-300"></span>
+      <span class="size-2 rounded-full bg-ash-300"></span>
+      <span class="size-2 rounded-full bg-ash-300"></span>
+    </div>
+
+    <span class="absolute top-[16%] left-[6%] size-[5%] rounded-full bg-ink"></span>
+    <span class="absolute top-[17.5%] left-[62%] h-[2%] w-[9%] rounded-full bg-ash-200"></span>
+    <span class="absolute top-[17.5%] left-[74%] h-[2%] w-[9%] rounded-full bg-ash-200"></span>
+    <span class="absolute top-[17.5%] left-[86%] h-[2%] w-[8%] rounded-full bg-ash-200"></span>
+
+    <span class="absolute top-[30%] left-[6%] h-[6%] w-[44%] rounded-full bg-ink"></span>
+    <span class="editor-heading absolute top-[39%] left-[6%] h-[6%] w-[32%] rounded-full bg-ink"></span>
+    <span class="absolute top-[51%] left-[6%] h-[2.5%] w-[42%] rounded-full bg-ash-200"></span>
+    <span class="absolute top-[56%] left-[6%] h-[2.5%] w-[36%] rounded-full bg-ash-200"></span>
+    <span class="editor-button absolute top-[66%] left-[6%] h-[9%] w-[22%] rounded-full bg-ink"></span>
+    <span class="editor-image absolute top-[28%] left-[56%] h-[52%] w-[38%] rounded-xl bg-sky"></span>
+
+    <span class="editor-selection absolute rounded-lg border-2 border-iris-strong">
+      <span class="absolute -top-1 -left-1 size-2 rounded-sm border-2 border-iris-strong bg-white"></span>
+      <span class="absolute -top-1 -right-1 size-2 rounded-sm border-2 border-iris-strong bg-white"></span>
+      <span class="absolute -bottom-1 -left-1 size-2 rounded-sm border-2 border-iris-strong bg-white"></span>
+      <span class="absolute -right-1 -bottom-1 size-2 rounded-sm border-2 border-iris-strong bg-white"></span>
+    </span>
+
+    {/* Swatches sit 28px apart (12px dot, 4px margins, 8px gap); the ring and UpInTown's cursor move in those steps. */}
+    <div class="absolute top-[84%] left-[6%] flex items-center gap-2 rounded-full bg-white px-3 py-1 shadow-sm ring-1 ring-ash-200">
+      <span class="editor-swatch-ring absolute top-1/2 left-3 size-5 rounded-full ring-2 ring-ink"></span>
+      <span class="relative m-1 size-3 rounded-full bg-sky"></span>
+      <span class="relative m-1 size-3 rounded-full bg-blush"></span>
+      <span class="relative m-1 size-3 rounded-full bg-volt"></span>
+      <span class="relative m-1 size-3 rounded-full bg-iris"></span>
+      <span class="editor-cursor-brand absolute top-1/2 left-0 flex items-start">
+        <Cursor class="size-5 text-sky-strong" />
+        <span class="mt-4 -ml-1 rounded-full bg-sky px-2 py-0.5 text-xs font-medium whitespace-nowrap text-ink">
+          {brand}
+        </span>
+      </span>
+    </div>
+
+    {/* Same classes as the desktop elements, so colours and edits change on both at once. */}
+    <div class="editor-phone absolute -top-[4%] -right-[18%] flex aspect-[9/17] w-[20%] flex-col gap-1.5 rounded-[0.9rem] bg-white p-2 shadow-md ring-1 ring-ash-200 max-sm:hidden">
+      <span class="mx-auto h-1 w-1/3 rounded-full bg-ash-200"></span>
+      <span class="mt-1 size-2 rounded-full bg-ink"></span>
+      <span class="h-1.5 w-full rounded-full bg-ink"></span>
+      <span class="editor-heading h-1.5 w-2/3 rounded-full bg-ink"></span>
+      <span class="editor-image mt-0.5 flex-1 rounded-md bg-sky"></span>
+      <span class="editor-button h-2.5 w-1/2 rounded-full bg-ink"></span>
+    </div>
+
+    <span class="editor-cursor-you absolute flex items-start">
+      <Cursor class="size-5 text-iris-strong" />
+      <span class="mt-4 -ml-1 rounded-full bg-iris-strong px-2 py-0.5 text-xs font-medium whitespace-nowrap text-white">
+        {you}
+      </span>
+    </span>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: the picture is selected. */
+  .editor-selection {
+    left: 54%;
+    top: 26%;
+    width: 42%;
+    height: 56%;
+  }
+
+  .editor-cursor-you {
+    left: 92%;
+    top: 78%;
+  }
+
+  .editor-cursor-brand {
+    transform: translate(19px, 0);
+  }
+
+  .editor-swatch-ring {
+    transform: translate(0, -50%);
+  }
+</style>
+
+<script>
+  import { cssColor, gsap, playWhileVisible, withMotion } from "../lib/motion";
+
+  // One 9s loop: the visitor selects and edits the heading, then the picture (UpInTown changes its colour),
+  // then the button. Desktop and phone share the classes, so both change at once.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-design]").forEach((root) => {
+      const q = gsap.utils.selector(root);
+      const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+      const onHeading = { left: "4%", top: "27%", width: "48%", height: "21%" };
+
+      loop
+        .set(q(".editor-selection"), onHeading, 0)
+        .set(q(".editor-cursor-you"), { left: "47%", top: "44%" }, 0)
+        .set(q(".editor-cursor-brand"), { x: 130, y: 6 }, 0)
+        .set(q(".editor-heading"), { scaleX: 1, transformOrigin: "left center" }, 0)
+        .set(q(".editor-image"), { backgroundColor: cssColor("sky") }, 0)
+        .set(q(".editor-swatch-ring"), { x: 0, y: 0, yPercent: -50 }, 0)
+        .set(q(".editor-button"), { backgroundColor: cssColor("ink") }, 0)
+        // The heading gets a longer second line.
+        .to(q(".editor-heading"), { scaleX: 1.25, duration: 0.72 }, 0.9)
+        // The visitor selects the picture; UpInTown picks two colours in turn.
+        .to(q(".editor-selection"), { left: "54%", top: "26%", width: "42%", height: "56%", duration: 0.72 }, 2.52)
+        .to(q(".editor-cursor-you"), { left: "90%", top: "76%", duration: 0.72 }, 2.52)
+        .to(q(".editor-cursor-brand"), { x: 47, y: 0, duration: 0.72 }, 3.06)
+        .to(q(".editor-swatch-ring"), { x: 28, duration: 0.27 }, 3.78)
+        .to(q(".editor-image"), { backgroundColor: cssColor("blush"), duration: 0.09 }, 3.96)
+        .to(q(".editor-cursor-brand"), { x: 75, duration: 0.36 }, 4.32)
+        .to(q(".editor-swatch-ring"), { x: 56, duration: 0.27 }, 4.68)
+        .to(q(".editor-image"), { backgroundColor: cssColor("volt"), duration: 0.09 }, 4.86)
+        .to(q(".editor-cursor-brand"), { x: 130, y: 6, duration: 0.72 }, 5.22)
+        // Then the button changes colour.
+        .to(q(".editor-selection"), { left: "4%", top: "64%", width: "26%", height: "13%", duration: 0.72 }, 5.58)
+        .to(q(".editor-cursor-you"), { left: "26%", top: "73%", duration: 0.72 }, 5.58)
+        .to(q(".editor-button"), { backgroundColor: cssColor("iris-strong"), duration: 0.09 }, 7.47)
+        // Back to the heading for the next loop.
+        .to(q(".editor-selection"), { ...onHeading, duration: 0.54 }, 8.46)
+        .to(q(".editor-cursor-you"), { left: "47%", top: "44%", duration: 0.54 }, 8.46)
+        .to(q(".editor-heading"), { scaleX: 1, duration: 0.54 }, 8.46)
+        .set({}, {}, 9);
+
+      // Gentle float, twice per loop, so the phone reads as a separate device.
+      const float = gsap.to(q(".editor-phone"), { y: -4, duration: 2.25, ease: "curtain", yoyo: true, repeat: -1 });
+
+      playWhileVisible(root, loop);
+      playWhileVisible(root, float);
+    });
+  });
+</script>

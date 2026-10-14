@@ -1,0 +1,123 @@
+---
+import Lock from "./icons/Lock.astro";
+import Logo from "./Logo.astro";
+
+interface Props {
+  /** Address before and after launch, e.g. "apercu.upintown.dev" then "votre-entreprise.be". */
+  preview: string;
+  live: string;
+  /** Label of the button that gets pressed. */
+  publish: string;
+  /** Notification shown once the site is live. */
+  toast: string;
+}
+
+const { preview, live, publish, toast } = Astro.props;
+---
+
+<!-- Decorative mock: the page is built block by block, the publish button is pressed, the preview address becomes the live one, then a notification confirms it. -->
+<div data-launch class="relative flex h-full w-full items-center justify-center p-6" aria-hidden="true">
+  <div class="mb-12 w-full max-w-xs rounded-2xl bg-white p-4 shadow-sm">
+    <div class="flex items-center gap-2 rounded-full bg-paper px-3 py-2 text-sm">
+      <Lock class="size-4 flex-none text-ink" />
+      <span class="relative h-5 flex-1 overflow-hidden">
+        <span class="launch-swap absolute inset-x-0 top-0 grid">
+          <span class="h-5 truncate leading-5 text-ash-600">{preview}</span>
+          <span class="h-5 truncate leading-5 font-medium text-ink">{live}</span>
+        </span>
+      </span>
+      <span class="launch-live relative size-2 flex-none rounded-full bg-volt">
+        <span class="launch-halo absolute inset-0 rounded-full bg-volt"></span>
+      </span>
+    </div>
+
+    <div class="mt-4 grid grid-cols-3 gap-2">
+      <span class="launch-block col-span-3 grid h-16 content-center gap-1.5 rounded-xl bg-iris/30 px-3">
+        <span class="h-2 w-1/2 rounded-full bg-white/80"></span>
+        <span class="h-2 w-1/3 rounded-full bg-white/80"></span>
+      </span>
+      <span class="launch-block h-10 rounded-lg bg-paper"></span>
+      <span class="launch-block h-10 rounded-lg bg-paper"></span>
+      <span class="launch-block h-10 rounded-lg bg-paper"></span>
+    </div>
+
+    <div class="mt-4 grid grid-cols-[1fr_auto] items-center gap-3">
+      <span class="h-2 overflow-hidden rounded-full bg-ash-200">
+        <span class="launch-progress block h-full w-full origin-left rounded-full bg-volt"></span>
+      </span>
+      <span class="relative">
+        <span class="launch-burst absolute inset-0 rounded-full ring-2 ring-ink"></span>
+        <span class="launch-button block rounded-full bg-ink px-4 py-2 text-sm font-semibold whitespace-nowrap text-white">
+          {publish}
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <div class="launch-toast absolute right-6 bottom-5 flex items-center gap-3 rounded-2xl bg-white py-2.5 pr-4 pl-2.5 shadow-md sm:right-10">
+    <span class="grid size-9 flex-none place-items-center rounded-full bg-ink text-white">
+      <Logo class="size-4" />
+    </span>
+    <span class="text-sm font-medium whitespace-nowrap text-ink">{toast}</span>
+  </div>
+</div>
+
+<style>
+  /* Static frame, shown with reduced motion: the site is live. */
+  .launch-burst,
+  .launch-halo {
+    opacity: 0;
+  }
+
+  .launch-swap {
+    transform: translateY(-50%);
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible, withMotion } from "../lib/motion";
+
+  // One 8s loop: the blocks assemble, the button is pressed (a ring bursts out), the bar fills,
+  // the address switches to live with a pulsing dot, then the notification slides in.
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-launch]").forEach((root) => {
+      const q = gsap.utils.selector(root);
+      const loop = gsap.timeline({ repeat: -1, defaults: { ease: "curtain" } });
+
+      loop
+        .set(q(".launch-block"), { opacity: 0, y: "0.5rem", scale: 0.92 }, 0)
+        .set(q(".launch-burst"), { opacity: 0, scale: 1 }, 0)
+        .set(q(".launch-progress"), { scaleX: 0, opacity: 1 }, 0)
+        .set(q(".launch-swap"), { y: 0, yPercent: 0 }, 0)
+        .set(q(".launch-live"), { scale: 0, opacity: 1 }, 0)
+        .set(q(".launch-toast"), { opacity: 0, y: "1.5rem" }, 0)
+        // Blocks assemble one after another.
+        .to(q(".launch-block"), { opacity: 1, y: 0, scale: 1, duration: 0.56, ease: "out-expo", stagger: 0.15 }, 0.16)
+        // Publish is pressed and a ring bursts out.
+        .to(q(".launch-button"), { scale: 0.92, duration: 0.32 }, 1.12)
+        .to(q(".launch-button"), { scale: 1, duration: 0.32 }, 1.44)
+        .to(q(".launch-burst"), { opacity: 1, duration: 0.08, ease: "out-expo" }, 1.36)
+        .to(q(".launch-burst"), { opacity: 0, scale: 1.5, duration: 0.96, ease: "out-expo" }, 1.44)
+        .to(q(".launch-progress"), { scaleX: 1, duration: 2.4 }, 1.6)
+        // The address goes live, then the notification arrives.
+        .to(q(".launch-swap"), { yPercent: -50, duration: 0.64 }, 4)
+        .to(q(".launch-live"), { scale: 1, duration: 0.48, ease: "out-expo" }, 4.48)
+        .to(q(".launch-toast"), { opacity: 1, y: 0, duration: 0.48, ease: "out-expo" }, 4.8)
+        // Everything clears before the loop restarts.
+        .to(q(".launch-block"), { opacity: 0, duration: 0.48, ease: "out-expo", stagger: 0.15 }, 7.04)
+        .to(q(".launch-progress"), { opacity: 0, duration: 0.64 }, 7.36)
+        .to(q(".launch-live"), { opacity: 0, duration: 0.64, ease: "out-expo" }, 7.36)
+        .to(q(".launch-toast"), { opacity: 0, y: "0.5rem", duration: 0.64, ease: "out-expo" }, 7.36)
+        .set({}, {}, 8);
+
+      const pulse = gsap.fromTo(
+        q(".launch-halo"),
+        { opacity: 0.6, scale: 1 },
+        { opacity: 0, scale: 2.5, duration: 1.6, ease: "out-expo", repeat: -1 },
+      );
+
+      playWhileVisible(root, loop);
+      playWhileVisible(root, pulse);
+    });
+  });
+</script>
