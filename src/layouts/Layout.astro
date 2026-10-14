@@ -3,6 +3,7 @@ import { Font } from "astro:assets";
 import "../styles/global.css";
 import Footer from "../components/Footer.astro";
 import Header from "../components/Header.astro";
+import { umami } from "../data/analytics";
 import { business } from "../data/business";
 import { ui } from "../data/ui";
 import { defaultLocale, htmlLang, locales, ogLocale, type Locale, type Localized } from "../data/i18n";
@@ -85,6 +86,39 @@ const organization = {
         setTimeout(() => root.dataset.motion !== "ready" && delete root.dataset.motion, 3000);
       }
     </script>
+    {umami && (
+      <>
+        {/* Umami only receives campaign tags and the site's own fixed parameters, and referrers without their query. */}
+        <script is:inline>
+          window.umamiBeforeSend = (_type, payload) => {
+            try {
+              const keep = /^(utm_(source|medium|campaign|content|term)|plan|need|sent)$/;
+              const url = new URL(payload.url, location.href);
+              for (const key of [...url.searchParams.keys()]) if (!keep.test(key)) url.searchParams.delete(key);
+              url.hash = "";
+              payload.url = url.href;
+              if (payload.referrer) {
+                const referrer = new URL(payload.referrer, location.href);
+                payload.referrer =
+                  referrer.origin === location.origin ? referrer.pathname : referrer.origin + referrer.pathname;
+              }
+              return payload;
+            } catch {
+              return null;
+            }
+          };
+        </script>
+        <script
+          is:inline
+          defer
+          src={umami.src}
+          data-website-id={umami.websiteId}
+          data-domains={new URL(business.url).hostname}
+          data-do-not-track="true"
+          data-before-send="umamiBeforeSend"
+        ></script>
+      </>
+    )}
     <slot name="head" />
   </head>
   <body class="relative">
@@ -100,7 +134,9 @@ const organization = {
       import "lenis/dist/lenis.css";
       import { gsap, playWhileVisible, smoothScroll, withMotion } from "../lib/motion";
       import { initReveals } from "../lib/reveal";
+      import { trackContactClicks } from "../lib/analytics";
 
+      trackContactClicks();
       smoothScroll();
       initReveals();
 

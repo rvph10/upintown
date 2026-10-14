@@ -1,6 +1,7 @@
 ---
 import LegalLayout from "../layouts/LegalLayout.astro";
 import LegalSection from "../components/LegalSection.astro";
+import { umami } from "../data/analytics";
 import { business, contactLinks, legal, processors } from "../data/business";
 import { lowerFirst, type Locale } from "../data/i18n";
 import { contract } from "../data/offer";
@@ -88,6 +89,18 @@ const section = (index: number) => ({ id: ids[index], index, title: titles[index
           du formulaire, l'adresse IP est gardée en mémoire {hours} heure au maximum, sans être enregistrée. C'est un
           intérêt légitime&nbsp;: protéger le site.
         </li>
+        {umami && (
+          <li>
+            <strong class="font-medium text-ink">Statistiques de visite.</strong> Pour savoir quelles pages sont lues et
+            comment les visiteurs arrivent sur le site, {business.name} utilise Umami, installé sur son propre serveur
+            chez Hetzner en Allemagne. Sont mesurés&nbsp;: les pages vues, le site d'où vous venez, le pays et la ville
+            approximative, la langue, le type d'appareil et de navigateur, et quelques actions comme un clic sur un lien
+            de contact ou l'envoi du formulaire (jamais ce que vous y écrivez). Umami ne dépose aucun cookie et
+            n'enregistre pas votre adresse IP&nbsp;: elle sert seulement, avec le type de navigateur, à calculer un
+            identifiant qui change chaque jour. Le réglage «&nbsp;Do Not Track&nbsp;» de votre navigateur est respecté.
+            C'est un intérêt légitime&nbsp;: comprendre comment le site est utilisé pour l'améliorer.
+          </li>
+        )}
       </ul>
     ) : (
       <ul>
@@ -115,15 +128,40 @@ const section = (index: number) => ({ id: ids[index], index, title: titles[index
           address is kept in memory for {hours} hour at most, without being stored. This is a legitimate interest:
           protecting the site.
         </li>
+        {umami && (
+          <li>
+            <strong class="font-medium text-ink">Visit statistics.</strong> To know which pages are read and how
+            visitors find the site, {business.name} uses Umami, installed on its own server at Hetzner in Germany. It
+            measures the pages viewed, the site you came from, your country and approximate city, language, device and
+            browser type, and a few actions such as a click on a contact link or sending the form (never what you write
+            in it). Umami sets no cookies and does not store your IP address: it is only used, with the browser type, to
+            compute an identifier that changes every day. Your browser's "Do Not Track" setting is respected. This is a
+            legitimate interest: understanding how the site is used in order to improve it.
+          </li>
+        )}
       </ul>
     )}
   </LegalSection>
 
   <LegalSection {...section(2)}>
     {fr ? (
+      umami ? (
+        <p>
+          Ce site ne dépose aucun cookie, n'utilise aucun outil publicitaire et ne vous suit pas sur d'autres sites. En
+          dehors des statistiques décrites plus haut, le serveur n'enregistre pas de journal des visites. Vos données ne
+          sont jamais vendues ni utilisées pour une décision automatisée.
+        </p>
+      ) : (
+        <p>
+          Ce site ne dépose aucun cookie, n'utilise aucun outil publicitaire ni de suivi, et le serveur n'enregistre pas
+          de journal des visites. Vos données ne sont jamais vendues ni utilisées pour une décision automatisée.
+        </p>
+      )
+    ) : umami ? (
       <p>
-        Ce site ne dépose aucun cookie, n'utilise aucun outil publicitaire ni de suivi, et le serveur n'enregistre pas
-        de journal des visites. Vos données ne sont jamais vendues ni utilisées pour une décision automatisée.
+        This site sets no cookies, uses no advertising tools and does not follow you across other sites. Apart from the
+        statistics described above, the server keeps no log of visits. Your data is never sold or used for automated
+        decisions.
       </p>
     ) : (
       <p>

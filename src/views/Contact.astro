@@ -173,6 +173,14 @@ const channels = [
 const reviews = ["Sophie L.", "Marc D.", "Claire M."].flatMap(
   (name) => testimonials[locale].find((item) => item.name === name) ?? [],
 );
+// For the statistics: why the form came back, as a fixed category.
+const formError = Object.keys(errors).length
+  ? "validation"
+  : status === "failed"
+    ? "send_failed"
+    : status === "limited"
+      ? "rate_limited"
+      : undefined;
 const card = "rounded-card bg-surface p-6 inset-ring inset-ring-ash-200 sm:p-8";
 const alert = "rounded-3xl bg-surface p-6 text-base font-medium text-danger-strong inset-ring-2 inset-ring-danger";
 ---
@@ -231,7 +239,7 @@ const alert = "rounded-3xl bg-surface p-6 text-base font-medium text-danger-stro
             </Button>
           </section>
         ) : (
-          <form method="post" novalidate class:list={[card, "grid gap-8 sm:grid-cols-2"]}>
+          <form method="post" novalidate data-error={formError} class:list={[card, "grid gap-8 sm:grid-cols-2"]}>
             <TextField
               id="name"
               label={t.name[locale]}
@@ -391,6 +399,8 @@ const alert = "rounded-3xl bg-surface p-6 text-base font-medium text-danger-stro
 </Layout>
 
 <script>
+  import { isId, track } from "../lib/analytics";
+
   // One click sends: the button is disabled while the page submits, and enabled again if the visitor comes back.
   const submit = document.querySelector<HTMLButtonElement>("[data-submit]");
   submit?.form?.addEventListener("submit", () => {
@@ -405,4 +415,17 @@ const alert = "rounded-3xl bg-surface p-6 text-base font-medium text-danger-stro
 
   // After a failed submit, put the cursor in the first field to fix. Its error is read out with it.
   document.querySelector<HTMLElement>('form [aria-invalid="true"]:not([hidden])')?.focus();
+
+  // Statistics: field values are never sent. A form that came back with an error is not a new start.
+  const form = submit?.form;
+  const error = form?.dataset.error;
+  if (error) track("contact_form_error", { error_type: error });
+  else form?.addEventListener("focusin", () => track("contact_form_start"), { once: true });
+
+  // A real send lands on `?sent=<need>`. The value is then removed, so a reload or a return visit is not counted again.
+  const sent = new URLSearchParams(location.search).get("sent");
+  if (isId(sent)) {
+    track("contact_form_success", { need: sent });
+    history.replaceState(history.state, "", `${location.pathname}?sent`);
+  }
 </script>

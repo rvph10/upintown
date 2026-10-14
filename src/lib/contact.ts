@@ -190,5 +190,6 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
     usedTokens.delete(token);
     return { form, errors, status: "failed", token };
   }
-  return astro.redirect(`${url.pathname}?sent`, 303);
+  // Only a real send carries a value: the confirmation page counts it as a conversion, see docs/analytics.md.
+  return astro.redirect(`${url.pathname}?sent=${form.need}`, 303);
 }

@@ -52,7 +52,7 @@ export const legal = {
   },
 } as const;
 
-// UpInTown's own processors, listed in the privacy policy. Add Umami once it is live on the site.
+// UpInTown's own processors, listed in the privacy policy. Umami is self-hosted, so it runs under Hetzner.
 export const processors = [
   {
     name: "Hetzner",
