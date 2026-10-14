@@ -1,0 +1,120 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+
+interface Props {
+  /** Square images (1:1). Without them, coloured placeholders are shown. */
+  images?: ImageMetadata[];
+  /** Number of placeholders when no images are given. */
+  count?: number;
+  /** Seconds for one full turn. */
+  duration?: number;
+  /** From 64rem up, keep the ring's right edge in the box and let it overflow to the left instead of clipping it. */
+  bleed?: boolean;
+  class?: string;
+}
+
+const { images, count = 10, duration = 18, bleed = false, class: className } = Astro.props;
+
+const placeholders = ["bg-volt-soft", "bg-sky", "bg-blush", "bg-iris", "bg-ash-200"];
+const cards = images ?? Array.from({ length: count }, () => undefined);
+---
+
+{/* Decorative: a tilted ring of cards turning slowly. CSS 3D turned by GSAP, paused off screen and static with reduced motion. */}
+<div
+  data-carousel
+  data-duration={duration}
+  data-bleed={bleed ? "" : undefined}
+  aria-hidden="true"
+  class:list={["carousel relative grid h-(--stage) place-items-center overflow-x-clip", className]}
+  style={`--count: ${cards.length}`}
+>
+  <div class="tilt relative">
+    <div data-wheel class="wheel absolute inset-0">
+      {cards.map((image, index) => (
+        <div class="card absolute overflow-hidden rounded-2xl lg:rounded-[1.25rem]" style={`--index: ${index}`}>
+          {image ? (
+            <Image src={image} alt="" widths={[240, 480]} sizes="13.8rem" class="size-full object-cover" />
+          ) : (
+            <div class:list={["grid size-full place-items-center", placeholders[index % placeholders.length]]}>
+              <span class="text-sm font-medium text-ink">{index + 1}</span>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
+
+<style>
+  .carousel {
+    /* Space between neighbouring cards. */
+    --air: 0.75rem;
+    /* Widest card that keeps the whole ring (two radii plus a card) inside the screen. */
+    --fit: calc((100vw - 1.5rem - 2 * var(--air)) / (1 / tan(180deg / var(--count)) + 1));
+    --card-w: min(8.7rem, var(--fit));
+    --stage: calc(var(--card-w) * 3);
+    /* Distance from the centre so the cards just touch, plus the air. */
+    --radius: calc(var(--card-w) / (2 * tan(180deg / var(--count))) + var(--air));
+    perspective: 110rem;
+  }
+
+  @media (min-width: 40rem) {
+    .carousel {
+      --air: 1.5rem;
+      --card-w: min(11.1rem, var(--fit));
+      --stage: 32rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .carousel {
+      --card-w: 13.8rem;
+      --stage: 40rem;
+    }
+  }
+
+  /* Approximate on-screen width of the ring, used to align its right edge when bleeding. */
+  @media (min-width: 64rem) {
+    .carousel[data-bleed] {
+      container-type: inline-size;
+      overflow-x: visible;
+    }
+
+    .carousel[data-bleed] .tilt {
+      translate: min(0px, (100cqw - 2 * var(--radius) - var(--card-w)) / 2) 0;
+    }
+  }
+
+  /* The tilt stays fixed; GSAP turns the wheel inside it. */
+  .tilt {
+    width: var(--card-w);
+    aspect-ratio: 1;
+    transform-style: preserve-3d;
+    transform: rotateZ(-14deg) rotateX(-22deg);
+  }
+
+  .wheel {
+    transform-style: preserve-3d;
+  }
+
+  .card {
+    inset: 0;
+    transform: rotateY(calc(var(--index) * 360deg / var(--count))) translateZ(var(--radius));
+  }
+</style>
+
+<script>
+  import { gsap, playWhileVisible, withMotion } from "../../lib/motion";
+
+  withMotion(() => {
+    document.querySelectorAll<HTMLElement>("[data-carousel]").forEach((carousel) => {
+      const spin = gsap.fromTo(
+        carousel.querySelector("[data-wheel]"),
+        { rotationY: 0 },
+        { rotationY: -360, duration: Number(carousel.dataset.duration), ease: "none", repeat: -1 },
+      );
+      playWhileVisible(carousel, spin);
+    });
+  });
+</script>

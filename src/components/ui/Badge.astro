@@ -1,0 +1,46 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import { controlSizes, type ControlSize } from "./sizes";
+
+type Props = HTMLAttributes<"p"> & {
+  as?: "p" | "span";
+  tone?: "surface" | "glass" | "ink" | "volt";
+  /** Same height and padding as the matching Button size. */
+  size?: ControlSize;
+};
+
+const { as: Tag = "p", tone = "surface", size = "sm", class: className, ...rest } = Astro.props;
+const hasIcon = Astro.slots.has("icon");
+
+const tones = {
+  surface: { root: "bg-surface text-ink inset-ring inset-ring-ash-200", dot: "bg-ink text-paper" },
+  glass: { root: "bg-surface/70 text-ink inset-ring inset-ring-ash-200 backdrop-blur-sm", dot: "bg-ink text-paper" },
+  ink: { root: "bg-ink text-paper", dot: "bg-white text-ink" },
+  volt: { root: "bg-volt text-ink", dot: "bg-ink text-volt" },
+};
+
+const sizes = controlSizes;
+---
+
+<Tag
+  class:list={[
+    "inline-flex h-(--h) w-fit items-center rounded-full leading-tight font-medium tracking-ui whitespace-nowrap",
+    tones[tone].root,
+    sizes[size].root,
+    hasIcon ? ["gap-3 pl-[calc((var(--h)-var(--dot))/2)]", sizes[size].end] : sizes[size].padding,
+    className,
+  ]}
+  {...rest}
+>
+  {hasIcon && (
+    <span
+      class:list={["grid size-(--dot) flex-none place-items-center rounded-full", tones[tone].dot]}
+      aria-hidden="true"
+    >
+      <span class:list={["grid", sizes[size].icon]}>
+        <slot name="icon" />
+      </span>
+    </span>
+  )}
+  <slot />
+</Tag>

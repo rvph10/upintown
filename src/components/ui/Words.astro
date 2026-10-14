@@ -1,0 +1,23 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+
+const escape = (value: string) =>
+  value.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+
+// Built as one string so no formatter whitespace slips between words. Only plain spaces split: non-breaking spaces
+// (French punctuation) stay inside their word.
+const html = text
+  .split(" ")
+  .map(
+    (word, index) => `<span class="word"><span class="word-inner" style="--i: ${index}">${escape(word)}</span></span>`,
+  )
+  .join(" ");
+---
+
+{/* A title as one masked span per word, so it can rise out of its lines. The text stays real text: it wraps,
+    selects and reads as usual. Animated by an opening (`data-opening`) or a scroll sequence (`data-reveal="sequence"`). */}
+<span data-words set:html={html} />

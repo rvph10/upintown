@@ -1,11 +1,14 @@
 ---
 import type { HTMLAttributes } from "astro/types";
+import { controlSizes, type ControlSize } from "./sizes";
+import ArrowUpRight from "../icons/ArrowUpRight.astro";
+import RollText from "./RollText.astro";
 
 type Props = Omit<HTMLAttributes<"a"> & HTMLAttributes<"button">, "type"> & {
   href?: string;
   type?: "button" | "submit" | "reset";
-  tone?: "ink" | "volt" | "surface";
-  size?: "md" | "lg";
+  tone?: "ink" | "surface";
+  size?: ControlSize;
   icon?: boolean;
   full?: boolean;
   disabled?: boolean;
@@ -25,233 +28,66 @@ const {
 
 const Tag = href ? "a" : "button";
 const label = await Astro.slots.render("default");
+
+const tones = {
+  ink: "bg-ink text-paper",
+  surface: "bg-surface text-ink inset-ring inset-ring-ash-200",
+};
+
+const sizes = controlSizes;
+
+// The fill grows from the icon circle, or from the bottom edge without an icon.
+const fill = icon
+  ? "[clip-path:inset(var(--gap)_var(--gap)_var(--gap)_calc(100%-var(--gap)-var(--dot))_round_9999px)] group-hocus:[clip-path:inset(var(--gap)_round_9999px)]"
+  : "[clip-path:circle(0_at_50%_100%)] group-hocus:[clip-path:circle(150%_at_50%_100%)]";
+
+const motion = "transition-transform duration-500 ease-curtain motion-reduce:transition-none";
 ---
 
 <Tag
-  class:list={["btn", `btn-${tone}`, `btn-${size}`, { "btn-with-icon": icon, "btn-full": full }, className]}
+  class:list={[
+    "group relative isolate inline-flex h-(--h) cursor-pointer items-center gap-4 overflow-hidden rounded-full font-semibold tracking-ui whitespace-nowrap",
+    "transition-transform duration-200 not-disabled:active:scale-98 motion-reduce:transition-none",
+    "focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-iris-strong",
+    "disabled:cursor-not-allowed disabled:opacity-45",
+    tones[tone],
+    sizes[size].root,
+    icon ? ["[--gap:calc((var(--h)-var(--dot))/2)] pr-(--gap)", sizes[size].start] : sizes[size].padding,
+    full && "w-full",
+    full && icon ? "justify-between" : "justify-center",
+    className,
+  ]}
   href={href}
   type={href ? undefined : type}
   disabled={href ? undefined : disabled}
   {...rest}
 >
-  <span class="btn-fill" aria-hidden="true"></span>
-  <span class="btn-label">
-    <span class="btn-roll">
-      <span set:html={label} />
-      <span class="btn-roll-copy" aria-hidden="true" set:html={label} />
-    </span>
-  </span>
+  <span
+    class:list={[
+      "absolute inset-0 -z-10 bg-white transition-[clip-path] duration-500 ease-curtain motion-reduce:transition-none",
+      fill,
+    ]}
+    aria-hidden="true"
+  ></span>
+  <RollText rollClass="text-ink">
+    <Fragment set:html={label} />
+  </RollText>
   {icon && (
-    <span class="btn-dot" aria-hidden="true">
-      <span class="btn-arrow">
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
-        </svg>
-        <svg
-          viewBox="0 0 16 16"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        >
-          <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
-        </svg>
+    <span class="grid size-(--dot) flex-none place-items-center text-ink" aria-hidden="true">
+      <span class:list={["relative overflow-hidden", sizes[size].icon]}>
+        <ArrowUpRight
+          class:list={[
+            "absolute inset-0 size-full group-hocus:translate-x-[110%] group-hocus:-translate-y-[110%]",
+            motion,
+          ]}
+        />
+        <ArrowUpRight
+          class:list={[
+            "absolute inset-0 size-full -translate-x-[110%] translate-y-[110%] group-hocus:translate-x-0 group-hocus:translate-y-0",
+            motion,
+          ]}
+        />
       </span>
     </span>
   )}
 </Tag>
-
-<style>
-  .btn {
-    --h: 3rem;
-    --dot: 2.25rem;
-    --duration: 0.5s;
-    --fill-rest: circle(0 at 50% 100%);
-    --fill-hover: circle(150% at 50% 100%);
-    position: relative;
-    isolation: isolate;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    height: var(--h);
-    padding-inline: 1.75rem;
-    border: 0;
-    border-radius: 9999px;
-    overflow: hidden;
-    background: var(--bg);
-    color: var(--fg);
-    box-shadow: inset 0 0 0 1px var(--ring, transparent);
-    font: inherit;
-    font-size: 1rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    white-space: nowrap;
-    text-decoration: none;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    transition: transform 0.2s ease;
-  }
-
-  .btn-lg {
-    --h: 3.5rem;
-    --dot: 2.75rem;
-    padding-inline: 2rem;
-    font-size: 1.0625rem;
-  }
-
-  .btn-with-icon {
-    --gap: calc((var(--h) - var(--dot)) / 2);
-    --fill-rest: inset(var(--gap) var(--gap) var(--gap) calc(100% - var(--gap) - var(--dot)) round 9999px);
-    --fill-hover: inset(var(--gap) round 9999px);
-    padding-right: var(--gap);
-  }
-
-  .btn-full {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .btn-ink {
-    --bg: var(--color-ink);
-    --fg: var(--color-paper);
-    --dot-bg: var(--color-volt);
-    --dot-fg: var(--color-ink);
-  }
-
-  .btn-volt {
-    --bg: var(--color-volt);
-    --fg: var(--color-ink);
-    --dot-bg: var(--color-ink);
-    --dot-fg: var(--color-paper);
-  }
-
-  .btn-surface {
-    --bg: var(--color-surface);
-    --fg: var(--color-ink);
-    --ring: var(--color-ash-200);
-    --dot-bg: var(--color-ink);
-    --dot-fg: var(--color-paper);
-  }
-
-  .btn-fill {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: var(--dot-bg);
-    clip-path: var(--fill-rest);
-    transition: clip-path var(--duration) var(--ease-curtain);
-  }
-
-  .btn-label {
-    display: block;
-    overflow: hidden;
-    padding-block: 0.15em;
-    line-height: 1.25;
-  }
-
-  .btn-roll {
-    position: relative;
-    display: block;
-    transition: transform var(--duration) var(--ease-curtain);
-  }
-
-  .btn-roll-copy {
-    position: absolute;
-    top: calc(100% + 0.3em);
-    left: 0;
-    color: var(--dot-fg);
-  }
-
-  .btn-dot {
-    display: grid;
-    place-items: center;
-    flex: none;
-    width: var(--dot);
-    height: var(--dot);
-    color: var(--dot-fg);
-  }
-
-  .btn-arrow {
-    position: relative;
-    width: 1rem;
-    height: 1rem;
-    overflow: hidden;
-  }
-
-  .btn-lg .btn-arrow {
-    width: 1.125rem;
-    height: 1.125rem;
-  }
-
-  .btn-arrow svg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    transition: transform var(--duration) var(--ease-curtain);
-  }
-
-  .btn-arrow svg + svg {
-    transform: translate(-110%, 110%);
-  }
-
-  @media (hover: hover) {
-    .btn:not(:disabled):hover .btn-fill {
-      clip-path: var(--fill-hover);
-    }
-    .btn:not(:disabled):hover .btn-roll {
-      transform: translateY(calc(-100% - 0.3em));
-    }
-    .btn:not(:disabled):hover .btn-arrow svg:first-child {
-      transform: translate(110%, -110%);
-    }
-    .btn:not(:disabled):hover .btn-arrow svg + svg {
-      transform: translate(0, 0);
-    }
-  }
-
-  .btn:focus-visible {
-    outline: 2px solid var(--color-iris-strong);
-    outline-offset: 3px;
-  }
-
-  .btn:focus-visible .btn-fill {
-    clip-path: var(--fill-hover);
-  }
-  .btn:focus-visible .btn-roll {
-    transform: translateY(calc(-100% - 0.3em));
-  }
-  .btn:focus-visible .btn-arrow svg:first-child {
-    transform: translate(110%, -110%);
-  }
-  .btn:focus-visible .btn-arrow svg + svg {
-    transform: translate(0, 0);
-  }
-
-  .btn:not(:disabled):active {
-    transform: scale(0.98);
-  }
-
-  .btn:disabled {
-    opacity: 0.45;
-    cursor: not-allowed;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .btn,
-    .btn-fill,
-    .btn-roll,
-    .btn-arrow svg {
-      transition-duration: 0.01ms;
-    }
-  }
-</style>

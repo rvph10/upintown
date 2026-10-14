@@ -1,0 +1,148 @@
+---
+import type { HTMLAttributes } from "astro/types";
+import Pause from "../icons/Pause.astro";
+import Play from "../icons/Play.astro";
+
+type Props = Omit<HTMLAttributes<"video">, "src" | "poster"> & {
+  /** File name in public/videos: `name.webm` (AV1), `name.mp4` (H.264) and `name-poster.webp`. */
+  name: string;
+  /** "visible" plays while on screen; "manual" leaves playback to the parent script (see playVideo). */
+  play?: "visible" | "manual";
+  /** Adds a pause button shown on hover or focus. `class` then sizes the wrapper instead of the video. */
+  pauseButton?: { pause: string; play: string };
+};
+
+const { name, play = "visible", preload = "none", pauseButton, class: className, ...rest } = Astro.props;
+---
+
+{/* Decorative, muted loop. Never plays with reduced motion or data saver: the poster stays. */}
+{pauseButton ? (
+  <div data-video-wrap class:list={["group/video relative isolate overflow-hidden", className]}>
+    <video
+      data-loop-video={play}
+      poster={`/videos/${name}-poster.webp`}
+      muted
+      loop
+      playsinline
+      preload={preload}
+      aria-hidden="true"
+      class="size-full rounded-[inherit] object-cover"
+      {...rest}
+    >
+      <source src={`/videos/${name}.webm`} type='video/webm; codecs="av01.0.08M.08"' />
+      <source src={`/videos/${name}.mp4`} type="video/mp4" />
+    </video>
+    {/* Hidden when the video can never play (reduced motion, data saver). Always shown on touch screens. */}
+    <button
+      type="button"
+      data-video-toggle
+      aria-label={pauseButton.pause}
+      data-pause-label={pauseButton.pause}
+      data-play-label={pauseButton.play}
+      class="video-toggle absolute right-3 bottom-3 grid size-10 cursor-pointer place-items-center rounded-full bg-white/85 text-ink backdrop-blur-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-iris-strong motion-reduce:hidden"
+    >
+      <span class="relative size-4">
+        <Pause class="video-icon-pause absolute inset-0 size-full" />
+        <Play class="video-icon-play absolute inset-0 size-full" />
+      </span>
+    </button>
+  </div>
+) : (
+  <video
+    data-loop-video={play}
+    poster={`/videos/${name}-poster.webp`}
+    muted
+    loop
+    playsinline
+    preload={preload}
+    class={className}
+    {...rest}
+  >
+    <source src={`/videos/${name}.webm`} type='video/webm; codecs="av01.0.08M.08"' />
+    <source src={`/videos/${name}.mp4`} type="video/mp4" />
+  </video>
+)}
+
+<style>
+  /* Rises and fades in on hover; leaves faster than it arrives. */
+  .video-toggle {
+    opacity: 0;
+    scale: 0.9;
+    translate: 0 0.25rem;
+    transition:
+      opacity var(--duration-quick) var(--ease-in-quart),
+      scale var(--duration-quick) var(--ease-in-quart),
+      translate var(--duration-quick) var(--ease-in-quart),
+      background-color var(--duration-instant);
+  }
+
+  .group\/video:hover .video-toggle,
+  .video-toggle:focus-visible,
+  [data-user-paused] + .video-toggle {
+    opacity: 1;
+    scale: 1;
+    translate: 0;
+    transition-timing-function: var(--ease-out-expo);
+    transition-duration: var(--duration-base);
+  }
+
+  @media (hover: none) {
+    .video-toggle {
+      opacity: 1;
+      scale: 1;
+      translate: 0;
+    }
+  }
+
+  .video-toggle:hover {
+    background-color: var(--color-white);
+  }
+
+  .video-toggle:active {
+    scale: 0.94;
+    transition-duration: var(--duration-instant);
+  }
+
+  /* The two icons swap with a short cross fade. */
+  .video-icon-pause,
+  .video-icon-play {
+    transition:
+      opacity var(--duration-instant) var(--ease-curtain),
+      scale var(--duration-instant) var(--ease-curtain);
+  }
+
+  .video-icon-play,
+  [data-paused] .video-icon-pause {
+    opacity: 0;
+    scale: 0.6;
+  }
+
+  [data-paused] .video-icon-play {
+    opacity: 1;
+    scale: 1;
+  }
+
+  [data-video-wrap][data-no-play] .video-toggle {
+    display: none;
+  }
+</style>
+
+<script>
+  import { canPlayVideo, playVideo, playVideoWhileVisible } from "../../lib/motion";
+
+  document.querySelectorAll<HTMLVideoElement>('[data-loop-video="visible"]').forEach(playVideoWhileVisible);
+
+  // The visitor's pause wins over every automatic play until they press play again.
+  document.querySelectorAll<HTMLElement>("[data-video-wrap]").forEach((wrap) => {
+    const video = wrap.querySelector("video")!;
+    const toggle = wrap.querySelector<HTMLButtonElement>("[data-video-toggle]")!;
+    wrap.toggleAttribute("data-no-play", !canPlayVideo());
+    toggle.addEventListener("click", () => {
+      const pause = !video.hasAttribute("data-user-paused");
+      video.toggleAttribute("data-user-paused", pause);
+      toggle.toggleAttribute("data-paused", pause);
+      toggle.setAttribute("aria-label", pause ? toggle.dataset.playLabel! : toggle.dataset.pauseLabel!);
+      playVideo(video, !pause);
+    });
+  });
+</script>

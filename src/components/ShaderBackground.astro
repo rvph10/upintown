@@ -1,0 +1,195 @@
+---
+interface Settings {
+  seed: number;
+  speed: number;
+  freqX: number;
+  freqY: number;
+  /** Wave angle in degrees. */
+  angle: number;
+  amplitude: number;
+  softness: number;
+  blend: number;
+}
+
+interface Props {
+  /** Up to four CSS colors, e.g. "var(--color-paper)" or "#f2f2f2". */
+  colors?: string[];
+  settings?: Partial<Settings>;
+  /** Overrides applied below 810px. */
+  mobile?: Partial<Settings>;
+  /** Color of the section below; the bottom edge fades into it. */
+  fadeTo?: string;
+  class?: string;
+}
+
+const desktop: Settings = {
+  seed: 32,
+  speed: 0.61,
+  freqX: 1.3,
+  freqY: 6,
+  angle: 112,
+  amplitude: 5,
+  softness: 2,
+  blend: 0.8,
+};
+
+const {
+  colors = ["var(--color-paper)", "var(--color-ash-300)", "var(--color-paper)", "var(--color-ash-250)"],
+  settings,
+  mobile = { speed: 1.06, freqX: 0.7, freqY: 4.3, angle: 56 },
+  fadeTo = "var(--color-white)",
+  class: className,
+} = Astro.props;
+
+const base = { ...desktop, ...settings };
+---
+
+<div aria-hidden="true" class:list={["pointer-events-none", className]}>
+  <canvas
+    data-shader
+    data-colors={JSON.stringify(colors)}
+    data-settings={JSON.stringify(base)}
+    data-mobile={JSON.stringify({ ...base, ...mobile })}
+    class="size-full opacity-0 transition-opacity duration-900 motion-reduce:transition-none"
+  ></canvas>
+  <div
+    class="absolute inset-x-0 bottom-0 h-24"
+    style={`background: linear-gradient(to bottom, transparent, ${fadeTo})`}
+  ></div>
+</div>
+
+<script>
+  import { reducedMotion } from "../lib/motion";
+  import waveGradient from "../shaders/wave-gradient.frag?raw";
+
+  const vertex = `#version 300 es
+    in vec2 a_position;
+    out vec2 v_uv;
+    void main() {
+      v_uv = a_position * 0.5 + 0.5;
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  `;
+
+  // Inputs the Framer shader expects from its host.
+  const fragment = `#version 300 es
+    precision highp float;
+    in vec2 v_uv;
+    out vec4 fragColor;
+    uniform vec2 u_resolution;
+    uniform float u_time;
+    uniform vec4 u_colors[4];
+    uniform int u_colors_length;
+    uniform float u_seed;
+    uniform float u_waveSpeed;
+    uniform float u_waveFreqX;
+    uniform float u_waveFreqY;
+    uniform float u_waveAngle;
+    uniform float u_waveAmplitude;
+    uniform float u_maskSoftness;
+    uniform float u_blendAmount;
+    ${waveGradient}
+  `;
+
+  const small = matchMedia("(max-width: 809.98px)");
+
+  /** Resolves any CSS color (including var()) to RGBA in 0..1. */
+  function toRgba(canvas: HTMLCanvasElement, color: string): number[] {
+    canvas.style.color = color;
+    const [r, g, b] = getComputedStyle(canvas)
+      .color.match(/[\d.]+/g)!
+      .map(Number);
+    canvas.style.color = "";
+    return [r / 255, g / 255, b / 255, 1];
+  }
+
+  function compile(gl: WebGL2RenderingContext, type: number, source: string) {
+    const shader = gl.createShader(type)!;
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+    return shader;
+  }
+
+  function init(canvas: HTMLCanvasElement) {
+    const gl = canvas.getContext("webgl2", { antialias: false, alpha: false });
+    if (!gl) return;
+
+    const program = gl.createProgram()!;
+    gl.attachShader(program, compile(gl, gl.VERTEX_SHADER, vertex));
+    gl.attachShader(program, compile(gl, gl.FRAGMENT_SHADER, fragment));
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    gl.useProgram(program);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const position = gl.getAttribLocation(program, "a_position");
+    gl.enableVertexAttribArray(position);
+    gl.vertexAttribPointer(position, 2, gl.FLOAT, false, 0, 0);
+
+    const uniform = (name: string) => gl.getUniformLocation(program, name);
+    const colors: string[] = JSON.parse(canvas.dataset.colors!).slice(0, 4);
+    gl.uniform4fv(
+      uniform("u_colors"),
+      colors.flatMap((color) => toRgba(canvas, color)),
+    );
+    gl.uniform1i(uniform("u_colors_length"), colors.length);
+
+    function applySettings() {
+      const settings = JSON.parse((small.matches ? canvas.dataset.mobile : canvas.dataset.settings)!);
+      gl!.uniform1f(uniform("u_seed"), settings.seed);
+      gl!.uniform1f(uniform("u_waveSpeed"), settings.speed);
+      gl!.uniform1f(uniform("u_waveFreqX"), settings.freqX);
+      gl!.uniform1f(uniform("u_waveFreqY"), settings.freqY);
+      gl!.uniform1f(uniform("u_waveAngle"), settings.angle);
+      gl!.uniform1f(uniform("u_waveAmplitude"), settings.amplitude);
+      gl!.uniform1f(uniform("u_maskSoftness"), settings.softness);
+      gl!.uniform1f(uniform("u_blendAmount"), settings.blend);
+    }
+    applySettings();
+
+    const resolution = uniform("u_resolution");
+    const time = uniform("u_time");
+    const start = performance.now();
+    let frame = 0;
+    let visible = false;
+
+    function draw(now: number) {
+      gl!.uniform1f(time, reducedMotion.matches ? 0 : (now - start) / 1000);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 3);
+      canvas.classList.remove("opacity-0");
+    }
+
+    function loop(now: number) {
+      draw(now);
+      frame = visible && !reducedMotion.matches ? requestAnimationFrame(loop) : 0;
+    }
+
+    function play() {
+      if (!frame) frame = requestAnimationFrame(loop);
+    }
+
+    // Half the device resolution, never below 1 pixel per CSS pixel (Framer's default).
+    new ResizeObserver(() => {
+      const scale = Math.max(devicePixelRatio * 0.5, 1);
+      canvas.width = Math.round(canvas.offsetWidth * scale);
+      canvas.height = Math.round(canvas.offsetHeight * scale);
+      gl.viewport(0, 0, canvas.width, canvas.height);
+      gl.uniform2f(resolution, canvas.width, canvas.height);
+      draw(performance.now());
+    }).observe(canvas);
+
+    new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      if (visible) play();
+    }).observe(canvas);
+
+    reducedMotion.addEventListener("change", play);
+    small.addEventListener("change", () => {
+      applySettings();
+      draw(performance.now());
+    });
+  }
+
+  document.querySelectorAll<HTMLCanvasElement>("canvas[data-shader]").forEach(init);
+</script>

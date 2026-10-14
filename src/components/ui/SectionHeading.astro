@@ -1,0 +1,44 @@
+---
+import Star from "../icons/Star.astro";
+import Badge from "./Badge.astro";
+import Words from "./Words.astro";
+
+interface Props {
+  /** Id of the heading, for the section's aria-labelledby. */
+  id: string;
+  label: string;
+  title: string;
+  subtitle?: string;
+  align?: "center" | "start";
+  /** Off when a parent `data-reveal="sequence"` plays this heading with its own extra parts. */
+  reveal?: boolean;
+  class?: string;
+}
+
+const { id, label, title, subtitle, align = "center", reveal = true, class: className } = Astro.props;
+---
+
+{/* Section badge, title and optional subtitle. Extra content (a button, a prompt) goes in the slot below them.
+    On scroll the title rises line by line, the other parts follow. */}
+<div
+  data-reveal={reveal ? "sequence" : undefined}
+  class:list={["flex flex-col", align === "center" ? "items-center text-center" : "items-start text-left", className]}
+>
+  <Badge data-reveal-step>
+    <Star slot="icon" class="-m-0.5 size-4.5 text-blush" data-spin />
+    {label}
+  </Badge>
+  <h2 id={id} class="mt-6 max-w-3xl text-section font-semibold text-balance text-ink">
+    <Words text={title} />
+  </h2>
+  {subtitle && (
+    <p data-reveal-step class="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600 sm:text-xl">
+      {subtitle}
+    </p>
+  )}
+  {Astro.slots.has("default") && (
+    <div data-reveal-step>
+      <slot />
+    </div>
+  )}
+</div>

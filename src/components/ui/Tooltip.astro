@@ -1,0 +1,151 @@
+---
+import Info from "../icons/Info.astro";
+
+interface Props {
+  /** Accessible name of the trigger, e.g. "En savoir plus : Petites modifications". */
+  label: string;
+  /** Which edge of the bubble lines up with the trigger. Use "end" near the right edge of a container. */
+  align?: "start" | "center" | "end";
+  class?: string;
+}
+
+const { label, align = "center", class: className } = Astro.props;
+const id = `tooltip-${crypto.randomUUID().slice(0, 8)}`;
+
+const aligns = {
+  start: "left-0",
+  center: "left-1/2 -translate-x-1/2",
+  end: "right-0",
+};
+// The bubble grows out of the trigger (size-6, so its centre is 0.75rem from the edge).
+const origins = {
+  start: "0.75rem 100%",
+  center: "50% 100%",
+  end: "calc(100% - 0.75rem) 100%",
+};
+---
+
+{/* Opens on hover, keyboard focus or tap. Escape or a tap elsewhere closes it (WCAG 1.4.13). */}
+<span data-tooltip class:list={["tooltip relative inline-flex align-middle", className]}>
+  <button
+    type="button"
+    aria-label={label}
+    aria-describedby={id}
+    class="grid size-6 cursor-pointer place-items-center rounded-full text-ash-400 transition-colors duration-200 hover:text-ink focus-visible:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-iris-strong"
+  >
+    <Info class="size-5" />
+  </button>
+  {/* The padding bridges the gap to the trigger so the pointer can move onto the bubble. */}
+  <span class:list={["bubble absolute bottom-full z-20 pb-2", aligns[align]]}>
+    <span
+      id={id}
+      role="tooltip"
+      style={`transform-origin: ${origins[align]}`}
+      class="bubble-body block w-max max-w-[min(18rem,calc(100vw-5rem))] rounded-2xl bg-ink px-4 py-3 text-left text-sm leading-relaxed font-normal text-pretty text-paper shadow-[0_12px_32px_-12px_rgb(0_0_0/0.35)]"
+    >
+      <slot />
+    </span>
+  </span>
+</span>
+
+<style>
+  /* The wrapper holds visibility (and the hover bridge); the body moves. Hover opens after a short pause,
+     so sweeping the pointer across a list does not flash every bubble. Focus and tap open at once. */
+  .bubble {
+    --delay: 0s;
+    visibility: hidden;
+    transition: visibility 0s linear var(--duration-quick);
+  }
+
+  .bubble-body {
+    opacity: 0;
+    scale: 0.92;
+    translate: 0 0.375rem;
+    filter: blur(4px);
+    transition-property: opacity, scale, translate, filter;
+    transition-duration: var(--duration-quick);
+    transition-timing-function: var(--ease-in-quart);
+  }
+
+  @media (hover: hover) {
+    .tooltip:hover .bubble {
+      --delay: 0.1s;
+    }
+
+    .tooltip:hover .bubble,
+    .tooltip:hover .bubble-body {
+      visibility: visible;
+      opacity: 1;
+      scale: 1;
+      translate: 0;
+      filter: blur(0);
+      transition-delay: var(--delay);
+      transition-duration: var(--duration-base);
+      transition-timing-function: var(--ease-out-expo);
+    }
+  }
+
+  .tooltip:has(:focus-visible) .bubble,
+  .tooltip:has(:focus-visible) .bubble-body,
+  .tooltip[data-open] .bubble,
+  .tooltip[data-open] .bubble-body {
+    --delay: 0s;
+    visibility: visible;
+    opacity: 1;
+    scale: 1;
+    translate: 0;
+    filter: blur(0);
+    transition-delay: 0s;
+    transition-duration: var(--duration-base);
+    transition-timing-function: var(--ease-out-expo);
+  }
+
+  .tooltip[data-dismissed] .bubble {
+    visibility: hidden;
+  }
+
+  .tooltip[data-dismissed] .bubble-body {
+    opacity: 0;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bubble,
+    .bubble-body {
+      transition: none !important;
+    }
+
+    .bubble-body {
+      scale: 1;
+      translate: 0;
+      filter: none;
+    }
+  }
+</style>
+
+<script>
+  const tooltips = document.querySelectorAll<HTMLElement>("[data-tooltip]");
+  const closeAll = (except?: HTMLElement) =>
+    tooltips.forEach((tooltip) => tooltip !== except && tooltip.removeAttribute("data-open"));
+
+  tooltips.forEach((tooltip) => {
+    tooltip.querySelector("button")!.addEventListener("click", () => {
+      closeAll(tooltip);
+      tooltip.toggleAttribute("data-open");
+    });
+    const reset = () => tooltip.removeAttribute("data-dismissed");
+    tooltip.addEventListener("pointerleave", reset);
+    tooltip.addEventListener("focusout", reset);
+  });
+
+  document.addEventListener("click", (event) => {
+    if (!(event.target as Element).closest("[data-tooltip]")) closeAll();
+  });
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key !== "Escape") return;
+    closeAll();
+    tooltips.forEach((tooltip) => {
+      if (tooltip.matches(":hover, :focus-within")) tooltip.setAttribute("data-dismissed", "");
+    });
+  });
+</script>

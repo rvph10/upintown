@@ -1,0 +1,60 @@
+---
+import FieldLabel from "./FieldLabel.astro";
+import FieldMessage from "./FieldMessage.astro";
+
+interface Props {
+  /** Id of the group, used as the anchor for error summaries. */
+  id: string;
+  name?: string;
+  label: string;
+  options: { value: string; label: string }[];
+  value?: string;
+  required?: boolean;
+  hint?: string;
+  error?: string;
+  class?: string;
+}
+
+const { id, name = id, label, options, value = "", required = false, hint, error, class: className } = Astro.props;
+
+const describedBy = [error && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(" ") || undefined;
+---
+
+{/* One choice among a few, as pills. Native radios: arrow keys move between options. */}
+<fieldset id={id} aria-describedby={describedBy} class:list={["grid gap-2.5", className]}>
+  <FieldLabel as="legend" required={required} error={Boolean(error)} class="mb-2.5">
+    {label}
+  </FieldLabel>
+  <div class="flex flex-wrap gap-2">
+    {options.map((option) => (
+      <label
+        class:list={[
+          "inline-flex h-12 cursor-pointer items-center rounded-full bg-surface px-6 text-base text-ink transition-colors duration-200 select-none motion-reduce:transition-none",
+          "has-checked:bg-ink has-checked:text-paper has-focus-visible:outline-2 has-focus-visible:outline-offset-3 has-focus-visible:outline-iris-strong",
+          error ? "inset-ring-2 inset-ring-danger" : "inset-ring inset-ring-ash-200 hover:inset-ring-ash-400",
+        ]}
+      >
+        <input
+          type="radio"
+          name={name}
+          value={option.value}
+          checked={option.value === value}
+          required={required}
+          aria-invalid={error ? "true" : undefined}
+          class="sr-only"
+        />
+        {option.label}
+      </label>
+    ))}
+  </div>
+  {error && (
+    <FieldMessage id={`${id}-error`} tone="error">
+      {error}
+    </FieldMessage>
+  )}
+  {hint && (
+    <FieldMessage id={`${id}-hint`} tone="hint">
+      {hint}
+    </FieldMessage>
+  )}
+</fieldset>

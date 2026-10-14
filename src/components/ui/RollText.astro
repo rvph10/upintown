@@ -1,0 +1,30 @@
+---
+interface Props {
+  /** Smaller gap and padding, for large titles. */
+  tight?: boolean;
+  /** Classes for the copy that rolls in, e.g. a different text colour. */
+  rollClass?: string;
+  class?: string;
+}
+
+const { tight = false, rollClass, class: className } = Astro.props;
+const label = await Astro.slots.render("default");
+---
+
+{/* On hover or focus of the parent `group`, the label rolls up and an identical copy takes its place. */}
+<span
+  class:list={[
+    "block overflow-hidden",
+    tight ? "py-[0.1em] [--roll-gap:0.2em]" : "py-[0.15em] leading-tight [--roll-gap:0.3em]",
+    className,
+  ]}
+>
+  <span class="relative block transition-transform duration-500 ease-curtain group-hocus:translate-y-[calc(-100%-var(--roll-gap))] motion-reduce:transition-none">
+    <span set:html={label} />
+    <span
+      class:list={["absolute top-[calc(100%+var(--roll-gap))] left-0", rollClass]}
+      aria-hidden="true"
+      set:html={label}
+    />
+  </span>
+</span>

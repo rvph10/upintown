@@ -1,0 +1,63 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = HTMLAttributes<"svg"> & {
+  /** Seeds the drawing: the same name always gives the same avatar. */
+  name: string;
+};
+
+const { name, class: className, ...rest } = Astro.props;
+
+// Abstract illustrated face, deliberately not a real person: a tilted head shape with eyes and a mouth.
+const colors = [
+  "var(--color-sky)",
+  "var(--color-blush)",
+  "var(--color-iris)",
+  "var(--color-tangerine)",
+  "var(--color-sun)",
+  "var(--color-volt-soft)",
+];
+
+let hash = 0;
+for (const char of name) hash = (hash * 31 + char.charCodeAt(0)) >>> 0;
+// Successive digits of the hash drive each choice.
+const pick = (range: number, shift: number) => Math.floor(hash / range ** shift) % range;
+
+const background = colors[hash % colors.length];
+const head = colors[(hash + 1 + pick(colors.length - 1, 1)) % colors.length];
+const round = pick(2, 2) === 1;
+const tilt = pick(9, 3) * 10 - 40;
+const shiftX = pick(5, 4) - 2;
+const faceTilt = pick(5, 5) * 4 - 8;
+const smile = pick(3, 6);
+---
+
+<svg
+  viewBox="0 0 36 36"
+  fill="none"
+  aria-hidden="true"
+  class:list={["overflow-hidden rounded-full", className]}
+  {...rest}
+>
+  <g>
+    <rect width="36" height="36" fill={background} />
+    <rect
+      width="36"
+      height="36"
+      rx={round ? 18 : 7}
+      fill={head}
+      transform={`translate(${5 + shiftX} 7) rotate(${tilt} 18 18) scale(1.05)`}
+    />
+    <g transform={`translate(${3 + shiftX} 4) rotate(${faceTilt} 18 18)`}>
+      {smile === 0 ? (
+        <path d="M13 21 Q18 25 23 21" stroke="var(--color-ink)" stroke-width="1.6" stroke-linecap="round" />
+      ) : smile === 1 ? (
+        <path d="M14 20.5 Q18 26 22 20.5 Z" fill="var(--color-ink)" />
+      ) : (
+        <path d="M14.5 22 H21.5" stroke="var(--color-ink)" stroke-width="1.6" stroke-linecap="round" />
+      )}
+      <rect x="12" y="14" width="1.8" height="3" rx="0.9" fill="var(--color-ink)" />
+      <rect x="22" y="14" width="1.8" height="3" rx="0.9" fill="var(--color-ink)" />
+    </g>
+  </g>
+</svg>

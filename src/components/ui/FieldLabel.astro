@@ -1,0 +1,28 @@
+---
+interface Props {
+  as?: "label" | "legend";
+  /** Id of the control, for a label. */
+  for?: string;
+  id?: string;
+  /** Shows the required dot. The control itself carries `required` for assistive tech. */
+  required?: boolean;
+  error?: boolean;
+  class?: string;
+}
+
+const { as: Tag = "label", for: htmlFor, id, required = false, error = false, class: className } = Astro.props;
+---
+
+{/* Field title above a control, aligned with the control's text. A small iris dot marks required fields. */}
+<Tag
+  for={Tag === "label" ? htmlFor : undefined}
+  id={id}
+  class:list={[
+    "flex items-center gap-2 px-6 text-ui leading-snug font-semibold tracking-ui",
+    error ? "text-danger-strong" : "text-ink",
+    className,
+  ]}
+>
+  <slot />
+  {required && <span class="size-1.5 flex-none rounded-full bg-iris" aria-hidden="true"></span>}
+</Tag>

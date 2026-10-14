@@ -1,14 +1,39 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Badge from "../components/ui/Badge.astro";
 import Button from "../components/ui/Button.astro";
+import Marquee from "../components/ui/Marquee.astro";
+import ArrowUpRight from "../components/icons/ArrowUpRight.astro";
+import Sparkle from "../components/icons/Sparkle.astro";
 import TextField from "../components/ui/TextField.astro";
+import Tooltip from "../components/ui/Tooltip.astro";
+import Carousel3D from "../components/ui/Carousel3D.astro";
+import Faq from "../components/Faq.astro";
+import Avatar from "../components/ui/Avatar.astro";
+import ChoiceField from "../components/ui/ChoiceField.astro";
+import LoopVideo from "../components/ui/LoopVideo.astro";
+import SectionHeading from "../components/ui/SectionHeading.astro";
+import SelectField from "../components/ui/SelectField.astro";
+import Words from "../components/ui/Words.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
 
 export const prerender = false;
 
 if (import.meta.env.PROD) return new Response(null, { status: 404 });
 
-const tones = ["ink", "volt", "surface"] as const;
-const sizes = ["md", "lg"] as const;
+const tones = ["ink", "surface"] as const;
+const badgeTones = ["surface", "glass", "ink", "volt"] as const;
+const sizes = ["sm", "md", "lg"] as const;
+const needOptions = [
+  { value: "website", label: "Création de site internet" },
+  { value: "care", label: "Entretien du site" },
+  { value: "other", label: "Autre chose" },
+];
+const planOptions = [
+  { value: "", label: "Pas encore décidé" },
+  { value: "essentiel", label: "Essentiel" },
+  { value: "visibilite", label: "Visibilité" },
+];
 ---
 
 <Layout locale="fr" title="Components" description="Component library" alternates={{}} noindex>
@@ -21,7 +46,7 @@ const sizes = ["md", "lg"] as const;
     <section class="grid gap-10">
       <h2 class="text-3xl font-semibold tracking-tight">Button</h2>
       {tones.map((tone) => (
-        <div class="grid gap-6 rounded-3xl bg-surface p-8 shadow-[inset_0_0_0_1px_var(--color-ash-200)]">
+        <div class="grid gap-6 rounded-3xl bg-surface p-8 inset-ring inset-ring-ash-200">
           <h3 class="text-lg font-semibold">Tone: {tone}</h3>
           {sizes.map((size) => (
             <div class="flex flex-wrap items-center gap-4">
@@ -42,7 +67,7 @@ const sizes = ["md", "lg"] as const;
       <div class="grid gap-6 rounded-3xl bg-ink p-8">
         <h3 class="text-lg font-semibold text-paper">On dark background</h3>
         <div class="flex flex-wrap items-center gap-4">
-          <Button tone="volt" size="lg" href="#">
+          <Button tone="surface" size="lg" href="#">
             Demander un devis
           </Button>
           <Button tone="surface" size="lg" icon={false}>
@@ -62,9 +87,50 @@ const sizes = ["md", "lg"] as const;
     </section>
 
     <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Badge</h2>
+      {badgeTones.map((tone) => (
+        <div class="grid gap-6 rounded-3xl bg-paper p-8 inset-ring inset-ring-ash-200">
+          <h3 class="text-lg font-semibold">Tone: {tone}</h3>
+          {sizes.map((size) => (
+            <div class="flex flex-wrap items-center gap-4">
+              <span class="w-24 text-sm text-ash-600">Size {size}</span>
+              <Badge tone={tone} size={size}>
+                Création et suivi de sites internet
+              </Badge>
+              <Badge tone={tone} size={size}>
+                <ArrowUpRight slot="icon" class="size-full" />
+                Avec icône
+              </Badge>
+              <Button tone="ink" size={size} icon={false}>
+                Bouton {size}
+              </Button>
+            </div>
+          ))}
+        </div>
+      ))}
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Marquee</h2>
+      <div class="rounded-3xl bg-paper py-8">
+        <Marquee duration={30}>
+          {["Trafic", "Appels", "Demandes de devis", "Avis Google", "Nouveaux clients"].map((label) => (
+            <li>
+              <Badge as="span" tone="glass">
+                <Sparkle slot="icon" class="size-full" />
+                <span class="font-semibold">XX %</span>
+                <span class="-ml-1.5">{label}</span>
+              </Badge>
+            </li>
+          ))}
+        </Marquee>
+      </div>
+    </section>
+
+    <section class="grid gap-10">
       <h2 class="text-3xl font-semibold tracking-tight">Text field</h2>
       <div class="grid gap-8 md:grid-cols-2">
-        <TextField id="demo-name" label="Nom" autocomplete="name" />
+        <TextField id="demo-name" label="Nom" autocomplete="name" placeholder="Marie Dupont" required />
         <TextField id="demo-email" label="E-mail" type="email" placeholder="vous@entreprise.be" />
         <TextField id="demo-filled" label="Entreprise" value="Cabinet Dupont" />
         <TextField
@@ -102,6 +168,204 @@ const sizes = ["md", "lg"] as const;
           Envoyer
         </Button>
       </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Select and choice fields</h2>
+      <div class="grid gap-8 md:grid-cols-2">
+        <SelectField id="demo-plan" label="Formule" options={planOptions} />
+        <SelectField id="demo-plan-required" label="Formule" options={planOptions} required />
+        <SelectField
+          id="demo-plan-hint"
+          label="Formule"
+          options={planOptions}
+          value="visibilite"
+          hint="Modifiable plus tard."
+        />
+        <SelectField id="demo-plan-error" label="Formule" options={planOptions} error="Ce champ est obligatoire." />
+        <SelectField id="demo-plan-disabled" label="Formule" options={planOptions} value="essentiel" disabled />
+        <ChoiceField id="demo-need" class="md:col-span-2" label="Votre besoin" options={needOptions} value="care" />
+        <ChoiceField
+          id="demo-need-error"
+          class="md:col-span-2"
+          label="Votre besoin"
+          options={needOptions}
+          error="Ce champ est obligatoire."
+        />
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Section heading</h2>
+      <div class="grid gap-16 rounded-3xl bg-paper p-8">
+        <SectionHeading id="demo-heading-center" label="Formules" title="Un prix fixe chaque mois, sans surprise." />
+        <SectionHeading
+          id="demo-heading-subtitle"
+          label="Formules"
+          title="Avec un sous-titre."
+          subtitle="Une fois votre site en ligne, choisissez jusqu'où UpInTown s'en occupe."
+        />
+        <SectionHeading
+          id="demo-heading-start"
+          label="Questions fréquentes"
+          title="Alignée à gauche, avec contenu."
+          align="start"
+        >
+          <div class="mt-10">
+            <Button href="#">Posez-la</Button>
+          </div>
+        </SectionHeading>
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Reveals</h2>
+      <p class="text-ash-600">
+        Scroll reveals from src/lib/reveal.ts, each shown once. Reload the page below this section to replay them.
+      </p>
+      <div data-opening class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">Opening (CSS, on load): Words + data-opening-step</h3>
+        <p class="text-section font-semibold text-balance">
+          <Words text="Un site qui travaille, même quand vous êtes occupé." />
+        </p>
+        <p data-opening-step style="--delay: 300ms" class="text-ash-600">
+          Step with a 300ms delay.
+        </p>
+      </div>
+      <div class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal (block)</h3>
+        <div data-reveal class="rounded-3xl bg-white p-6">
+          A block of meaning rises in.
+        </div>
+      </div>
+      <div class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal="fade"</h3>
+        <div data-reveal="fade" class="rounded-3xl bg-white p-6">
+          Fades without moving.
+        </div>
+      </div>
+      <div data-reveal="sequence" class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal="sequence"</h3>
+        <p class="text-section font-semibold text-balance">
+          <Words text="Le titre monte ligne par ligne." />
+        </p>
+        <p data-reveal-step class="text-ash-600">
+          Then each data-reveal-step, in page order.
+        </p>
+        <div data-reveal-step>
+          <Button href="#">Demander un devis</Button>
+        </div>
+      </div>
+      <div class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal="group" with data-reveal-grow and data-reveal-pop</h3>
+        <ul data-reveal="group" class="grid gap-3 sm:grid-cols-3">
+          {[1, 2, 3].map((level) => (
+            <li class="flex items-end justify-between rounded-3xl bg-white p-6">
+              <span class="flex items-end gap-1">
+                {[0, 1, 2].map((bar) => (
+                  <span
+                    data-reveal-grow={bar < level ? "" : undefined}
+                    class:list={["w-2 rounded-full", bar < level ? "bg-ink" : "bg-ash-300"]}
+                    style={`height: ${0.75 + bar * 0.5}rem`}
+                  />
+                ))}
+              </span>
+              <Checkmark data-reveal-pop class="size-6 text-volt [--check:var(--color-white)]" />
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal="list"</h3>
+        <ul data-reveal="list" class="grid gap-2">
+          {["Une", "Deux", "Trois"].map((item) => (
+            <li class="rounded-2xl bg-white px-6 py-4">{item}</li>
+          ))}
+        </ul>
+      </div>
+      <div class="grid gap-3 rounded-3xl bg-paper p-8">
+        <h3 class="text-lg font-semibold">data-reveal-image</h3>
+        <div data-reveal-image class="aspect-video overflow-hidden rounded-card bg-linear-to-b from-sky to-iris"></div>
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Loop video</h2>
+      <p class="text-ash-600">
+        Plays while on screen (never with reduced motion or data saver). "manual" leaves playback to a script.
+        "pauseButton" adds a pause button on hover.
+      </p>
+      <div class="grid gap-6 md:grid-cols-3">
+        <LoopVideo name="real-estate-site" class="aspect-[4/3] w-full rounded-3xl object-cover" />
+        <LoopVideo
+          name="real-estate-site"
+          pauseButton={{ pause: "Mettre la vidéo en pause", play: "Lire la vidéo" }}
+          class="aspect-[4/3] w-full rounded-3xl"
+        />
+        <LoopVideo name="dental-site" play="manual" class="aspect-[4/3] w-full rounded-3xl object-cover" />
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Tooltip</h2>
+      <div class="flex flex-wrap items-center justify-between gap-8 rounded-3xl bg-paper px-8 pt-28 pb-8">
+        {(["start", "center", "end"] as const).map((align) => (
+          <p class="flex items-center gap-2">
+            Align {align}
+            <Tooltip label={`En savoir plus : align ${align}`} align={align}>
+              Textes, photos, horaires, prix : faits sous 2 jours ouvrables. Les nouvelles pages sont sur devis.
+            </Tooltip>
+          </p>
+        ))}
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Avatar</h2>
+      <div class="flex flex-wrap items-center gap-4">
+        {["Sophie L.", "Nadia B.", "Claire M.", "Marc D.", "Julien R.", "Thomas V.", "Anne P.", "Hugo S."].map(
+          (name) => (
+            <Avatar name={name} class="size-14" />
+          ),
+        )}
+        <Avatar name="Sophie L." class="size-10" />
+        <Avatar name="Sophie L." class="size-24" />
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">Carousel 3D</h2>
+      <div class="grid gap-6 rounded-3xl bg-paper">
+        <Carousel3D />
+        <Carousel3D count={6} duration={30} />
+      </div>
+    </section>
+
+    <section class="grid gap-10">
+      <h2 class="text-3xl font-semibold tracking-tight">FAQ</h2>
+      <Faq
+        id="demo-faq"
+        class=""
+        label="Questions fréquentes"
+        title="Titre de la FAQ."
+        intro="Introduction facultative."
+        items={[
+          { question: "Première question ?", answer: "Réponse courte." },
+          {
+            question: "Deuxième question, un peu plus longue pour tester le retour à la ligne ?",
+            answer:
+              "Réponse plus longue, sur plusieurs lignes, pour vérifier l’espacement du texte dans le panneau ouvert.",
+          },
+        ]}
+        contact={{ text: "Une autre question ?", href: "#", label: "Posez-la" }}
+      />
+      <Faq
+        id="demo-faq-minimal"
+        class=""
+        label="Sans contact"
+        title="Version minimale."
+        items={[{ question: "Question ?", answer: "Réponse." }]}
+      />
     </section>
   </div>
 </Layout>

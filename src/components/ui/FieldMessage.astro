@@ -1,0 +1,27 @@
+---
+interface Props {
+  id: string;
+  /** "error" is announced with the field through aria-describedby and shows a warning icon. */
+  tone: "error" | "hint";
+}
+
+const { id, tone } = Astro.props;
+---
+
+<p
+  id={id}
+  class:list={[
+    "flex items-center gap-1.5 px-6 text-sm leading-snug",
+    tone === "error" ? "font-medium text-danger-strong" : "text-ash-600",
+  ]}
+>
+  {tone === "error" && (
+    <svg class="size-4 flex-none" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <path
+        fill-rule="evenodd"
+        d="M1.5 11.25C1.5 5.86522 5.86522 1.5 11.25 1.5H12.75C18.1348 1.5 22.5 5.86522 22.5 11.25V12.75C22.5 18.1348 18.1348 22.5 12.75 22.5H11.25C5.86522 22.5 1.5 18.1348 1.5 12.75V11.25ZM12 6C12.4142 6 12.75 6.33579 12.75 6.75V14.25C12.75 14.6642 12.4142 15 12 15C11.5858 15 11.25 14.6642 11.25 14.25V6.75C11.25 6.33579 11.5858 6 12 6ZM12 18C12.4142 18 12.75 17.6642 12.75 17.25C12.75 16.8358 12.4142 16.5 12 16.5C11.5858 16.5 11.25 16.8358 11.25 17.25C11.25 17.6642 11.5858 18 12 18Z"
+      />
+    </svg>
+  )}
+  <slot />
+</p>
