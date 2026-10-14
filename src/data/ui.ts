@@ -47,5 +47,8 @@ export const ui = {
   ctaCall: { fr: "Appeler maintenant", en: "Call now" },
   pauseVideo: { fr: "Mettre la vidéo en pause", en: "Pause the video" },
   playVideo: { fr: "Lire la vidéo", en: "Play the video" },
-  shareImageAlt: { fr: "Page d'accueil d'UpInTown", en: "UpInTown home page" },
+  shareImageAlt: {
+    fr: "UpInTown : un site qui travaille, même quand vous êtes occupé.",
+    en: "UpInTown: a website that works, even when you're busy.",
+  },
 } as const satisfies Record<string, Localized>;
