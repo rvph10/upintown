@@ -11,7 +11,7 @@ export async function getProjects(locale?: Locale): Promise<Project[]> {
       const [entryLocale, slug] = entry.id.split("/") as [Locale, string];
       return { ...entry, locale: entryLocale, slug };
     })
-    .filter((project) => !locale || project.locale === locale)
+    .filter((project) => (!locale || project.locale === locale) && !(import.meta.env.PROD && project.data.draft))
     .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 }
 

@@ -1,0 +1,68 @@
+---
+import Quote from "./icons/Quote.astro";
+import ProjectCard, { type ProjectCardData } from "./ProjectCard.astro";
+
+interface Props {
+  /** Accessible name of the gallery. */
+  label: string;
+  cards: ProjectCardData[];
+  /** Short statements about the design approach, placed in the middle of every other row, in order. */
+  statements: string[];
+  /** Shown under each statement. */
+  signature: string;
+  /** Shown in the empty image frame of a placeholder card. */
+  placeholder: string;
+}
+
+const { label, cards, statements, signature, placeholder } = Astro.props;
+
+type Item =
+  | { kind: "project"; card: ProjectCardData; tall: boolean; column: number }
+  | { kind: "statement"; text: string; column: number };
+
+// Rows of three alternate: a tall project in the middle, then a statement in its place.
+// A statement only appears with a project on each side.
+const items: Item[] = [];
+let next = 0;
+for (let row = 0; next < cards.length; row++) {
+  if (row % 2 === 0 || !statements.length) {
+    cards
+      .slice(next, next + 3)
+      .forEach((card, column) => items.push({ kind: "project", card, tall: column === 1, column }));
+    next += 3;
+  } else {
+    items.push({ kind: "project", card: cards[next++], tall: false, column: 0 });
+    if (next < cards.length) {
+      items.push({ kind: "statement", text: statements[Math.floor(row / 2) % statements.length], column: 1 });
+      items.push({ kind: "project", card: cards[next++], tall: false, column: 2 });
+    }
+  }
+}
+---
+
+<section aria-label={label} class="pt-8 pb-24 sm:pt-12 sm:pb-32">
+  {/* On two columns a statement takes a full row; dense flow pulls the next project up beside a lone one. */}
+  <ul
+    data-reveal="group"
+    class="grid gap-x-3 gap-y-12 md:grid-flow-row-dense md:grid-cols-2 lg:grid-flow-row lg:grid-cols-3 lg:items-start"
+  >
+    {items.map((item) =>
+      item.kind === "project" ? (
+        <li>
+          <ProjectCard card={item.card} tall={item.tall} placeholder={placeholder} heading="h2" />
+        </li>
+      ) : (
+        <li class="md:col-span-2 lg:col-span-1">
+          {/* No frame: the statement sits in the open, centred on the height of the images beside it. */}
+          <figure class="flex flex-col items-center justify-center gap-8 px-4 py-8 text-center sm:px-8 lg:aspect-square">
+            <Quote class="h-8 w-auto text-iris" />
+            <blockquote class="max-w-md text-quote font-medium text-balance text-ink">
+              <p>{item.text}</p>
+            </blockquote>
+            <figcaption class="text-ui font-semibold text-ash-600">{signature}</figcaption>
+          </figure>
+        </li>
+      ),
+    )}
+  </ul>
+</section>

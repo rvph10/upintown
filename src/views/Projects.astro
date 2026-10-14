@@ -1,37 +1,170 @@
 ---
-import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
-import type { Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
+import CallToAction from "../components/CallToAction.astro";
+import Faq from "../components/Faq.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ProjectGallery from "../components/ProjectGallery.astro";
+import type { ProjectCardData } from "../components/ProjectCard.astro";
+import { formatPrice, workingDays, type Locale, type Localized } from "../data/i18n";
+import { answers } from "../data/answers";
+import { descriptions, titles } from "../data/meta";
+import { plans, policies, website } from "../data/offer";
+import { projectTags } from "../data/projectTags";
 import { getProjects } from "../data/projects";
-import { projectPath, routes } from "../data/routes";
-import { pageNames } from "../data/ui";
+import { path, projectPath, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const projects = await getProjects(locale);
+
+const price = (amount: number) => formatPrice(amount, locale);
+const percent = (share: number) => (locale === "fr" ? `${share} %` : `${share}%`);
+const weeks = `${website.weeks.min}-${website.weeks.max}`;
+const fromMonthly = price(Math.min(...plans.map((plan) => plan.monthly)));
+const changeDays = workingDays(policies.changeReplyWorkingDays, locale);
+
+const t = {
+  title: {
+    fr: "Des sites pensés pour chaque métier.",
+    en: "Websites shaped around each trade.",
+  },
+  subtitle: {
+    fr: "Chaque site part de l'activité du client : ce qu'il propose, à qui, et ce que ses visiteurs doivent pouvoir faire en un clic.",
+    en: "Every site starts from the client's business: what they offer, to whom, and what visitors should be able to do in one click.",
+  },
+  placeholder: { fr: "Image du projet", en: "Project image" },
+  statements: {
+    fr: [
+      "Un bon design, c'est quand vos visiteurs trouvent ce qu'ils cherchent sans y penser.",
+      "Moins d'effets, plus de clarté. Le site s'efface derrière votre métier.",
+    ],
+    en: [
+      "Good design is when your visitors find what they need without thinking about it.",
+      "Fewer effects, more clarity. The site steps aside for your business.",
+    ],
+  },
+  signature: { fr: "L'approche UpInTown", en: "The UpInTown approach" },
+  faqLabel: { fr: "Questions fréquentes", en: "FAQ" },
+  faqTitle: { fr: "Un site comme ceux-ci, pour vous ?", en: "A site like these, for you?" },
+  faqContact: {
+    fr: { text: "Un projet en tête ?", label: "Demander un devis" },
+    en: { text: "A project in mind?", label: "Request a quote" },
+  },
+  faq: {
+    fr: [
+      {
+        question: "Combien coûte un site comme ceux-ci ?",
+        answer: `Le site commence à ${price(website.fromPrice)}, textes compris, payés en ${website.stages.length} fois ${percent(website.stages[0].share)} au fil des étapes, et il est en ligne en ${weeks} semaines. Une identité de marque (logo, couleurs, supports imprimés) se fait sur devis.`,
+      },
+      {
+        question: "Vais-je voir mon site avant sa mise en ligne ?",
+        answer: `Oui, deux fois. D'abord une maquette de la page d'accueil avec vos vrais textes, avant que le site soit construit. Ensuite un lien d'aperçu pour tester le site complet, avec ${website.correctionRounds} série de corrections avant la mise en ligne.`,
+      },
+      {
+        question: "Qui écrit les textes ?",
+        answer:
+          "Ils sont rédigés pour vous, à partir d'un court appel et d'un questionnaire simple, sans rien inventer sur votre activité. Vous les validez par écrit avant le design.",
+      },
+      {
+        question: "Que se passe-t-il une fois le site en ligne ?",
+        answer: `Si vous le souhaitez, une formule mensuelle dès ${fromMonthly}/mois garde votre site en ligne, sécurisé et à jour, avec vos petites modifications faites sous ${changeDays}. Aucune formule n'est obligatoire.`,
+      },
+      {
+        question: "Le site m'appartient-il ?",
+        answer: `Oui. ${answers.leaving.fr}`,
+      },
+    ],
+    en: [
+      {
+        question: "How much does a site like these cost?",
+        answer: `The website starts at ${price(website.fromPrice)}, text included, paid in ${website.stages.length} parts of ${percent(website.stages[0].share)} as the project moves forward, and it is live in ${weeks} weeks. A brand identity (logo, colours, print) is quoted separately.`,
+      },
+      {
+        question: "Will I see my site before it goes live?",
+        answer: `Yes, twice. First a homepage mockup with your real text, before the site is built. Then a preview link to test the full site, with ${website.correctionRounds} round of corrections before launch.`,
+      },
+      {
+        question: "Who writes the text?",
+        answer:
+          "It's written for you, from a short call and a simple questionnaire, with nothing invented about your business. You approve it in writing before the design.",
+      },
+      {
+        question: "What happens once the site is live?",
+        answer: `If you want, a monthly plan from ${fromMonthly}/month keeps your site online, secure and up to date, with your small changes done within ${changeDays}. No plan is required.`,
+      },
+      {
+        question: "Do I own my website?",
+        answer: `Yes. ${answers.leaving.en}`,
+      },
+    ],
+  } as Localized<{ question: string; answer: string }[]>,
+};
+
+const cards: ProjectCardData[] = (await getProjects(locale)).map((project) => ({
+  title: project.data.title,
+  sector: project.data.sector,
+  summary: project.data.summary,
+  services: project.data.tags.map((id) => projectTags[id].name[locale]),
+  href: projectPath(project.slug, locale),
+  cover: project.data.cover,
+  coverAlt: project.data.coverAlt,
+}));
+// Dev only: placeholder cards to preview the layout while no project is published.
+if (!cards.length && import.meta.env.DEV) {
+  for (let index = 0; index < 8; index++) {
+    cards.push({
+      title: locale === "fr" ? "Nom du projet" : "Project name",
+      sector: locale === "fr" ? "Secteur" : "Sector",
+      summary:
+        locale === "fr"
+          ? "Courte description du projet : le besoin du client et ce qui a été fait."
+          : "Short project description: what the client needed and what was done.",
+      services: [projectTags.website.name[locale]],
+      href: path("projects", locale),
+    });
+  }
+}
 ---
 
 <Layout
   locale={locale}
-  title={pageNames.projects[locale]}
+  title={titles.projects[locale]}
   description={descriptions.projects[locale]}
   alternates={routes.projects}
 >
-  <h1>{pageNames.projects[locale]}</h1>
-  <ul>
-    {projects.map((project) => (
-      <li>
-        <a href={projectPath(project.slug, locale)}>
-          <Image src={project.data.cover} alt={project.data.coverAlt} width={800} />
-          <h2>{project.data.title}</h2>
-        </a>
-        <p>{project.data.sector}</p>
-        <p>{project.data.summary}</p>
-      </li>
-    ))}
-  </ul>
+  <PageHeader
+    slot="full-width"
+    label={pageNames.projects[locale]}
+    title={t.title[locale]}
+    subtitle={t.subtitle[locale]}
+  />
+
+  {cards.length > 0 && (
+    <ProjectGallery
+      label={pageNames.projects[locale]}
+      cards={cards}
+      statements={t.statements[locale]}
+      signature={t.signature[locale]}
+      placeholder={t.placeholder[locale]}
+    />
+  )}
+
+  <Faq
+    id="projects-faq"
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={t.faq[locale]}
+    contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
+    class={cards.length > 0 ? "pb-24 sm:pb-32" : undefined}
+  />
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
 </Layout>

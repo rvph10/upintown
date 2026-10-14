@@ -1,0 +1,148 @@
+---
+import type { ImageMetadata } from "astro";
+import { Image } from "astro:assets";
+import ArrowUpRight from "./icons/ArrowUpRight.astro";
+
+export interface ProjectCardData {
+  title: string;
+  sector: string;
+  /** One or two sentences, revealed over the image on hover. */
+  summary: string;
+  services: string[];
+  href: string;
+  /** Without a cover, a placeholder is shown (dev preview only). */
+  cover?: ImageMetadata;
+  coverAlt?: string;
+}
+
+interface Props {
+  card: ProjectCardData;
+  /** Taller image, for the middle of a gallery row on large screens. */
+  tall?: boolean;
+  /** Shown in the empty image frame of a placeholder card. */
+  placeholder: string;
+  /** Heading level of the title, so it fits the page outline. */
+  heading?: "h2" | "h3";
+}
+
+const { card, tall = false, placeholder, heading: Heading = "h3" } = Astro.props;
+
+const motion = "duration-500 ease-curtain motion-reduce:transition-none";
+---
+
+<a
+  href={card.href}
+  class="group block rounded-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-iris-strong"
+>
+  <div
+    data-reveal-image
+    class:list={[
+      "relative isolate overflow-hidden rounded-card bg-paper",
+      tall ? "aspect-4/5 lg:aspect-[2/3]" : "aspect-4/5 lg:aspect-square",
+    ]}
+  >
+    <div class:list={["size-full transition-transform group-hocus:scale-[1.04]", motion]}>
+      {card.cover ? (
+        <Image
+          src={card.cover}
+          alt={card.coverAlt ?? ""}
+          widths={[480, 800, 1200]}
+          sizes="(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"
+          class="size-full object-cover"
+        />
+      ) : (
+        <div class="grid size-full place-items-center bg-linear-to-b from-ash-200 to-paper">
+          <span class="text-ui font-medium text-ash-600">{placeholder}</span>
+        </div>
+      )}
+    </div>
+    {/* On devices that hover, a soft shade rises and the summary unfolds from the bottom edge, its text following
+        just after. Touch devices get the summary under the title instead. */}
+    <div
+      class="project-shade pointer-events-none absolute inset-x-0 bottom-0 hidden h-2/3 bg-linear-to-t from-ink/35 to-transparent [@media(hover:hover)]:block"
+      aria-hidden="true"
+    />
+    <div class="project-summary absolute inset-x-3 bottom-3 hidden rounded-3xl bg-white/85 p-5 backdrop-blur-xl backdrop-saturate-150 sm:p-6 [@media(hover:hover)]:block">
+      <p class="project-summary-text leading-relaxed text-pretty text-ink">{card.summary}</p>
+    </div>
+    {/* Arrow rises into the corner on hover. */}
+    <span
+      class:list={[
+        "absolute top-5 right-5 grid size-14 place-items-center rounded-full bg-white text-ink opacity-0 transition-[opacity,scale] scale-75 group-hocus:scale-100 group-hocus:opacity-100",
+        motion,
+      ]}
+      aria-hidden="true"
+    >
+      <ArrowUpRight class="size-6" />
+    </span>
+  </div>
+  <div class="mt-6 flex flex-wrap items-start justify-between gap-x-6 gap-y-3 px-1">
+    <div>
+      <Heading class="text-2xl font-medium tracking-title text-ink">{card.title}</Heading>
+      <p class="mt-1 text-lg text-ash-600">{card.sector}</p>
+      <p class="mt-3 max-w-md leading-relaxed text-pretty text-ash-600 [@media(hover:hover)]:hidden">{card.summary}</p>
+    </div>
+    <ul class="flex flex-wrap gap-2">
+      {card.services.map((service) => (
+        <li class="rounded-full bg-paper px-3 py-1 text-sm font-medium text-ink">{service}</li>
+      ))}
+    </ul>
+  </div>
+</a>
+
+<style>
+  /* Leaves quickly, arrives softly: the panel opens upwards (clip-path), then the text rises into place. */
+  .project-shade {
+    opacity: 0;
+    transition: opacity var(--duration-quick) var(--ease-in-quart);
+  }
+
+  .project-summary {
+    clip-path: inset(100% 0 0 0 round 1.5rem);
+    translate: 0 0.5rem;
+    transition:
+      clip-path var(--duration-quick) var(--ease-in-quart),
+      translate var(--duration-quick) var(--ease-in-quart);
+  }
+
+  .project-summary-text {
+    opacity: 0;
+    translate: 0 0.75rem;
+    filter: blur(4px);
+    transition:
+      opacity var(--duration-instant) var(--ease-in-quart),
+      translate var(--duration-instant) var(--ease-in-quart),
+      filter var(--duration-instant) var(--ease-in-quart);
+  }
+
+  .group:is(:hover, :focus-visible) .project-shade {
+    opacity: 1;
+    transition: opacity var(--duration-base) var(--ease-out-expo);
+  }
+
+  .group:is(:hover, :focus-visible) .project-summary {
+    clip-path: inset(0 0 0 0 round 1.5rem);
+    translate: 0;
+    transition:
+      clip-path var(--duration-base) var(--ease-curtain),
+      translate var(--duration-base) var(--ease-out-expo);
+  }
+
+  .group:is(:hover, :focus-visible) .project-summary-text {
+    opacity: 1;
+    translate: 0;
+    filter: blur(0);
+    transition:
+      opacity var(--duration-base) var(--ease-out-expo) 0.12s,
+      translate var(--duration-slow) var(--ease-out-expo) 0.12s,
+      filter var(--duration-base) var(--ease-out-expo) 0.12s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-shade,
+    .project-summary,
+    .project-summary-text {
+      transition: none !important;
+    }
+  }
+</style>

@@ -1,11 +1,15 @@
 ---
 import { Image } from "astro:assets";
-import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ArrowUpRight from "../components/icons/ArrowUpRight.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
+import Button from "../components/ui/Button.astro";
 import type { Locale } from "../data/i18n";
-import { services } from "../data/offer";
-import { projectAlternates, type Project } from "../data/projects";
-import { path } from "../data/routes";
+import { projectTags, type ProjectTag } from "../data/projectTags";
+import { getProjects, projectAlternates, type Project } from "../data/projects";
+import { path, projectPath } from "../data/routes";
 import { ui } from "../data/ui";
 
 interface Props {
@@ -14,25 +18,195 @@ interface Props {
 }
 
 const { locale, project } = Astro.props;
-const { Content } = await render(project);
+const { data } = project;
 const alternates = await projectAlternates(project.slug);
-const usedServices = services.filter((s) => project.data.services.includes(s.id));
+const tags: ProjectTag[] = data.tags.map((id) => projectTags[id]);
+
+// The next project in the list, wrapping to the first, keeps visitors browsing.
+const projects = await getProjects(locale);
+const nextProject =
+  projects.length > 1
+    ? projects[(projects.findIndex((p) => p.slug === project.slug) + 1) % projects.length]
+    : undefined;
+
+const t = {
+  allProjects: { fr: "Tous les projets", en: "All projects" },
+  visit: { fr: "Voir le site", en: "Visit the site" },
+  facts: { fr: "En bref", en: "At a glance" },
+  sector: { fr: "Secteur", en: "Sector" },
+  services: { fr: "Services", en: "Services" },
+  year: { fr: "Année", en: "Year" },
+  context: { fr: "Le besoin", en: "The need" },
+  work: { fr: "Ce qui a été fait", en: "What was done" },
+  outcome: { fr: "Le résultat", en: "The outcome" },
+  gallery: { fr: "Images du projet", en: "Project images" },
+  next: { fr: "Projet suivant", en: "Next project" },
+  ctaTitle: { fr: "Un projet comme celui-ci ?", en: "A project like this one?" },
+};
+
+const story = [
+  { id: "context", title: t.context[locale], text: data.context },
+  { id: "work", title: t.work[locale], list: data.work },
+  ...(data.outcome ? [{ id: "outcome", title: t.outcome[locale], text: data.outcome }] : []),
+];
+
+// Landscape images span the full width, square and portrait ones go side by side.
+let pairColumn = 0;
+const gallery = data.gallery.map((image) => {
+  const wide = image.src.width / image.src.height >= 1.5;
+  const column = wide ? 0 : pairColumn++ % 2;
+  if (wide) pairColumn = 0;
+  return { ...image, wide, column };
+});
 ---
 
-<Layout locale={locale} title={project.data.title} description={project.data.summary} alternates={alternates}>
-  <article>
-    <h1>{project.data.title}</h1>
-    <p>{project.data.sector}</p>
-    <Image src={project.data.cover} alt={project.data.coverAlt} width={1600} />
-    <ul>
-      {usedServices.map((s) => (
-        <li>
-          <a href={path(s.route, locale)}>{s.name[locale]}</a>
-        </li>
-      ))}
-    </ul>
-    <Content />
-    {project.data.url && <a href={project.data.url}>{project.data.url}</a>}
+<Layout locale={locale} title={data.title} description={data.summary} alternates={alternates}>
+  <PageHeader slot="full-width" label={data.sector} title={data.title} subtitle={data.summary}>
+    <div class="mt-10 flex flex-wrap justify-center gap-3">
+      {data.url && (
+        <Button href={data.url} target="_blank" rel="noopener">
+          {t.visit[locale]}
+        </Button>
+      )}
+      <Button href={path("projects", locale)} tone="surface">
+        {t.allProjects[locale]}
+      </Button>
+    </div>
+  </PageHeader>
+
+  <article aria-labelledby="page-title">
+    <div data-opening-image style="--delay: 300ms" class="relative overflow-hidden rounded-card bg-paper">
+      <Image
+        src={data.banner?.src ?? data.cover}
+        alt={data.banner?.alt ?? data.coverAlt}
+        widths={[800, 1400, 2000]}
+        sizes="(min-width: 90rem) 88rem, 100vw"
+        loading="eager"
+        class="aspect-4/3 w-full object-cover md:aspect-video"
+      />
+    </div>
+
+    {/* Facts on the side, the story of the project in the main column. */}
+    <div class="grid gap-12 py-24 sm:py-32 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <aside data-reveal aria-label={t.facts[locale]} class="lg:sticky lg:top-32 lg:self-start">
+        <dl class="grid gap-6 rounded-3xl bg-paper p-7 sm:p-10">
+          <div>
+            <dt class="text-ui text-ash-600">{t.sector[locale]}</dt>
+            <dd class="mt-1 text-lg font-medium text-ink">{data.sector}</dd>
+          </div>
+          <div>
+            <dt class="text-ui text-ash-600">{t.services[locale]}</dt>
+            <dd class="mt-2">
+              <ul class="flex flex-wrap gap-2">
+                {tags.map((tag) => (
+                  <li>
+                    {tag.route ? (
+                      <a
+                        href={path(tag.route, locale)}
+                        class="inline-flex rounded-full bg-white px-3 py-1 text-sm font-medium text-ink transition-colors duration-200 hover:bg-ink hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-iris-strong motion-reduce:transition-none"
+                      >
+                        {tag.name[locale]}
+                      </a>
+                    ) : (
+                      <span class="inline-flex rounded-full bg-white px-3 py-1 text-sm font-medium text-ink">
+                        {tag.name[locale]}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </dd>
+          </div>
+          <div>
+            <dt class="text-ui text-ash-600">{t.year[locale]}</dt>
+            <dd class="mt-1 text-lg font-medium text-ink">{data.date.getFullYear()}</dd>
+          </div>
+        </dl>
+      </aside>
+
+      <div class="grid gap-16">
+        {story.map((part) => (
+          <section data-reveal aria-labelledby={`project-${part.id}`}>
+            <h2 id={`project-${part.id}`} class="text-3xl font-medium tracking-title text-ink">
+              {part.title}
+            </h2>
+            {part.text && <p class="mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600">{part.text}</p>}
+            {part.list && (
+              <ul class="mt-6 grid gap-4 text-lg text-ink">
+                {part.list.map((item) => (
+                  <li class="flex items-start gap-3">
+                    <Checkmark class="mt-0.5 size-6 flex-none text-volt [--check:var(--color-paper)]" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        ))}
+      </div>
+    </div>
+
+    {data.gallery.length > 0 && (
+      <section aria-label={t.gallery[locale]} class="pb-24 sm:pb-32">
+        <ul data-reveal="group" class="grid gap-x-3 gap-y-10 md:grid-cols-2">
+          {gallery.map((image) => (
+            <li class:list={[image.wide && "md:col-span-2"]}>
+              <figure>
+                <div data-reveal-image class="overflow-hidden rounded-card bg-paper">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    widths={image.wide ? [800, 1400, 2000] : [480, 800, 1200]}
+                    sizes={image.wide ? "(min-width: 90rem) 88rem, 100vw" : "(min-width: 48rem) 50vw, 100vw"}
+                    class:list={["w-full object-cover", image.wide ? "aspect-4/3 md:aspect-video" : "aspect-square"]}
+                  />
+                </div>
+                {image.caption && <figcaption class="mt-4 px-1 text-ui text-ash-600">{image.caption}</figcaption>}
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
   </article>
-  <a href={path("contact", locale)}>{ui.requestQuote[locale]}</a>
+
+  {nextProject && (
+    <nav aria-label={t.next[locale]} class="pb-24 sm:pb-32">
+      <a
+        href={projectPath(nextProject.slug, locale)}
+        data-reveal
+        class="group grid items-center gap-2 rounded-card bg-paper p-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-iris-strong sm:gap-3 sm:p-3 md:grid-cols-2"
+      >
+        <div class="flex flex-col gap-10 p-6 sm:p-10">
+          <span class="text-ui font-semibold text-ash-600">{t.next[locale]}</span>
+          <span class="grid gap-1">
+            <span class="text-3xl font-medium tracking-title text-ink sm:text-4xl">{nextProject.data.title}</span>
+            <span class="text-lg text-ash-600">{nextProject.data.sector}</span>
+          </span>
+          <span
+            class="grid size-14 place-items-center rounded-full bg-ink text-white transition-transform duration-500 ease-curtain group-hocus:rotate-45 motion-reduce:transition-none"
+            aria-hidden="true"
+          >
+            <ArrowUpRight class="size-6" />
+          </span>
+        </div>
+        <div class="overflow-hidden rounded-3xl">
+          <Image
+            src={nextProject.data.cover}
+            alt=""
+            widths={[480, 800, 1200]}
+            sizes="(min-width: 48rem) 50vw, 100vw"
+            class="aspect-4/3 w-full object-cover transition-transform duration-500 ease-curtain group-hocus:scale-[1.04] motion-reduce:transition-none"
+          />
+        </div>
+      </a>
+    </nav>
+  )}
+
+  <CallToAction
+    title={t.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
 </Layout>
