@@ -1,14 +1,14 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { formatPrice, type Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { services } from '../data/offer';
-import { path, routes } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { services } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
-  id: (typeof services)[number]['id'];
+  id: (typeof services)[number]["id"];
 }
 
 const { locale, id } = Astro.props;
@@ -28,7 +28,7 @@ const service = services.find((s) => s.id === id)!;
     {service.monthly && ui.perMonth[locale]}
   </p>
   <p>
-    <a href={path('contact', locale)}>{ui.requestQuote[locale]}</a>
-    <a href={path('pricing', locale)}>{pageNames.pricing[locale]}</a>
+    <a href={path("contact", locale)}>{ui.requestQuote[locale]}</a>
+    <a href={path("pricing", locale)}>{pageNames.pricing[locale]}</a>
   </p>
 </Layout>

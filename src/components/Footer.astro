@@ -1,9 +1,9 @@
 ---
-import { business, contactLinks } from '../data/business';
-import type { Locale } from '../data/i18n';
-import { services } from '../data/offer';
-import { path } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
+import { business, contactLinks } from "../data/business";
+import type { Locale } from "../data/i18n";
+import { services } from "../data/offer";
+import { path } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -15,28 +15,48 @@ const { locale } = Astro.props;
 <footer class="site-width">
   <p>{business.name}</p>
   <ul>
-    {
-      services.map((service) => (
-        <li>
-          <a href={path(service.route, locale)}>{service.name[locale]}</a>
-        </li>
-      ))
-    }
+    {services.map((service) => (
+      <li>
+        <a href={path(service.route, locale)}>{service.name[locale]}</a>
+      </li>
+    ))}
   </ul>
   <address>
     <ul>
-      <li>{ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a></li>
-      <li>{ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a></li>
-      <li><a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a></li>
+      <li>
+        {ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a>
+      </li>
+      <li>
+        {ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a>
+      </li>
+      <li>
+        <a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a>
+      </li>
     </ul>
   </address>
   <ul aria-label={ui.followUs[locale]}>
-    <li><a href={business.social.instagram} rel="me">Instagram</a></li>
-    <li><a href={business.social.linkedin} rel="me">LinkedIn</a></li>
-    <li><a href={business.social.github} rel="me">GitHub</a></li>
+    <li>
+      <a href={business.social.instagram} rel="me">
+        Instagram
+      </a>
+    </li>
+    <li>
+      <a href={business.social.linkedin} rel="me">
+        LinkedIn
+      </a>
+    </li>
+    <li>
+      <a href={business.social.github} rel="me">
+        GitHub
+      </a>
+    </li>
   </ul>
   <ul>
-    <li><a href={path('legalNotice', locale)}>{pageNames.legalNotice[locale]}</a></li>
-    <li><a href={path('privacy', locale)}>{pageNames.privacy[locale]}</a></li>
+    <li>
+      <a href={path("legalNotice", locale)}>{pageNames.legalNotice[locale]}</a>
+    </li>
+    <li>
+      <a href={path("privacy", locale)}>{pageNames.privacy[locale]}</a>
+    </li>
   </ul>
 </footer>

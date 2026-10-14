@@ -1,18 +1,18 @@
 ---
-import { formatPrice, type Locale } from '../data/i18n';
-import { planFeatures, plans } from '../data/offer';
-import { path } from '../data/routes';
-import { ui } from '../data/ui';
+import { formatPrice, type Locale } from "../data/i18n";
+import { planFeatures, plans } from "../data/offer";
+import { path } from "../data/routes";
+import { ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const caption = { fr: 'Formules mensuelles', en: 'Monthly plans' };
-const included = { fr: 'Inclus', en: 'Included' };
-const notIncluded = { fr: 'Non inclus', en: 'Not included' };
-const choose = { fr: 'Choisir', en: 'Choose' };
+const caption = { fr: "Formules mensuelles", en: "Monthly plans" };
+const included = { fr: "Inclus", en: "Included" };
+const notIncluded = { fr: "Non inclus", en: "Not included" };
+const choose = { fr: "Choisir", en: "Choose" };
 ---
 
 <table>
@@ -20,51 +20,47 @@ const choose = { fr: 'Choisir', en: 'Choose' };
   <thead>
     <tr>
       <td></td>
-      {
-        plans.map((plan) => (
-          <th scope="col">
-            {plan.name[locale]}
-            <span>{plan.job[locale]}</span>
-          </th>
-        ))
-      }
+      {plans.map((plan) => (
+        <th scope="col">
+          {plan.name[locale]}
+          <span>{plan.job[locale]}</span>
+        </th>
+      ))}
     </tr>
   </thead>
   <tbody>
-    {
-      planFeatures.map((feature) => (
-        <tr>
-          <th scope="row">{feature.label[locale]}</th>
-          {plans.map((plan) => {
-            const value = feature.plans[plan.id];
-            if (value === true) return <td>{included[locale]}</td>;
-            if (value) return <td>{value[locale]}</td>;
-            return <td>{notIncluded[locale]}</td>;
-          })}
-        </tr>
-      ))
-    }
+    {planFeatures.map((feature) => (
+      <tr>
+        <th scope="row">{feature.label[locale]}</th>
+        {plans.map((plan) => {
+          const value = feature.plans[plan.id];
+          if (value === true) return <td>{included[locale]}</td>;
+          if (value) return <td>{value[locale]}</td>;
+          return <td>{notIncluded[locale]}</td>;
+        })}
+      </tr>
+    ))}
   </tbody>
   <tfoot>
     <tr>
       <th scope="row">{ui.setupFee[locale]}</th>
-      {plans.map((plan) => <td>{plan.setupFee ? formatPrice(plan.setupFee, locale) : '-'}</td>)}
+      {plans.map((plan) => (
+        <td>{plan.setupFee ? formatPrice(plan.setupFee, locale) : "-"}</td>
+      ))}
     </tr>
     <tr>
       <td></td>
-      {
-        plans.map((plan) => (
-          <td>
-            <strong>
-              {formatPrice(plan.monthly, locale)}
-              {ui.perMonth[locale]}
-            </strong>
-            <a href={`${path('contact', locale)}?plan=${plan.id}`}>
-              {choose[locale]} {plan.name[locale]}
-            </a>
-          </td>
-        ))
-      }
+      {plans.map((plan) => (
+        <td>
+          <strong>
+            {formatPrice(plan.monthly, locale)}
+            {ui.perMonth[locale]}
+          </strong>
+          <a href={`${path("contact", locale)}?plan=${plan.id}`}>
+            {choose[locale]} {plan.name[locale]}
+          </a>
+        </td>
+      ))}
     </tr>
   </tfoot>
 </table>

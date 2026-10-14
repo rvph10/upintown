@@ -1,10 +1,10 @@
 ---
-import { Font } from 'astro:assets';
-import '../styles/global.css';
-import Footer from '../components/Footer.astro';
-import Header from '../components/Header.astro';
-import { business } from '../data/business';
-import { defaultLocale, htmlLang, locales, type Locale, type Localized } from '../data/i18n';
+import { Font } from "astro:assets";
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+import Header from "../components/Header.astro";
+import { business } from "../data/business";
+import { defaultLocale, htmlLang, locales, type Locale, type Localized } from "../data/i18n";
 
 interface Props {
   locale: Locale;
@@ -18,25 +18,25 @@ const { locale, title, description, alternates, noindex = false } = Astro.props;
 const site = Astro.site!;
 const canonical = new URL(Astro.url.pathname, site).href;
 const fullTitle = title === business.name ? title : `${title} | ${business.name}`;
-const ogLocale: Localized = { fr: 'fr_BE', en: 'en_GB' };
+const ogLocale: Localized = { fr: "fr_BE", en: "en_GB" };
 
 const organization = {
-  '@context': 'https://schema.org',
-  '@type': 'Organization',
+  "@context": "https://schema.org",
+  "@type": "Organization",
   name: business.name,
   url: business.url,
-  logo: new URL('/favicon.svg', site).href,
+  logo: new URL("/favicon.svg", site).href,
   email: business.email,
   telephone: business.phone.e164,
   areaServed: business.areaServed,
   sameAs: Object.values(business.social),
   contactPoint: {
-    '@type': 'ContactPoint',
-    contactType: 'customer service',
+    "@type": "ContactPoint",
+    contactType: "customer service",
     email: business.email,
     telephone: business.phone.e164,
-    availableLanguage: ['French', 'English'],
-    hoursAvailable: { '@type': 'OpeningHoursSpecification', dayOfWeek: business.openingDays },
+    availableLanguage: ["French", "English"],
+    hoursAvailable: { "@type": "OpeningHoursSpecification", dayOfWeek: business.openingDays },
   },
 };
 ---
@@ -49,17 +49,14 @@ const organization = {
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={canonical} />}
-    {
-      !noindex &&
-        locales.map(
-          (l) => alternates[l] && <link rel="alternate" hreflang={htmlLang[l]} href={new URL(alternates[l], site).href} />,
-        )
-    }
-    {
-      !noindex && alternates[defaultLocale] && (
-        <link rel="alternate" hreflang="x-default" href={new URL(alternates[defaultLocale], site).href} />
-      )
-    }
+    {!noindex &&
+      locales.map(
+        (l) =>
+          alternates[l] && <link rel="alternate" hreflang={htmlLang[l]} href={new URL(alternates[l], site).href} />,
+      )}
+    {!noindex && alternates[defaultLocale] && (
+      <link rel="alternate" hreflang="x-default" href={new URL(alternates[defaultLocale], site).href} />
+    )}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <link rel="sitemap" href="/sitemap-index.xml" />

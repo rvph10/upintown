@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { processors } from '../data/business';
-import type { Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { routes } from '../data/routes';
-import { pageNames } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import { processors } from "../data/business";
+import type { Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { routes } from "../data/routes";
+import { pageNames } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -12,23 +12,26 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = {
-  processors: { fr: 'Prestataires', en: 'Service providers' },
+  processors: { fr: "Prestataires", en: "Service providers" },
 };
 ---
 
-<Layout locale={locale} title={pageNames.privacy[locale]} description={descriptions.privacy[locale]} alternates={routes.privacy}>
+<Layout
+  locale={locale}
+  title={pageNames.privacy[locale]}
+  description={descriptions.privacy[locale]}
+  alternates={routes.privacy}
+>
   <h1>{pageNames.privacy[locale]}</h1>
   <section>
     <h2>{t.processors[locale]}</h2>
     <ul>
-      {
-        processors.map((p) => (
-          <li>
-            {p.name}: {p.purpose[locale]}
-            {'country' in p && <span>({p.country[locale]})</span>}
-          </li>
-        ))
-      }
+      {processors.map((p) => (
+        <li>
+          {p.name}: {p.purpose[locale]}
+          {"country" in p && <span>({p.country[locale]})</span>}
+        </li>
+      ))}
     </ul>
   </section>
 </Layout>

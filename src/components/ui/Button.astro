@@ -1,11 +1,11 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from "astro/types";
 
-type Props = Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type'> & {
+type Props = Omit<HTMLAttributes<"a"> & HTMLAttributes<"button">, "type"> & {
   href?: string;
-  type?: 'button' | 'submit' | 'reset';
-  tone?: 'ink' | 'volt' | 'surface';
-  size?: 'md' | 'lg';
+  type?: "button" | "submit" | "reset";
+  tone?: "ink" | "volt" | "surface";
+  size?: "md" | "lg";
   icon?: boolean;
   full?: boolean;
   disabled?: boolean;
@@ -13,9 +13,9 @@ type Props = Omit<HTMLAttributes<'a'> & HTMLAttributes<'button'>, 'type'> & {
 
 const {
   href,
-  type = 'button',
-  tone = 'ink',
-  size = 'md',
+  type = "button",
+  tone = "ink",
+  size = "md",
   icon = true,
   full = false,
   disabled = false,
@@ -23,12 +23,12 @@ const {
   ...rest
 } = Astro.props;
 
-const Tag = href ? 'a' : 'button';
-const label = await Astro.slots.render('default');
+const Tag = href ? "a" : "button";
+const label = await Astro.slots.render("default");
 ---
 
 <Tag
-  class:list={['btn', `btn-${tone}`, `btn-${size}`, { 'btn-with-icon': icon, 'btn-full': full }, className]}
+  class:list={["btn", `btn-${tone}`, `btn-${size}`, { "btn-with-icon": icon, "btn-full": full }, className]}
   href={href}
   type={href ? undefined : type}
   disabled={href ? undefined : disabled}
@@ -41,20 +41,32 @@ const label = await Astro.slots.render('default');
       <span class="btn-roll-copy" aria-hidden="true" set:html={label} />
     </span>
   </span>
-  {
-    icon && (
-      <span class="btn-dot" aria-hidden="true">
-        <span class="btn-arrow">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
-          </svg>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
-          </svg>
-        </span>
+  {icon && (
+    <span class="btn-dot" aria-hidden="true">
+      <span class="btn-arrow">
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
+        </svg>
+        <svg
+          viewBox="0 0 16 16"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M4.5 11.5l7-7M5.5 4.5h6v6" />
+        </svg>
       </span>
-    )
-  }
+    </span>
+  )}
 </Tag>
 
 <style>

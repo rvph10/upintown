@@ -1,12 +1,12 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import PlanTable from '../components/PlanTable.astro';
-import { formatPrice, type Locale } from '../data/i18n';
-import { legal } from '../data/business';
-import { descriptions } from '../data/meta';
-import { policies, website } from '../data/offer';
-import { path, routes } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import PlanTable from "../components/PlanTable.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { legal } from "../data/business";
+import { descriptions } from "../data/meta";
+import { policies, website } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -14,26 +14,37 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = {
-  website: { fr: 'Création de site internet', en: 'Website creation' },
-  stages: { fr: 'Payé en étapes', en: 'Paid in stages' },
-  extras: { fr: 'Options', en: 'Extras' },
-  extraMailbox: { fr: 'Boîte e-mail supplémentaire', en: 'Extra mailbox' },
-  extraPage: { fr: 'Page supplémentaire', en: 'Extra page' },
-  hourly: { fr: 'Travail sur demande', en: 'Work on request' },
-  perHour: { fr: '/heure', en: '/hour' },
+  website: { fr: "Création de site internet", en: "Website creation" },
+  stages: { fr: "Payé en étapes", en: "Paid in stages" },
+  extras: { fr: "Options", en: "Extras" },
+  extraMailbox: { fr: "Boîte e-mail supplémentaire", en: "Extra mailbox" },
+  extraPage: { fr: "Page supplémentaire", en: "Extra page" },
+  hourly: { fr: "Travail sur demande", en: "Work on request" },
+  perHour: { fr: "/heure", en: "/hour" },
 };
 ---
 
-<Layout locale={locale} title={pageNames.pricing[locale]} description={descriptions.pricing[locale]} alternates={routes.pricing}>
+<Layout
+  locale={locale}
+  title={pageNames.pricing[locale]}
+  description={descriptions.pricing[locale]}
+  alternates={routes.pricing}
+>
   <h1>{pageNames.pricing[locale]}</h1>
   <section>
     <h2>{t.website[locale]}</h2>
-    <p>{ui.from[locale]} {formatPrice(website.fromPrice, locale)}</p>
+    <p>
+      {ui.from[locale]} {formatPrice(website.fromPrice, locale)}
+    </p>
     <h3>{t.stages[locale]}</h3>
     <ol>
-      {website.stages.map((stage) => <li>{stage.name[locale]} ({stage.share}%)</li>)}
+      {website.stages.map((stage) => (
+        <li>
+          {stage.name[locale]} ({stage.share}%)
+        </li>
+      ))}
     </ol>
-    <a href={path('websiteCreation', locale)}>{pageNames.websiteCreation[locale]}</a>
+    <a href={path("websiteCreation", locale)}>{pageNames.websiteCreation[locale]}</a>
   </section>
   <section>
     <PlanTable locale={locale} />
@@ -42,11 +53,17 @@ const t = {
     <h2>{t.extras[locale]}</h2>
     <dl>
       <dt>{t.extraMailbox[locale]}</dt>
-      <dd>{formatPrice(policies.extraMailbox, locale)}{ui.perMonth[locale]}</dd>
+      <dd>
+        {formatPrice(policies.extraMailbox, locale)}
+        {ui.perMonth[locale]}
+      </dd>
       <dt>{t.extraPage[locale]}</dt>
       <dd>{formatPrice(website.extraPage, locale)}</dd>
       <dt>{t.hourly[locale]}</dt>
-      <dd>{formatPrice(policies.hourlyRate, locale)}{t.perHour[locale]}</dd>
+      <dd>
+        {formatPrice(policies.hourlyRate, locale)}
+        {t.perHour[locale]}
+      </dd>
     </dl>
   </section>
   {legal.vatExempt && <p>{legal.vatMention[locale]}</p>}

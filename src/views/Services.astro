@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { formatPrice, type Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { services } from '../data/offer';
-import { path, routes } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { services } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -13,20 +13,23 @@ interface Props {
 const { locale } = Astro.props;
 ---
 
-<Layout locale={locale} title={pageNames.services[locale]} description={descriptions.services[locale]} alternates={routes.services}>
+<Layout
+  locale={locale}
+  title={pageNames.services[locale]}
+  description={descriptions.services[locale]}
+  alternates={routes.services}
+>
   <h1>{pageNames.services[locale]}</h1>
-  {
-    services.map((service) => (
-      <section>
-        <h2>
-          <a href={path(service.route, locale)}>{service.name[locale]}</a>
-        </h2>
-        <p>{descriptions[service.route][locale]}</p>
-        <p>
-          {ui.from[locale]} {formatPrice(service.fromPrice, locale)}
-          {service.monthly && ui.perMonth[locale]}
-        </p>
-      </section>
-    ))
-  }
+  {services.map((service) => (
+    <section>
+      <h2>
+        <a href={path(service.route, locale)}>{service.name[locale]}</a>
+      </h2>
+      <p>{descriptions[service.route][locale]}</p>
+      <p>
+        {ui.from[locale]} {formatPrice(service.fromPrice, locale)}
+        {service.monthly && ui.perMonth[locale]}
+      </p>
+    </section>
+  ))}
 </Layout>

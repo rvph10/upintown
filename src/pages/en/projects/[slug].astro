@@ -1,9 +1,9 @@
 ---
-import Project from '../../../views/Project.astro';
-import { getProjects, type Project as ProjectEntry } from '../../../data/projects';
+import Project from "../../../views/Project.astro";
+import { getProjects, type Project as ProjectEntry } from "../../../data/projects";
 
 export async function getStaticPaths() {
-  const projects = await getProjects('en');
+  const projects = await getProjects("en");
   return projects.map((project) => ({ params: { slug: project.slug }, props: { project } }));
 }
 

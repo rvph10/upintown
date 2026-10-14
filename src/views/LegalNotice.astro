@@ -1,10 +1,10 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { business, contactLinks, legal } from '../data/business';
-import type { Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { routes } from '../data/routes';
-import { pageNames } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import { business, contactLinks, legal } from "../data/business";
+import type { Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { routes } from "../data/routes";
+import { pageNames } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -12,19 +12,24 @@ interface Props {
 
 const { locale } = Astro.props;
 const t = {
-  publisher: { fr: 'Éditeur du site', en: 'Site publisher' },
-  tradeName: { fr: 'Nom commercial', en: 'Trade name' },
-  owner: { fr: 'Responsable', en: 'Owner' },
-  form: { fr: 'Forme juridique', en: 'Legal form' },
-  address: { fr: 'Siège', en: 'Registered address' },
-  companyNumber: { fr: "Numéro d'entreprise (BCE)", en: 'Company number (CBE)' },
-  vat: { fr: 'TVA', en: 'VAT' },
-  contact: { fr: 'Contact', en: 'Contact' },
-  host: { fr: 'Hébergement', en: 'Hosting' },
+  publisher: { fr: "Éditeur du site", en: "Site publisher" },
+  tradeName: { fr: "Nom commercial", en: "Trade name" },
+  owner: { fr: "Responsable", en: "Owner" },
+  form: { fr: "Forme juridique", en: "Legal form" },
+  address: { fr: "Siège", en: "Registered address" },
+  companyNumber: { fr: "Numéro d'entreprise (BCE)", en: "Company number (CBE)" },
+  vat: { fr: "TVA", en: "VAT" },
+  contact: { fr: "Contact", en: "Contact" },
+  host: { fr: "Hébergement", en: "Hosting" },
 };
 ---
 
-<Layout locale={locale} title={pageNames.legalNotice[locale]} description={descriptions.legalNotice[locale]} alternates={routes.legalNotice}>
+<Layout
+  locale={locale}
+  title={pageNames.legalNotice[locale]}
+  description={descriptions.legalNotice[locale]}
+  alternates={routes.legalNotice}
+>
   <h1>{pageNames.legalNotice[locale]}</h1>
   <section>
     <h2>{t.publisher[locale]}</h2>
@@ -42,7 +47,10 @@ const t = {
       <dt>{t.companyNumber[locale]}</dt>
       <dd>{legal.companyNumber}</dd>
       <dt>{t.vat[locale]}</dt>
-      <dd>{legal.vatNumber}{legal.vatExempt && <span>. {legal.vatMention[locale]}</span>}</dd>
+      <dd>
+        {legal.vatNumber}
+        {legal.vatExempt && <span>. {legal.vatMention[locale]}</span>}
+      </dd>
       <dt>{t.contact[locale]}</dt>
       <dd>
         <a href={contactLinks.email}>{business.email}</a>, <a href={contactLinks.phone}>{business.phone.display}</a>
@@ -51,6 +59,8 @@ const t = {
   </section>
   <section>
     <h2>{t.host[locale]}</h2>
-    <p>{legal.host.name}, {legal.host.address}. <a href={legal.host.url}>{legal.host.url}</a></p>
+    <p>
+      {legal.host.name}, {legal.host.address}. <a href={legal.host.url}>{legal.host.url}</a>
+    </p>
   </section>
 </Layout>

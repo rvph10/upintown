@@ -1,11 +1,11 @@
 ---
-import { Image } from 'astro:assets';
-import Layout from '../layouts/Layout.astro';
-import type { Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { getProjects } from '../data/projects';
-import { projectPath, routes } from '../data/routes';
-import { pageNames } from '../data/ui';
+import { Image } from "astro:assets";
+import Layout from "../layouts/Layout.astro";
+import type { Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { getProjects } from "../data/projects";
+import { projectPath, routes } from "../data/routes";
+import { pageNames } from "../data/ui";
 
 interface Props {
   locale: Locale;
@@ -15,20 +15,23 @@ const { locale } = Astro.props;
 const projects = await getProjects(locale);
 ---
 
-<Layout locale={locale} title={pageNames.projects[locale]} description={descriptions.projects[locale]} alternates={routes.projects}>
+<Layout
+  locale={locale}
+  title={pageNames.projects[locale]}
+  description={descriptions.projects[locale]}
+  alternates={routes.projects}
+>
   <h1>{pageNames.projects[locale]}</h1>
   <ul>
-    {
-      projects.map((project) => (
-        <li>
-          <a href={projectPath(project.slug, locale)}>
-            <Image src={project.data.cover} alt={project.data.coverAlt} width={800} />
-            <h2>{project.data.title}</h2>
-          </a>
-          <p>{project.data.sector}</p>
-          <p>{project.data.summary}</p>
-        </li>
-      ))
-    }
+    {projects.map((project) => (
+      <li>
+        <a href={projectPath(project.slug, locale)}>
+          <Image src={project.data.cover} alt={project.data.coverAlt} width={800} />
+          <h2>{project.data.title}</h2>
+        </a>
+        <p>{project.data.sector}</p>
+        <p>{project.data.summary}</p>
+      </li>
+    ))}
   </ul>
 </Layout>

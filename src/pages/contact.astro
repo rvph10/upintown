@@ -1,10 +1,10 @@
 ---
-import Contact from '../views/Contact.astro';
-import { handleContact } from '../lib/contact';
+import Contact from "../views/Contact.astro";
+import { handleContact } from "../lib/contact";
 
 export const prerender = false;
 
-const result = await handleContact(Astro, 'fr');
+const result = await handleContact(Astro, "fr");
 if (result instanceof Response) return result;
 ---
 

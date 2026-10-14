@@ -1,7 +1,7 @@
 ---
-import type { HTMLAttributes } from 'astro/types';
+import type { HTMLAttributes } from "astro/types";
 
-type Props = Omit<HTMLAttributes<'input'>, 'id' | 'name' | 'value'> & {
+type Props = Omit<HTMLAttributes<"input">, "id" | "name" | "value"> & {
   id: string;
   name?: string;
   label: string;
@@ -16,7 +16,7 @@ const {
   id,
   name = id,
   label,
-  value = '',
+  value = "",
   hint,
   error,
   multiline = false,
@@ -26,38 +26,40 @@ const {
   ...rest
 } = Astro.props;
 
-const describedBy = [error && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(' ') || undefined;
-const shared: HTMLAttributes<'input'> & HTMLAttributes<'textarea'> = {
+const describedBy = [error && `${id}-error`, hint && `${id}-hint`].filter(Boolean).join(" ") || undefined;
+const shared: HTMLAttributes<"input"> & HTMLAttributes<"textarea"> = {
   id,
   name,
-  class: 'field-control',
+  class: "field-control",
   placeholder,
-  'aria-invalid': error ? true : undefined,
-  'aria-describedby': describedBy,
+  "aria-invalid": error ? true : undefined,
+  "aria-describedby": describedBy,
 };
 ---
 
-<div class:list={['field', { 'field-multiline': multiline, 'field-invalid': error }, className]}>
-  <label for={id} class="field-label">{label}</label>
-  {
-    multiline ? (
-      <textarea {...shared} rows={rows} {...(rest as HTMLAttributes<'textarea'>)}>{value}</textarea>
-    ) : (
-      <input {...shared} value={value} {...rest} />
-    )
-  }
-  {
-    error && (
-      <p id={`${id}-error`} class="field-message field-error">
-        <svg viewBox="0 0 16 16" aria-hidden="true">
-          <circle cx="8" cy="8" r="7" fill="currentColor" />
-          <path d="M8 4.5v4M8 11v.5" stroke="var(--color-surface)" stroke-width="1.75" stroke-linecap="round" />
-        </svg>
-        {error}
-      </p>
-    )
-  }
-  {hint && <p id={`${id}-hint`} class="field-message field-hint">{hint}</p>}
+<div class:list={["field", { "field-multiline": multiline, "field-invalid": error }, className]}>
+  <label for={id} class="field-label">
+    {label}
+  </label>
+  {multiline ? (
+    <textarea {...shared} rows={rows} {...(rest as HTMLAttributes<"textarea">)}>{value}</textarea>
+  ) : (
+    <input {...shared} value={value} {...rest} />
+  )}
+  {error && (
+    <p id={`${id}-error`} class="field-message field-error">
+      <svg viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="8" cy="8" r="7" fill="currentColor" />
+        <path d="M8 4.5v4M8 11v.5" stroke="var(--color-surface)" stroke-width="1.75" stroke-linecap="round" />
+      </svg>
+      {error}
+    </p>
+  )}
+  {hint && (
+    <p id={`${id}-hint`} class="field-message field-hint">
+      {hint}
+    </p>
+  )}
 </div>
 
 <style>

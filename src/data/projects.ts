@@ -1,14 +1,14 @@
-import { getCollection, type CollectionEntry } from 'astro:content';
-import type { Locale, Localized } from './i18n';
-import { projectPath } from './routes';
+import { getCollection, type CollectionEntry } from "astro:content";
+import type { Locale, Localized } from "./i18n";
+import { projectPath } from "./routes";
 
-export type Project = CollectionEntry<'projects'> & { locale: Locale; slug: string };
+export type Project = CollectionEntry<"projects"> & { locale: Locale; slug: string };
 
 export async function getProjects(locale?: Locale): Promise<Project[]> {
-  const entries = await getCollection('projects');
+  const entries = await getCollection("projects");
   return entries
     .map((entry) => {
-      const [entryLocale, slug] = entry.id.split('/') as [Locale, string];
+      const [entryLocale, slug] = entry.id.split("/") as [Locale, string];
       return { ...entry, locale: entryLocale, slug };
     })
     .filter((project) => !locale || project.locale === locale)
@@ -18,6 +18,8 @@ export async function getProjects(locale?: Locale): Promise<Project[]> {
 export async function projectAlternates(slug: string): Promise<Partial<Localized>> {
   const all = await getProjects();
   return Object.fromEntries(
-    all.filter((project) => project.slug === slug).map((project) => [project.locale, projectPath(slug, project.locale)]),
+    all
+      .filter((project) => project.slug === slug)
+      .map((project) => [project.locale, projectPath(slug, project.locale)]),
   );
 }

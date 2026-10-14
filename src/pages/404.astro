@@ -1,23 +1,27 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { locales } from '../data/i18n';
-import { path } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
+import Layout from "../layouts/Layout.astro";
+import { locales } from "../data/i18n";
+import { path } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
 
-const alternates = Object.fromEntries(locales.map((l) => [l, path('home', l)]));
+const alternates = Object.fromEntries(locales.map((l) => [l, path("home", l)]));
 ---
 
 <Layout locale="fr" title={ui.notFoundTitle.fr} description={ui.notFoundTitle.fr} alternates={alternates} noindex>
-  {
-    locales.map((locale) => (
-      <section lang={locale}>
-        <h1>{ui.notFoundTitle[locale]}</h1>
-        <ul>
-          <li><a href={path('home', locale)}>{pageNames.home[locale]}</a></li>
-          <li><a href={path('services', locale)}>{pageNames.services[locale]}</a></li>
-          <li><a href={path('contact', locale)}>{pageNames.contact[locale]}</a></li>
-        </ul>
-      </section>
-    ))
-  }
+  {locales.map((locale) => (
+    <section lang={locale}>
+      <h1>{ui.notFoundTitle[locale]}</h1>
+      <ul>
+        <li>
+          <a href={path("home", locale)}>{pageNames.home[locale]}</a>
+        </li>
+        <li>
+          <a href={path("services", locale)}>{pageNames.services[locale]}</a>
+        </li>
+        <li>
+          <a href={path("contact", locale)}>{pageNames.contact[locale]}</a>
+        </li>
+      </ul>
+    </section>
+  ))}
 </Layout>

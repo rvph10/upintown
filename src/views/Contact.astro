@@ -1,12 +1,12 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { business, contactLinks } from '../data/business';
-import type { Locale } from '../data/i18n';
-import { descriptions } from '../data/meta';
-import { plans, services } from '../data/offer';
-import { routes } from '../data/routes';
-import { pageNames, ui } from '../data/ui';
-import type { ContactForm, ContactState, FieldError } from '../lib/contact';
+import Layout from "../layouts/Layout.astro";
+import { business, contactLinks } from "../data/business";
+import type { Locale } from "../data/i18n";
+import { descriptions } from "../data/meta";
+import { plans, services } from "../data/offer";
+import { routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
+import type { ContactForm, ContactState, FieldError } from "../lib/contact";
 
 interface Props extends ContactState {
   locale: Locale;
@@ -15,20 +15,20 @@ interface Props extends ContactState {
 const { locale, form, errors, status } = Astro.props;
 
 const t = {
-  name: { fr: 'Nom', en: 'Name' },
-  email: { fr: 'E-mail', en: 'Email' },
-  business: { fr: 'Entreprise ou site actuel', en: 'Business or current website' },
-  need: { fr: 'Votre besoin', en: 'What you need' },
-  other: { fr: 'Autre chose', en: 'Something else' },
-  plan: { fr: 'Formule', en: 'Plan' },
-  noPlan: { fr: 'Pas encore décidé', en: 'Not decided yet' },
-  message: { fr: 'Message', en: 'Message' },
-  source: { fr: 'Comment avez-vous connu UpInTown ?', en: 'How did you hear about UpInTown?' },
-  optional: { fr: 'facultatif', en: 'optional' },
-  submit: { fr: 'Envoyer le message', en: 'Send message' },
+  name: { fr: "Nom", en: "Name" },
+  email: { fr: "E-mail", en: "Email" },
+  business: { fr: "Entreprise ou site actuel", en: "Business or current website" },
+  need: { fr: "Votre besoin", en: "What you need" },
+  other: { fr: "Autre chose", en: "Something else" },
+  plan: { fr: "Formule", en: "Plan" },
+  noPlan: { fr: "Pas encore décidé", en: "Not decided yet" },
+  message: { fr: "Message", en: "Message" },
+  source: { fr: "Comment avez-vous connu UpInTown ?", en: "How did you hear about UpInTown?" },
+  optional: { fr: "facultatif", en: "optional" },
+  submit: { fr: "Envoyer le message", en: "Send message" },
   sent: {
-    fr: 'Message envoyé. Un e-mail de confirmation vient de vous être envoyé.',
-    en: 'Message sent. A confirmation email is on its way.',
+    fr: "Message envoyé. Un e-mail de confirmation vient de vous être envoyé.",
+    en: "Message sent. A confirmation email is on its way.",
   },
   failed: {
     fr: `Le message n'a pas pu être envoyé. Réessayez ou écrivez à ${business.email}.`,
@@ -38,109 +38,154 @@ const t = {
     fr: `Trop de messages envoyés depuis cette connexion. Écrivez à ${business.email}.`,
     en: `Too many messages sent from this connection. Write to ${business.email}.`,
   },
-  errorSummary: { fr: 'Vérifiez les champs suivants :', en: 'Please check these fields:' },
+  errorSummary: { fr: "Vérifiez les champs suivants :", en: "Please check these fields:" },
 };
 
 const errorText: Record<FieldError, { fr: string; en: string }> = {
-  required: { fr: 'Ce champ est obligatoire.', en: 'This field is required.' },
-  invalid: { fr: "Cette adresse e-mail n'est pas valide.", en: 'This email address is not valid.' },
-  tooLong: { fr: 'Ce texte est trop long.', en: 'This text is too long.' },
+  required: { fr: "Ce champ est obligatoire.", en: "This field is required." },
+  invalid: { fr: "Cette adresse e-mail n'est pas valide.", en: "This email address is not valid." },
+  tooLong: { fr: "Ce texte est trop long.", en: "This text is too long." },
 };
 
 const fieldErrors = Object.entries(errors) as [keyof ContactForm, FieldError][];
-const needOptions = [...services.map((s) => ({ value: s.id, label: s.name[locale] })), { value: 'other', label: t.other[locale] }];
-const invalid = (field: keyof ContactForm) => (errors[field] ? 'true' : undefined);
+const needOptions = [
+  ...services.map((s) => ({ value: s.id, label: s.name[locale] })),
+  { value: "other", label: t.other[locale] },
+];
+const invalid = (field: keyof ContactForm) => (errors[field] ? "true" : undefined);
 const describedBy = (field: keyof ContactForm) => (errors[field] ? `${field}-error` : undefined);
 ---
 
-<Layout locale={locale} title={pageNames.contact[locale]} description={descriptions.contact[locale]} alternates={routes.contact}>
+<Layout
+  locale={locale}
+  title={pageNames.contact[locale]}
+  description={descriptions.contact[locale]}
+  alternates={routes.contact}
+>
   <h1>{pageNames.contact[locale]}</h1>
   <p>{descriptions.contact[locale]}</p>
 
-  {status === 'sent' && <p role="status">{t.sent[locale]}</p>}
-  {status === 'failed' && <p role="alert">{t.failed[locale]}</p>}
-  {status === 'limited' && <p role="alert">{t.limited[locale]}</p>}
-  {
-    fieldErrors.length > 0 && (
-      <div role="alert">
-        <p>{t.errorSummary[locale]}</p>
-        <ul>
-          {fieldErrors.map(([field]) => (
-            <li>
-              <a href={`#${field}`}>{t[field][locale]}</a>
-            </li>
-          ))}
-        </ul>
-      </div>
-    )
-  }
+  {status === "sent" && <p role="status">{t.sent[locale]}</p>}
+  {status === "failed" && <p role="alert">{t.failed[locale]}</p>}
+  {status === "limited" && <p role="alert">{t.limited[locale]}</p>}
+  {fieldErrors.length > 0 && (
+    <div role="alert">
+      <p>{t.errorSummary[locale]}</p>
+      <ul>
+        {fieldErrors.map(([field]) => (
+          <li>
+            <a href={`#${field}`}>{t[field][locale]}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
 
-  {
-    status !== 'sent' && (
-      <form method="post" novalidate>
-        <p>
-          <label for="name">{t.name[locale]}</label>
-          <input id="name" name="name" autocomplete="name" required maxlength="100" value={form.name} aria-invalid={invalid('name')} aria-describedby={describedBy('name')} />
-          {errors.name && <span id="name-error">{errorText[errors.name][locale]}</span>}
-        </p>
-        <p>
-          <label for="email">{t.email[locale]}</label>
-          <input id="email" name="email" type="email" autocomplete="email" required maxlength="254" value={form.email} aria-invalid={invalid('email')} aria-describedby={describedBy('email')} />
-          {errors.email && <span id="email-error">{errorText[errors.email][locale]}</span>}
-        </p>
-        <p>
-          <label for="business">
-            {t.business[locale]} ({t.optional[locale]})
+  {status !== "sent" && (
+    <form method="post" novalidate>
+      <p>
+        <label for="name">{t.name[locale]}</label>
+        <input
+          id="name"
+          name="name"
+          autocomplete="name"
+          required
+          maxlength="100"
+          value={form.name}
+          aria-invalid={invalid("name")}
+          aria-describedby={describedBy("name")}
+        />
+        {errors.name && <span id="name-error">{errorText[errors.name][locale]}</span>}
+      </p>
+      <p>
+        <label for="email">{t.email[locale]}</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          autocomplete="email"
+          required
+          maxlength="254"
+          value={form.email}
+          aria-invalid={invalid("email")}
+          aria-describedby={describedBy("email")}
+        />
+        {errors.email && <span id="email-error">{errorText[errors.email][locale]}</span>}
+      </p>
+      <p>
+        <label for="business">
+          {t.business[locale]} ({t.optional[locale]})
+        </label>
+        <input
+          id="business"
+          name="business"
+          autocomplete="organization"
+          maxlength="200"
+          value={form.business}
+          aria-invalid={invalid("business")}
+          aria-describedby={describedBy("business")}
+        />
+        {errors.business && <span id="business-error">{errorText[errors.business][locale]}</span>}
+      </p>
+      <fieldset id="need" aria-describedby={describedBy("need")}>
+        <legend>{t.need[locale]}</legend>
+        {needOptions.map((option) => (
+          <label>
+            <input type="radio" name="need" value={option.value} required checked={form.need === option.value} />
+            {option.label}
           </label>
-          <input id="business" name="business" autocomplete="organization" maxlength="200" value={form.business} aria-invalid={invalid('business')} aria-describedby={describedBy('business')} />
-          {errors.business && <span id="business-error">{errorText[errors.business][locale]}</span>}
-        </p>
-        <fieldset id="need" aria-describedby={describedBy('need')}>
-          <legend>{t.need[locale]}</legend>
-          {needOptions.map((option) => (
-            <label>
-              <input type="radio" name="need" value={option.value} required checked={form.need === option.value} />
-              {option.label}
-            </label>
+        ))}
+        {errors.need && <span id="need-error">{errorText[errors.need][locale]}</span>}
+      </fieldset>
+      <p>
+        <label for="plan">
+          {t.plan[locale]} ({t.optional[locale]})
+        </label>
+        <select id="plan" name="plan">
+          <option value="">{t.noPlan[locale]}</option>
+          {plans.map((plan) => (
+            <option value={plan.id} selected={form.plan === plan.id}>
+              {plan.name[locale]}
+            </option>
           ))}
-          {errors.need && <span id="need-error">{errorText[errors.need][locale]}</span>}
-        </fieldset>
-        <p>
-          <label for="plan">
-            {t.plan[locale]} ({t.optional[locale]})
-          </label>
-          <select id="plan" name="plan">
-            <option value="">{t.noPlan[locale]}</option>
-            {plans.map((plan) => (
-              <option value={plan.id} selected={form.plan === plan.id}>
-                {plan.name[locale]}
-              </option>
-            ))}
-          </select>
-        </p>
-        <p>
-          <label for="message">{t.message[locale]}</label>
-          <textarea id="message" name="message" rows="6" required maxlength="5000" aria-invalid={invalid('message')} aria-describedby={describedBy('message')}>{form.message}</textarea>
-          {errors.message && <span id="message-error">{errorText[errors.message][locale]}</span>}
-        </p>
-        <p>
-          <label for="source">
-            {t.source[locale]} ({t.optional[locale]})
-          </label>
-          <input id="source" name="source" maxlength="200" value={form.source} />
-        </p>
-        <div hidden>
-          <label for="fax">Fax</label>
-          <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
-        </div>
-        <button type="submit">{t.submit[locale]}</button>
-      </form>
-    )
-  }
+        </select>
+      </p>
+      <p>
+        <label for="message">{t.message[locale]}</label>
+        <textarea
+          id="message"
+          name="message"
+          rows="6"
+          required
+          maxlength="5000"
+          aria-invalid={invalid("message")}
+          aria-describedby={describedBy("message")}
+        >{form.message}</textarea>
+        {errors.message && <span id="message-error">{errorText[errors.message][locale]}</span>}
+      </p>
+      <p>
+        <label for="source">
+          {t.source[locale]} ({t.optional[locale]})
+        </label>
+        <input id="source" name="source" maxlength="200" value={form.source} />
+      </p>
+      <div hidden>
+        <label for="fax">Fax</label>
+        <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
+      </div>
+      <button type="submit">{t.submit[locale]}</button>
+    </form>
+  )}
 
   <ul>
-    <li>{ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a></li>
-    <li>{ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a></li>
-    <li><a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a></li>
+    <li>
+      {ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a>
+    </li>
+    <li>
+      {ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a>
+    </li>
+    <li>
+      <a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a>
+    </li>
   </ul>
 </Layout>
