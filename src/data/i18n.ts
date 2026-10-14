@@ -5,6 +5,7 @@ export const defaultLocale: Locale = "fr";
 export type Localized<T = string> = Record<Locale, T>;
 
 export const htmlLang: Localized = { fr: "fr-BE", en: "en" };
+export const ogLocale: Localized = { fr: "fr_BE", en: "en_GB" };
 
 export function formatPrice(amount: number, locale: Locale): string {
   return new Intl.NumberFormat(htmlLang[locale], {
@@ -17,4 +18,9 @@ export function formatPrice(amount: number, locale: Locale): string {
 export function workingDays(count: number, locale: Locale): string {
   if (locale === "fr") return `${count} jour${count > 1 ? "s" : ""} ouvrable${count > 1 ? "s" : ""}`;
   return count === 1 ? "one working day" : `${count} working days`;
+}
+
+/** Lowercases the first letter only, so names inside the text keep their capitals. */
+export function lowerFirst(text: string): string {
+  return text.charAt(0).toLocaleLowerCase() + text.slice(1);
 }
