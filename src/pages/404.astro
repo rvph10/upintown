@@ -1,27 +1,68 @@
 ---
+import CallToAction from "../components/CallToAction.astro";
+import ShaderBackground from "../components/ShaderBackground.astro";
+import Star from "../components/icons/Star.astro";
+import Badge from "../components/ui/Badge.astro";
+import Button from "../components/ui/Button.astro";
 import Layout from "../layouts/Layout.astro";
-import { locales } from "../data/i18n";
+import { locales, type Locale } from "../data/i18n";
 import { path } from "../data/routes";
-import { pageNames, ui } from "../data/ui";
+import { ui } from "../data/ui";
 
+// Rendered on demand so the page speaks the language of the missing address.
+export const prerender = false;
+
+const { pathname } = Astro.url;
+const locale: Locale = pathname === "/en" || pathname.startsWith("/en/") ? "en" : "fr";
 const alternates = Object.fromEntries(locales.map((l) => [l, path("home", l)]));
+
+const t = {
+  title: {
+    fr: "Cette page n'existe pas ou a été déplacée.",
+    en: "This page is not available right now.",
+  },
+  text: {
+    fr: "Le lien est peut-être ancien ou mal saisi. Revenez à l'accueil ou découvrez ce qu'UpInTown peut faire pour vous.",
+    en: "The link may be old or mistyped. Head back home or see what UpInTown can do for you.",
+  },
+  home: { fr: "Retour à l'accueil", en: "Back to home" },
+  services: { fr: "Voir les services", en: "See the services" },
+};
 ---
 
-<Layout locale="fr" title={ui.notFoundTitle.fr} description={ui.notFoundTitle.fr} alternates={alternates} noindex>
-  {locales.map((locale) => (
-    <section lang={locale}>
-      <h1>{ui.notFoundTitle[locale]}</h1>
-      <ul>
-        <li>
-          <a href={path("home", locale)}>{pageNames.home[locale]}</a>
-        </li>
-        <li>
-          <a href={path("services", locale)}>{pageNames.services[locale]}</a>
-        </li>
-        <li>
-          <a href={path("contact", locale)}>{pageNames.contact[locale]}</a>
-        </li>
-      </ul>
-    </section>
-  ))}
+<Layout locale={locale} title={ui.notFoundTitle[locale]} description={t.text[locale]} alternates={alternates} noindex>
+  <section
+    slot="full-width"
+    aria-labelledby="not-found-title"
+    class="relative isolate grid min-h-svh place-items-center overflow-hidden bg-paper px-4 pt-32 pb-24"
+  >
+    <ShaderBackground class="absolute inset-0 -z-10" />
+    <div class="flex max-w-5xl flex-col items-center text-center">
+      <Badge tone="glass">
+        <Star slot="icon" class="-m-0.5 size-4.5 text-blush" data-spin />
+        404
+      </Badge>
+      <h1 id="not-found-title" class="mt-8 text-display font-semibold text-balance text-ink">
+        {t.title[locale]}
+      </h1>
+      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600 sm:text-xl">{t.text[locale]}</p>
+      <div class="mt-10 flex flex-wrap justify-center gap-3">
+        <Button href={path("home", locale)} size="lg">
+          {t.home[locale]}
+        </Button>
+        <Button href={path("services", locale)} size="lg" tone="surface">
+          {t.services[locale]}
+        </Button>
+      </div>
+    </div>
+  </section>
+
+  <div class="pt-24 sm:pt-32">
+    <CallToAction
+      title={ui.ctaTitle[locale]}
+      text={ui.ctaText[locale]}
+      primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+      call={ui.ctaCall[locale]}
+    />
+  </div>
 </Layout>

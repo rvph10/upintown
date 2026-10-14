@@ -1,0 +1,46 @@
+---
+import ShaderBackground from "./ShaderBackground.astro";
+import Badge from "./ui/Badge.astro";
+import Words from "./ui/Words.astro";
+
+interface Props {
+  label: string;
+  title: string;
+  subtitle?: string;
+  /** Color of the section below, passed to the shader fade. */
+  fadeTo?: string;
+}
+
+const { label, title, subtitle, fadeTo } = Astro.props;
+---
+
+{/* Short shader header for inner pages: badge, title, optional subtitle, then anything in the slot (date, marquee). */}
+<section
+  aria-labelledby="page-title"
+  data-opening
+  class="relative isolate overflow-hidden bg-paper pt-36 pb-16 sm:pt-44 sm:pb-24"
+>
+  <ShaderBackground fadeTo={fadeTo} class="absolute inset-0 -z-10" />
+  <div class="site-width flex flex-col items-center text-center">
+    <Badge tone="glass" data-opening-step>
+      {label}
+    </Badge>
+    <h1 id="page-title" class="mt-6 max-w-4xl text-section font-semibold text-balance text-ink">
+      <Words text={title} />
+    </h1>
+    {subtitle && (
+      <p
+        data-opening-step
+        style="--delay: 260ms"
+        class="mt-5 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600 sm:text-xl"
+      >
+        {subtitle}
+      </p>
+    )}
+    {Astro.slots.has("default") && (
+      <div data-opening-step style="--delay: 380ms" class="flex w-full flex-col items-center">
+        <slot />
+      </div>
+    )}
+  </div>
+</section>

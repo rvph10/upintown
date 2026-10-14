@@ -1,171 +1,396 @@
 ---
-import Logo from "./Logo.astro";
-import Button from "./ui/Button.astro";
-import { business } from "../data/business";
+import { business, contactLinks } from "../data/business";
 import { locales, type Locale, type Localized } from "../data/i18n";
+import { services } from "../data/offer";
 import { path } from "../data/routes";
 import { mainNav, pageNames, ui } from "../data/ui";
+import ArrowUpRight from "./icons/ArrowUpRight.astro";
+import Desktop from "./icons/Desktop.astro";
+import Location from "./icons/Location.astro";
+import WhatsApp from "./icons/WhatsApp.astro";
+import Wrench from "./icons/Wrench.astro";
+import Button from "./ui/Button.astro";
+import RollText from "./ui/RollText.astro";
+import Logo from "./Logo.astro";
 
 interface Props {
   locale: Locale;
+  /** Same page in each language; without a translation the switch leads to the other home page. */
   alternates: Partial<Localized>;
+  /** Floats over the page so a full-width section can sit underneath. */
+  overlay?: boolean;
 }
 
-const { locale, alternates } = Astro.props;
-const current = Astro.url.pathname;
+const { locale, alternates, overlay = false } = Astro.props;
 const otherLocale = locales.find((l) => l !== locale)!;
-const otherPath = alternates[otherLocale];
-const menuLabel = { fr: "Menu", en: "Menu" };
+const languageSwitch = {
+  href: alternates[otherLocale] ?? path("home", otherLocale),
+  locale: otherLocale,
+  label: ui.languageName[otherLocale],
+};
+const current = Astro.url.pathname;
 
-const links = mainNav.map((route) => {
-  const href = path(route, locale);
-  return { href, label: pageNames[route][locale], current: current === href || current.startsWith(`${href}/`) };
+const servicesMenu = {
+  open: { fr: "Afficher les services", en: "Show services" },
+};
+const menuLabel = { fr: "Menu", en: "Menu" };
+const whatsappLabel = { fr: "Écrire sur WhatsApp", en: "Message on WhatsApp" };
+
+// Service links appear in both the desktop services menu and the mobile menu.
+const serviceItem =
+  "group flex items-center gap-4 rounded-2xl p-3 pr-4 transition-colors duration-300 hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-iris-strong motion-reduce:transition-none";
+const serviceIcon =
+  "grid size-11 flex-none place-items-center rounded-xl bg-paper transition-colors duration-300 group-hocus:bg-white motion-reduce:transition-none";
+const panel = "h-0 overflow-hidden";
+
+const serviceIcons = { website: Desktop, care: Wrench, google: Location };
+const serviceLinks = services.map((service) => ({
+  href: path(service.route, locale),
+  name: service.name[locale],
+  tagline: service.tagline[locale],
+  Icon: serviceIcons[service.id],
+}));
+
+const links = mainNav.map(({ route, hash, label }) => {
+  const page = path(route, locale);
+  return {
+    route,
+    href: hash ? `${page}#${hash}` : page,
+    label: (label ?? pageNames[route])[locale],
+    // A section link never marks the current page.
+    current: !hash && (current === page || current.startsWith(`${page}/`)),
+  };
 });
 ---
 
-<header
-  data-header
-  class="sticky top-0 z-50 transition-[background-color,box-shadow] duration-300 data-scrolled:bg-paper/85 data-scrolled:shadow-[0_1px_0_var(--color-ash-200)] data-scrolled:backdrop-blur-xl"
->
-  <a
-    href="#content"
-    class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-10 focus:rounded-full focus:bg-ink focus:px-5 focus:py-3 focus:text-paper"
+<!-- Sticky wrapper; with a full-width hero it takes no height so the page slides underneath. -->
+<div class:list={["sticky top-0 z-50 flow-root", overlay && "h-0"]}>
+  <header
+    data-header
+    class="group/header relative mx-auto my-4 w-[calc(100%-1.5rem)] max-w-max rounded-[1.875rem] bg-surface/80 backdrop-blur-lg p-2 transition-shadow duration-500 data-open:bg-surface/70 data-open:shadow-2xl data-open:shadow-ink/15 data-open:inset-ring data-open:inset-ring-ash-200 motion-reduce:transition-none"
   >
-    {ui.skipToContent[locale]}
-  </a>
-  <div class="site-width flex h-20 items-center justify-between gap-6">
-    <a href={path("home", locale)} class="flex items-center gap-2.5 rounded-full text-xl font-semibold tracking-tight">
-      <Logo class="h-7 w-auto" />
-      <span>{business.name}</span>
+    <a
+      href="#content"
+      class="sr-only rounded-full bg-ink text-ui font-semibold whitespace-nowrap text-white focus:not-sr-only focus:absolute focus:px-5 focus:py-3 focus:top-full focus:left-0 focus:mt-2 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-iris-strong"
+    >
+      {ui.skipToContent[locale]}
     </a>
+    <div class="flex items-center justify-between gap-3 md:gap-12 lg:gap-36">
+      <a href={path("home", locale)} class="flex flex-none items-center justify-center rounded-full pl-2">
+        <Logo class="size-9 text-ink" />
+        <span class="sr-only">{business.name}</span>
+      </a>
+      <nav class="max-md:hidden" aria-label={ui.mainNavLabel[locale]}>
+        <ul class="flex gap-6 text-ui font-semibold whitespace-nowrap">
+          {links.map((link) => (
+            <li
+              data-services={link.route === "services" ? "" : undefined}
+              data-nav-item
+              class="flex items-center gap-1"
+            >
+              <a href={link.href} aria-current={link.current ? "page" : undefined} class="group block text-ink">
+                <RollText>{link.label}</RollText>
+              </a>
+              {link.route === "services" && (
+                <button
+                  type="button"
+                  data-services-toggle
+                  aria-expanded="false"
+                  aria-controls="services-menu"
+                  class="grid size-6 cursor-pointer place-items-center rounded-full focus-visible:outline-2 focus-visible:outline-iris-strong"
+                >
+                  <span class="sr-only">{servicesMenu.open[locale]}</span>
+                  <svg data-chevron class="size-3" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path
+                      fill-rule="evenodd"
+                      d="M2.2045 6.7045C2.64384 6.26517 3.35616 6.26517 3.7955 6.7045L12 14.909L20.2045 6.70451C20.6438 6.26517 21.3562 6.26517 21.7955 6.70451C22.2348 7.14385 22.2348 7.85616 21.7955 8.2955L12.7955 17.2955C12.3562 17.7348 11.6438 17.7348 11.2045 17.2955L2.2045 8.2955C1.76517 7.85616 1.76517 7.14384 2.2045 6.7045Z"
+                    />
+                  </svg>
+                </button>
+              )}
+            </li>
+          ))}
+        </ul>
+      </nav>
+      <div class="flex flex-none items-center gap-2">
+        {/* Styled like the nav links; on phones it moves into the menu. */}
+        <a
+          href={languageSwitch.href}
+          hreflang={languageSwitch.locale}
+          lang={languageSwitch.locale}
+          aria-label={languageSwitch.label}
+          data-language-switch
+          class="group block px-3 text-ui font-semibold text-ink uppercase max-md:hidden"
+        >
+          <RollText>{languageSwitch.locale}</RollText>
+        </a>
+        <a
+          href={contactLinks.whatsapp}
+          aria-label={whatsappLabel[locale]}
+          class="group relative isolate grid size-11 flex-none place-items-center overflow-hidden rounded-full bg-ink text-white transition-transform duration-200 active:scale-98 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-iris-strong motion-reduce:transition-none"
+        >
+          {/* Same hover as the buttons: a white fill wipes up from the bottom edge. */}
+          <span
+            class="absolute inset-0 -z-10 bg-white [clip-path:circle(0_at_50%_100%)] transition-[clip-path] duration-500 ease-curtain group-hocus:[clip-path:circle(150%_at_50%_100%)] motion-reduce:transition-none"
+            aria-hidden="true"
+          ></span>
+          {/* The stroke thickens the filled logo. */}
+          <WhatsApp class="size-6 stroke-current stroke-1 transition-colors duration-500 ease-curtain [stroke-linejoin:round] group-hocus:text-ink motion-reduce:transition-none" />
+        </a>
+        <Button href={path("contact", locale)} size="sm">
+          {ui.headerCta[locale]}
+        </Button>
+        {/* Two bars that turn into a cross while the menu is open. */}
+        <button
+          type="button"
+          data-mobile-toggle
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          class="flex size-11 cursor-pointer flex-col items-center justify-center gap-1 rounded-full bg-surface inset-ring inset-ring-ash-200 focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-iris-strong md:hidden"
+        >
+          <span class="sr-only">{menuLabel[locale]}</span>
+          <span data-bar class="h-0.5 w-4 rounded-full bg-ink" aria-hidden="true"></span>
+          <span data-bar class="h-0.5 w-4 rounded-full bg-ink" aria-hidden="true"></span>
+        </button>
+      </div>
+    </div>
 
-    <div class="flex items-center gap-3">
-      <nav aria-label={ui.mainNavLabel[locale]} class="hidden md:block">
-        <ul class="flex items-center gap-1 rounded-full bg-surface p-1.5 shadow-[inset_0_0_0_1px_var(--color-ash-200)]">
+    <!-- Grows by --menu-h while the header's negative margin cancels it, so the menu overlays the page. -->
+    <div id="services-menu" data-services-menu inert class:list={[panel, "w-0 min-w-full max-md:hidden"]}>
+      <div class="px-2 pt-4 pb-2">
+        <ul class="grid gap-1">
+          {serviceLinks.map((service) => (
+            <li>
+              <a href={service.href} class={serviceItem}>
+                <span class={serviceIcon}>
+                  <service.Icon class="size-5 text-ink" />
+                </span>
+                <span class="grid min-w-0 flex-1 gap-0.5">
+                  <span class="text-ui font-semibold text-ink">{service.name}</span>
+                  <span class="text-sm text-ash-600">{service.tagline}</span>
+                </span>
+                <ArrowUpRight class="size-4 flex-none -translate-x-1 max-sm:hidden text-ink opacity-0 transition duration-300 group-hocus:translate-x-0 group-hocus:opacity-100 motion-reduce:transition-none" />
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <!-- Same overlay technique as the services menu; scrolls inside when taller than the screen. -->
+    <div
+      id="mobile-menu"
+      data-mobile-menu
+      data-lenis-prevent
+      inert
+      class:list={[panel, "group-data-[open=mobile]/header:overflow-y-auto md:hidden"]}
+    >
+      <nav class="px-2 pt-4 pb-2" aria-label={ui.mainNavLabel[locale]}>
+        <ul class="grid gap-1 border-t border-ash-200 pt-3">
           {links.map((link) => (
             <li>
               <a
                 href={link.href}
                 aria-current={link.current ? "page" : undefined}
-                class="flex h-9 items-center rounded-full px-4 text-[0.9375rem] font-medium text-ash-800 transition-colors hover:bg-ash-100 hover:text-ink aria-[current=page]:bg-ash-100 aria-[current=page]:text-ink"
+                class="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 text-2xl font-medium tracking-title text-ink transition-colors duration-300 hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-iris-strong aria-[current=page]:bg-paper motion-reduce:transition-none"
               >
                 {link.label}
+                <ArrowUpRight class="size-4 flex-none" />
               </a>
+              {link.route === "services" && (
+                <ul class="grid gap-1 pb-2">
+                  {serviceLinks.map((service) => (
+                    <li>
+                      <a href={service.href} class={serviceItem}>
+                        <span class={serviceIcon}>
+                          <service.Icon class="size-5 text-ink" />
+                        </span>
+                        <span class="grid min-w-0 flex-1 gap-0.5">
+                          <span class="text-ui font-semibold text-ink">{service.name}</span>
+                          <span class="text-sm text-ash-600">{service.tagline}</span>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
-          {otherPath && (
-            <li class="ml-1 border-l border-ash-200 pl-1">
-              <a
-                href={otherPath}
-                hreflang={otherLocale}
-                lang={otherLocale}
-                aria-label={ui.languageName[otherLocale]}
-                class="flex h-9 items-center rounded-full px-3 text-sm font-semibold text-ash-600 uppercase transition-colors hover:bg-ash-100 hover:text-ink"
-              >
-                {otherLocale}
-              </a>
-            </li>
-          )}
         </ul>
+        <div class="mt-2 border-t border-ash-200 pt-3">
+          <a
+            href={languageSwitch.href}
+            hreflang={languageSwitch.locale}
+            lang={languageSwitch.locale}
+            data-language-switch
+            class="flex items-center justify-between gap-4 rounded-2xl px-3 py-3 text-ui font-semibold text-ink transition-colors duration-300 hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-iris-strong motion-reduce:transition-none"
+          >
+            {languageSwitch.label}
+            <span class="text-ash-600 uppercase" aria-hidden="true">
+              {languageSwitch.locale}
+            </span>
+          </a>
+        </div>
       </nav>
-
-      <div class="hidden sm:block">
-        <Button href={path("contact", locale)}>{ui.requestQuote[locale]}</Button>
-      </div>
-
-      <button
-        type="button"
-        data-menu-button
-        aria-expanded="false"
-        aria-controls="mobile-menu"
-        class="grid size-12 place-items-center rounded-full bg-surface shadow-[inset_0_0_0_1px_var(--color-ash-200)] md:hidden"
-      >
-        <span class="sr-only">{menuLabel[locale]}</span>
-        <svg
-          class="size-5"
-          viewBox="0 0 20 20"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="1.75"
-          stroke-linecap="round"
-          aria-hidden="true"
-        >
-          <path class="origin-center transition-transform duration-300" d="M3 7h14" />
-          <path class="origin-center transition-transform duration-300" d="M3 13h14" />
-        </svg>
-      </button>
     </div>
-  </div>
-
-  <div id="mobile-menu" data-menu hidden class="site-width pb-4 md:hidden">
-    <div class="grid gap-1 rounded-3xl bg-surface p-3 shadow-[inset_0_0_0_1px_var(--color-ash-200)]">
-      {links.map((link) => (
-        <a
-          href={link.href}
-          aria-current={link.current ? "page" : undefined}
-          class="flex h-12 items-center rounded-2xl px-4 text-lg font-medium hover:bg-ash-100 aria-[current=page]:bg-ash-100"
-        >
-          {link.label}
-        </a>
-      ))}
-      {otherPath && (
-        <a
-          href={otherPath}
-          hreflang={otherLocale}
-          lang={otherLocale}
-          class="flex h-12 items-center rounded-2xl px-4 font-medium text-ash-600 hover:bg-ash-100"
-        >
-          {ui.languageName[otherLocale]}
-        </a>
-      )}
-      <div class="mt-2">
-        <Button href={path("contact", locale)} size="lg" full>
-          {ui.requestQuote[locale]}
-        </Button>
-      </div>
-    </div>
-  </div>
-</header>
+  </header>
+</div>
 
 <script>
+  import { duration, gsap, reducedMotion } from "../lib/motion";
+
+  type Menu = "services" | "mobile";
+
   const header = document.querySelector<HTMLElement>("[data-header]")!;
-  const button = header.querySelector<HTMLButtonElement>("[data-menu-button]")!;
-  const menu = header.querySelector<HTMLElement>("[data-menu]")!;
 
-  const updateScrolled = () => header.toggleAttribute("data-scrolled", window.scrollY > 8);
-  updateScrolled();
-  window.addEventListener("scroll", updateScrolled, { passive: true });
+  // Switching language keeps the visitor where they were. Texts differ in length, so the position is saved as
+  // the section at the top of the screen (same id in both languages) and how far into it, falling back to the
+  // share of the whole page.
+  const switchKey = "language-switch";
+  const sections = () => [...document.querySelectorAll<HTMLElement>("main [aria-labelledby]")];
+  const pageTop = (element: HTMLElement) => element.getBoundingClientRect().top + scrollY;
+  const scrollable = () => Math.max(document.documentElement.scrollHeight - innerHeight, 1);
 
-  const setOpen = (open: boolean) => {
-    button.setAttribute("aria-expanded", String(open));
-    menu.hidden = !open;
-    header.toggleAttribute("data-menu-open", open);
+  try {
+    const saved = sessionStorage.getItem(switchKey);
+    sessionStorage.removeItem(switchKey);
+    if (saved) {
+      const { section, progress, page } = JSON.parse(saved);
+      const target = sections().find((element) => element.getAttribute("aria-labelledby") === section);
+      const top = target ? pageTop(target) + progress * target.offsetHeight : page * scrollable();
+      window.scrollTo({ top, behavior: "instant" });
+    }
+  } catch {}
+
+  header.querySelectorAll("[data-language-switch]").forEach((link) =>
+    link.addEventListener("click", () => {
+      const current = sections().find((element) => element.getBoundingClientRect().bottom > 0);
+      const position = {
+        section: current?.getAttribute("aria-labelledby"),
+        progress: current ? (scrollY - pageTop(current)) / current.offsetHeight : 0,
+        page: scrollY / scrollable(),
+      };
+      try {
+        sessionStorage.setItem(switchKey, JSON.stringify(position));
+      } catch {}
+    }),
+  );
+  const menus = {
+    services: {
+      toggle: header.querySelector<HTMLButtonElement>("[data-services-toggle]")!,
+      panel: header.querySelector<HTMLElement>("[data-services-menu]")!,
+    },
+    mobile: {
+      toggle: header.querySelector<HTMLButtonElement>("[data-mobile-toggle]")!,
+      panel: header.querySelector<HTMLElement>("[data-mobile-menu]")!,
+    },
+  };
+  const chevron = header.querySelector("[data-chevron]");
+  const [topBar, bottomBar] = header.querySelectorAll("[data-bar]");
+  const desktop = matchMedia("(min-width: 48rem)");
+  const marginBottom = parseFloat(getComputedStyle(header).marginBottom);
+  let closeTimer: number | undefined;
+
+  // With reduced motion every change is instant.
+  const time = (seconds: number) => (reducedMotion.matches ? 0 : seconds);
+  const openMenu = () => header.dataset.open as Menu | undefined;
+
+  const setOpen = (open: Menu | null) => {
+    clearTimeout(closeTimer);
+    // The open panel grows while the header's negative margin cancels its height, so it overlays the page.
+    // The mobile menu stops at the bottom of the screen and scrolls inside.
+    let height = 0;
+    const opening = open && open !== openMenu();
+    if (open) {
+      const { panel } = menus[open];
+      const room = innerHeight - header.getBoundingClientRect().bottom - 16;
+      height = open === "mobile" ? Math.min(panel.scrollHeight, room) : panel.scrollHeight;
+      header.dataset.open = open;
+    } else {
+      delete header.dataset.open;
+    }
+    const move = { duration: time(duration.base), ease: "curtain" };
+    gsap.to(header, { marginBottom: open ? -height : marginBottom, ...move });
+    for (const [name, { toggle, panel }] of Object.entries(menus)) {
+      toggle.setAttribute("aria-expanded", String(name === open));
+      panel.inert = name !== open;
+      gsap.to(panel, { height: name === open ? height : 0, ...move });
+    }
+    // Links arrive one after the other as the panel opens; closing takes them away with the panel.
+    if (opening && !reducedMotion.matches) {
+      gsap.fromTo(
+        menus[open].panel.querySelectorAll("a"),
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: duration.base, ease: "out-expo", stagger: 0.035, delay: 0.08 },
+      );
+    }
+    // The chevron flips for the services menu; the two bars cross for the mobile one.
+    gsap.to(chevron, { rotation: open === "services" ? 180 : 0, ...move });
+    gsap.to(topBar, { y: open === "mobile" ? 3 : 0, rotation: open === "mobile" ? 45 : 0, ...move });
+    gsap.to(bottomBar, { y: open === "mobile" ? -3 : 0, rotation: open === "mobile" ? -45 : 0, ...move });
   };
 
-  button.addEventListener("click", () => setOpen(button.getAttribute("aria-expanded") !== "true"));
+  // Hover opens on Services and closes on other nav items or when the pointer leaves the header.
+  header.querySelectorAll<HTMLElement>("[data-nav-item]").forEach((item) => {
+    item.addEventListener("pointerenter", (event) => {
+      if (event.pointerType === "mouse") setOpen(item.hasAttribute("data-services") ? "services" : null);
+    });
+  });
+  header.addEventListener("pointerenter", () => clearTimeout(closeTimer));
+  header.addEventListener("pointerleave", (event) => {
+    if (event.pointerType === "mouse" && openMenu() === "services")
+      closeTimer = window.setTimeout(() => setOpen(null), 150);
+  });
+
+  // With a mouse, hover has already opened the services menu, so a click keeps it open.
+  menus.services.toggle.addEventListener("click", (event) => {
+    const mouse = (event as PointerEvent).pointerType === "mouse";
+    setOpen(mouse || openMenu() !== "services" ? "services" : null);
+  });
+  menus.mobile.toggle.addEventListener("click", () => setOpen(openMenu() === "mobile" ? null : "mobile"));
+  header.addEventListener("focusout", (event) => {
+    if (!header.contains(event.relatedTarget as Node | null)) setOpen(null);
+  });
+  // A tap outside closes the menu (mobile browsers do not always move focus on tap).
+  document.addEventListener("click", (event) => {
+    if (openMenu() && !header.contains(event.target as Node)) setOpen(null);
+  });
+  desktop.addEventListener("change", () => setOpen(null));
+  // Hide while scrolling down, show on scroll up, near the top, or while the header is in use.
+  // It leaves quickly and comes back softly.
+  let hidden = false;
+  const setHidden = (value: boolean) => {
+    if (value === hidden) return;
+    hidden = value;
+    if (hidden) {
+      gsap.to(header, { y: -(header.offsetHeight + 32), duration: time(0.4), ease: "in-quart" });
+      gsap.to(header, { opacity: 0, duration: time(duration.quick), ease: "in-quart" });
+    } else {
+      gsap.to(header, { y: 0, duration: time(0.7), ease: "out-expo" });
+      gsap.to(header, { opacity: 1, duration: time(duration.base), ease: "out-expo" });
+    }
+  };
+  let lastY = window.scrollY;
+  // Stays put for the first scroll steps (one wheel notch is about 100px).
+  const hideAfter = 300;
+  const minDelta = 6;
+  window.addEventListener(
+    "scroll",
+    () => {
+      const y = Math.max(window.scrollY, 0);
+      if (Math.abs(y - lastY) < minDelta) return;
+      const inUse = header.hasAttribute("data-open") || header.contains(document.activeElement);
+      setHidden(y > lastY && y > hideAfter && !inUse);
+      lastY = y;
+    },
+    { passive: true },
+  );
+  header.addEventListener("focusin", () => setHidden(false));
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !menu.hidden) {
-      setOpen(false);
-      button.focus();
+    const open = openMenu();
+    if (event.key === "Escape" && open) {
+      setOpen(null);
+      menus[open].toggle.focus();
     }
   });
-  window.matchMedia("(width >= 48rem)").addEventListener("change", () => setOpen(false));
 </script>
-
-<style>
-  [data-menu-open] {
-    background-color: var(--color-paper);
-  }
-
-  path {
-    transform-box: fill-box;
-  }
-
-  [aria-expanded="true"] path:first-child {
-    transform: translateY(3px) rotate(45deg);
-  }
-
-  [aria-expanded="true"] path:last-child {
-    transform: translateY(-3px) rotate(-45deg);
-  }
-</style>

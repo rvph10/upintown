@@ -1,0 +1,242 @@
+---
+import SectionHeading from "./ui/SectionHeading.astro";
+import Plus from "./icons/Plus.astro";
+import Button from "./ui/Button.astro";
+
+interface Props {
+  /** Unique per page when several FAQs are shown; used for the heading and the accordion group. */
+  id?: string;
+  label: string;
+  title: string;
+  intro?: string;
+  items: { question: string; answer: string }[];
+  /** Prompt under the intro, e.g. "Une autre question ?" with a contact button. */
+  contact?: { text: string; href: string; label: string };
+  /** Vertical spacing, so the section fits the sections around it. */
+  class?: string;
+}
+
+const { id = "faq", label, title, intro, items, contact, class: className = "py-24 sm:py-32" } = Astro.props;
+---
+
+<section
+  aria-labelledby={`${id}-title`}
+  class:list={["grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16", className]}
+>
+  <SectionHeading
+    id={`${id}-title`}
+    label={label}
+    title={title}
+    subtitle={intro}
+    align="start"
+    class="lg:sticky lg:top-32 lg:self-start"
+  >
+    {contact && (
+      <div class="mt-10 flex flex-wrap items-center gap-x-5 gap-y-4">
+        <p class="text-lg font-medium text-ink">{contact.text}</p>
+        <Button href={contact.href}>{contact.label}</Button>
+      </div>
+    )}
+  </SectionHeading>
+
+  {/* Native details: works without JavaScript and with find-in-page. One open at a time through `name`. */}
+  <div data-faq data-reveal="list" class="grid content-start gap-3">
+    {items.map((item) => (
+      <details name={id} class="faq-item group rounded-3xl bg-paper">
+        <summary class="flex cursor-pointer list-none items-center justify-between gap-6 rounded-3xl px-6 py-5 text-lg font-medium text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-iris-strong sm:px-8 sm:py-6 [&::-webkit-details-marker]:hidden">
+          {item.question}
+          <span class="faq-icon grid size-10 flex-none place-items-center rounded-full bg-white">
+            <Plus class="faq-plus size-3.5 text-ink" />
+          </span>
+        </summary>
+        <div class="faq-answer overflow-hidden">
+          <p class="faq-text max-w-2xl px-6 pb-6 leading-relaxed text-pretty text-ash-600 sm:px-8 sm:pb-8">
+            {/* One span per word so the answer can appear word by word; spaces stay text for copy and find-in-page. */}
+            {item.answer.split(" ").map((word, i) => (
+              <>
+                {i > 0 && " "}
+                <span class="faq-word inline-block">{word}</span>
+              </>
+            ))}
+          </p>
+        </div>
+      </details>
+    ))}
+  </div>
+</section>
+
+<style>
+  /* Open state. `data-closing` marks an answer that stays rendered while it collapses. */
+  .faq-item[open]:not([data-closing]) .faq-icon {
+    background-color: var(--color-ink);
+  }
+
+  .faq-item[open]:not([data-closing]) .faq-plus {
+    transform: rotate(45deg);
+    color: var(--color-white);
+  }
+</style>
+
+<script>
+  import { cssColor, duration, gsap, reducedMotion, ScrollTrigger } from "../lib/motion";
+
+  // GSAP animates between the closed and open states; the stylesheet holds the states themselves.
+  // Height and icon move as one state change, the text arrives softly and leaves quickly.
+  // The script also takes over `name`, since the native one closes the previous answer instantly.
+  document.querySelectorAll<HTMLElement>("[data-faq]").forEach((group) => {
+    const items = [...group.querySelectorAll<HTMLDetailsElement>("details")];
+
+    const parts = (item: HTMLDetailsElement) => ({
+      answer: item.querySelector<HTMLElement>(".faq-answer")!,
+      text: item.querySelector<HTMLElement>(".faq-text")!,
+      words: [...item.querySelectorAll<HTMLElement>(".faq-word")],
+      icon: item.querySelector<HTMLElement>(".faq-icon")!,
+      plus: item.querySelector<SVGElement>(".faq-plus")!,
+    });
+
+    // Where each part is right now, so an interrupted move continues from there.
+    const current = ({ answer, text, icon, plus }: ReturnType<typeof parts>) => ({
+      height: answer.offsetHeight,
+      opacity: gsap.getProperty(text, "opacity"),
+      y: gsap.getProperty(text, "y"),
+      blur: gsap.getProperty(text, "filter") as string,
+      background: gsap.getProperty(icon, "backgroundColor"),
+      rotation: gsap.getProperty(plus, "rotation"),
+      plusColor: gsap.getProperty(plus, "color"),
+    });
+
+    const open = (item: HTMLDetailsElement) => {
+      const p = parts(item);
+      const reopening = item.hasAttribute("data-closing");
+      const from = reopening
+        ? current(p)
+        : {
+            height: 0,
+            opacity: 0,
+            y: "0.75rem",
+            blur: "blur(6px)",
+            background: cssColor("white"),
+            rotation: 0,
+            plusColor: cssColor("ink"),
+          };
+      item.removeAttribute("data-closing");
+      item.open = true;
+      if (reducedMotion.matches) return;
+      gsap.killTweensOf([p.answer, p.text, p.icon, p.plus, ...p.words]);
+      gsap.fromTo(
+        p.answer,
+        { height: from.height },
+        { height: "auto", duration: duration.base, ease: "curtain", clearProps: "height" },
+      );
+      if (reopening) {
+        // Words are already in place, only the fading block comes back.
+        gsap.fromTo(
+          p.text,
+          { opacity: from.opacity, y: from.y, filter: from.blur },
+          { opacity: 1, y: 0, filter: "blur(0px)", duration: duration.base, ease: "out-expo", clearProps: "all" },
+        );
+      } else {
+        // The words wait until the panel has opened a little, then rise and come into focus one after another.
+        // Long answers share the same total time so the last word never lags.
+        gsap.fromTo(
+          p.words,
+          { opacity: 0, y: "0.5em", filter: "blur(4px)" },
+          {
+            opacity: 1,
+            y: 0,
+            filter: "blur(0px)",
+            duration: duration.base,
+            ease: "out-expo",
+            delay: 0.15,
+            stagger: Math.min(0.04, 1 / p.words.length),
+            clearProps: "opacity,transform,filter",
+          },
+        );
+      }
+      gsap.fromTo(
+        p.icon,
+        { backgroundColor: from.background },
+        { backgroundColor: cssColor("ink"), duration: duration.quick, clearProps: "backgroundColor" },
+      );
+      gsap.fromTo(
+        p.plus,
+        { rotation: from.rotation, color: from.plusColor },
+        {
+          rotation: 45,
+          color: cssColor("white"),
+          duration: duration.base,
+          ease: "curtain",
+          clearProps: "transform,color",
+        },
+      );
+    };
+
+    const close = (item: HTMLDetailsElement) => {
+      if (!item.open || item.hasAttribute("data-closing")) return;
+      if (reducedMotion.matches) {
+        item.open = false;
+        return;
+      }
+      const p = parts(item);
+      const from = current(p);
+      item.setAttribute("data-closing", "");
+      gsap.killTweensOf([p.answer, p.text, p.icon, p.plus]);
+      gsap.fromTo(
+        p.text,
+        { opacity: from.opacity, y: from.y, filter: from.blur },
+        { opacity: 0, y: "-0.25rem", filter: "blur(4px)", duration: duration.quick, ease: "in-quart" },
+      );
+      gsap.fromTo(
+        p.icon,
+        { backgroundColor: from.background },
+        { backgroundColor: cssColor("white"), duration: duration.quick, clearProps: "backgroundColor" },
+      );
+      gsap.fromTo(
+        p.plus,
+        { rotation: from.rotation, color: from.plusColor },
+        {
+          rotation: 0,
+          color: cssColor("ink"),
+          duration: duration.base,
+          ease: "curtain",
+          clearProps: "transform,color",
+        },
+      );
+      gsap.fromTo(
+        p.answer,
+        { height: from.height },
+        {
+          height: 0,
+          duration: duration.base,
+          ease: "curtain",
+          onComplete: () => {
+            item.removeAttribute("data-closing");
+            item.open = false;
+            gsap.killTweensOf(p.words);
+            gsap.set([p.answer, p.text, ...p.words], { clearProps: "all" });
+          },
+        },
+      );
+    };
+
+    items.forEach((item) => {
+      item.removeAttribute("name");
+      item.querySelector("summary")!.addEventListener("click", (event) => {
+        event.preventDefault();
+        if (item.open && !item.hasAttribute("data-closing")) close(item);
+        else open(item);
+      });
+      // Also covers find-in-page opening an answer.
+      item.addEventListener("toggle", () => {
+        if (item.open) items.forEach((other) => other !== item && close(other));
+      });
+    });
+
+    // Opening an answer moves everything below, so scroll triggers are measured again once the height settles.
+    let settle: number | undefined;
+    new ResizeObserver(() => {
+      clearTimeout(settle);
+      settle = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    }).observe(group);
+  });
+</script>

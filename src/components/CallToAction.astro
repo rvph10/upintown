@@ -1,0 +1,61 @@
+---
+import Button from "./ui/Button.astro";
+import Carousel3D from "./ui/Carousel3D.astro";
+import Words from "./ui/Words.astro";
+import { contactLinks } from "../data/business";
+import learningApp from "../assets/mockups/phones/learning-app-in-hand.jpg";
+import dashboardApp from "../assets/mockups/phones/dashboard-on-foam-cubes.jpg";
+import financeApp from "../assets/mockups/phones/finance-app-on-rock.jpg";
+import recipeApp from "../assets/mockups/phones/recipe-app-on-beam.jpg";
+import greenEnergySite from "../assets/mockups/websites/green-energy.jpg";
+import paymentCardsSite from "../assets/mockups/websites/payment-cards-laptop.jpg";
+import photoEditorSite from "../assets/mockups/websites/photo-editor.jpg";
+import fitnessSite from "../assets/mockups/websites/fitness.jpg";
+import eyewearSite from "../assets/mockups/websites/eyewear.jpg";
+
+interface Props {
+  title: string;
+  text: string;
+  primary: { href: string; label: string };
+  /** Label of the call button, e.g. "Appeler". */
+  call: string;
+}
+
+const { title, text, primary, call } = Astro.props;
+
+// Phone mockups alternate with full-page shots.
+const ringImages = [
+  learningApp,
+  greenEnergySite,
+  dashboardApp,
+  paymentCardsSite,
+  financeApp,
+  photoEditorSite,
+  recipeApp,
+  fitnessSite,
+  eyewearSite,
+];
+---
+
+<section
+  aria-labelledby="cta-title"
+  class="pb-24 lg:grid lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:-mt-12 lg:items-center lg:gap-12 lg:pb-16"
+>
+  <Carousel3D images={ringImages} bleed class="-mt-12 sm:-mt-16 lg:mt-0 lg:translate-x-[10%]" />
+  <div data-reveal="sequence" class="flex flex-col items-center text-center lg:items-start lg:text-left">
+    <h2 id="cta-title" class="max-w-3xl text-section font-semibold text-balance text-ink">
+      <Words text={title} />
+    </h2>
+    <p data-reveal-step class="mt-6 max-w-2xl text-lg leading-relaxed text-pretty text-ash-600 sm:text-xl">
+      {text}
+    </p>
+    <div data-reveal-step class="mt-10 flex flex-wrap justify-center gap-3 lg:justify-start">
+      <Button href={primary.href} size="lg">
+        {primary.label}
+      </Button>
+      <Button href={contactLinks.phone} size="lg" tone="surface">
+        {call}
+      </Button>
+    </div>
+  </div>
+</section>
