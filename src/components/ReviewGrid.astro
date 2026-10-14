@@ -1,0 +1,41 @@
+---
+import Quote from "./icons/Quote.astro";
+import Avatar from "./ui/Avatar.astro";
+import SectionHeading from "./ui/SectionHeading.astro";
+import type { Testimonial } from "../data/testimonials";
+
+interface Props {
+  id: string;
+  label: string;
+  title: string;
+  /** Tells visitors the names are changed. */
+  note: string;
+  items: Testimonial[];
+  class?: string;
+}
+
+const { id, label, title, note, items, class: className } = Astro.props;
+---
+
+{/* A few reviews side by side, each in its own card. Lighter than the home slideshow. */}
+<section aria-labelledby={`${id}-title`} class={className}>
+  <SectionHeading id={`${id}-title`} label={label} title={title} />
+  <ul data-reveal="group" class="mt-12 grid gap-3 sm:mt-16 md:grid-cols-3">
+    {items.map((item) => (
+      <li>
+        <figure class="flex h-full flex-col rounded-card bg-paper p-7 sm:p-8">
+          <Quote class="h-8 w-auto self-start text-iris" />
+          <blockquote class="mt-6 flex-1 text-lg leading-relaxed text-pretty text-ink">{item.quote}</blockquote>
+          <figcaption class="mt-8 flex items-center gap-3">
+            <Avatar name={item.name} class="size-11 flex-none rounded-full" />
+            <span class="grid text-base leading-snug">
+              <span class="font-semibold text-ink">{item.name}</span>
+              <span class="text-ash-600">{item.sector}</span>
+            </span>
+          </figcaption>
+        </figure>
+      </li>
+    ))}
+  </ul>
+  <p class="mt-6 text-center text-sm text-ash-600">{note}</p>
+</section>

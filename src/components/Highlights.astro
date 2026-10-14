@@ -1,0 +1,28 @@
+---
+import Sparkle from "./icons/Sparkle.astro";
+import Badge from "./ui/Badge.astro";
+import Marquee from "./ui/Marquee.astro";
+import type { Highlight } from "../data/highlights";
+
+interface Props {
+  items: Highlight[];
+  class?: string;
+}
+
+const { items, class: className } = Astro.props;
+---
+
+{/* Client results scrolling in glass badges. Renders nothing while there are no results. */}
+{items.length > 0 && (
+  <Marquee class={className}>
+    {items.map((item) => (
+      <li>
+        <Badge as="span" tone="glass">
+          <Sparkle slot="icon" class="size-full" />
+          <span class="font-semibold">{item.value}</span>
+          <span class="-ml-1.5">{item.label}</span>
+        </Badge>
+      </li>
+    ))}
+  </Marquee>
+)}

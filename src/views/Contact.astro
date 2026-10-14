@@ -1,20 +1,42 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import Faq from "../components/Faq.astro";
+import Highlights from "../components/Highlights.astro";
+import PageHeader from "../components/PageHeader.astro";
+import ReviewGrid from "../components/ReviewGrid.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
+import Email from "../components/icons/Email.astro";
+import Phone from "../components/icons/Phone.astro";
+import WhatsApp from "../components/icons/WhatsApp.astro";
+import Button from "../components/ui/Button.astro";
+import ChoiceField from "../components/ui/ChoiceField.astro";
+import SelectField from "../components/ui/SelectField.astro";
+import TextField from "../components/ui/TextField.astro";
 import { business, contactLinks } from "../data/business";
-import type { Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
-import { plans, services } from "../data/offer";
-import { routes } from "../data/routes";
-import { pageNames, ui } from "../data/ui";
+import { nextSteps } from "../data/contact";
+import { highlights } from "../data/highlights";
+import { formatPrice, workingDays, type Locale } from "../data/i18n";
+import { descriptions, titles } from "../data/meta";
+import { plans, policies, services, website } from "../data/offer";
+import { path, routes } from "../data/routes";
+import { testimonials, testimonialsNote } from "../data/testimonials";
+import { ui } from "../data/ui";
 import type { ContactForm, ContactState, FieldError } from "../lib/contact";
 
 interface Props extends ContactState {
   locale: Locale;
 }
 
-const { locale, form, errors, status } = Astro.props;
+const { locale, form, errors, status, token } = Astro.props;
+const replyDays = workingDays(policies.inquiryReplyWorkingDays, locale);
+const websitePrice = formatPrice(website.fromPrice, locale);
+const monthlyPrice = formatPrice(Math.min(...plans.map((plan) => plan.monthly)), locale);
+const stageCount = website.stages.length;
+const stageShare = website.stages[0].share;
 
 const t = {
+  label: { fr: "Contact", en: "Contact" },
+  title: { fr: "Parlons de votre projet.", en: "Let's talk about your project." },
   name: { fr: "Nom", en: "Name" },
   email: { fr: "E-mail", en: "Email" },
   business: { fr: "Entreprise ou site actuel", en: "Business or current website" },
@@ -23,13 +45,27 @@ const t = {
   plan: { fr: "Formule", en: "Plan" },
   noPlan: { fr: "Pas encore décidé", en: "Not decided yet" },
   message: { fr: "Message", en: "Message" },
-  source: { fr: "Comment avez-vous connu UpInTown ?", en: "How did you hear about UpInTown?" },
-  optional: { fr: "facultatif", en: "optional" },
-  submit: { fr: "Envoyer le message", en: "Send message" },
-  sent: {
-    fr: "Message envoyé. Un e-mail de confirmation vient de vous être envoyé.",
-    en: "Message sent. A confirmation email is on its way.",
+  messageHint: {
+    fr: "Votre activité, ce que vous avez aujourd'hui et ce que vous aimeriez.",
+    en: "Your business, what you have today and what you would like.",
   },
+  source: { fr: "Comment avez-vous connu UpInTown ?", en: "How did you hear about UpInTown?" },
+  namePlaceholder: { fr: "Marie Dupont", en: "Jane Smith" },
+  emailPlaceholder: { fr: "marie@entreprise.be", en: "jane@company.com" },
+  businessPlaceholder: { fr: "Cabinet Dupont ou dupont.be", en: "Smith Studio or smithstudio.com" },
+  sourcePlaceholder: { fr: "Google, bouche-à-oreille, Instagram…", en: "Google, word of mouth, Instagram…" },
+  submit: { fr: "Envoyer le message", en: "Send message" },
+  privacy: {
+    fr: "Vos données servent uniquement à répondre à votre demande.",
+    en: "Your data is only used to answer your request.",
+  },
+  privacyLink: { fr: "Politique de confidentialité", en: "Privacy policy" },
+  sentTitle: { fr: "Message envoyé.", en: "Message sent." },
+  sent: {
+    fr: `Merci. Un e-mail de confirmation vient de vous être envoyé, et vous recevrez une réponse sous ${replyDays}.`,
+    en: `Thank you. A confirmation email is on its way, and you will get a reply within ${replyDays}.`,
+  },
+  backHome: { fr: "Retour à l'accueil", en: "Back to home" },
   failed: {
     fr: `Le message n'a pas pu être envoyé. Réessayez ou écrivez à ${business.email}.`,
     en: `The message could not be sent. Try again or write to ${business.email}.`,
@@ -38,7 +74,79 @@ const t = {
     fr: `Trop de messages envoyés depuis cette connexion. Écrivez à ${business.email}.`,
     en: `Too many messages sent from this connection. Write to ${business.email}.`,
   },
-  errorSummary: { fr: "Vérifiez les champs suivants :", en: "Please check these fields:" },
+  reviewsLabel: { fr: "Avis clients", en: "Client reviews" },
+  reviewsTitle: { fr: "Ce qu'en disent les clients.", en: "What clients say." },
+  faqLabel: { fr: "Questions", en: "Questions" },
+  faqTitle: { fr: "Avant d'écrire.", en: "Before you write." },
+  direct: { fr: "Directement", en: "Directly" },
+  hours: {
+    fr: `Du lundi au vendredi. Réponse sous ${replyDays}.`,
+    en: `Monday to Friday. Reply within ${replyDays}.`,
+  },
+  callOrMessage: { fr: "Appel ou message", en: "Call or message" },
+  next: { fr: "Ensuite", en: "What happens next" },
+};
+
+const faq = {
+  fr: [
+    {
+      question: "Que se passe-t-il après l'envoi du message ?",
+      answer: `Vous recevez tout de suite un e-mail de confirmation, puis une réponse sous ${replyDays}. Un court appel permet ensuite de comprendre votre activité, puis vous recevez un devis clair.`,
+    },
+    {
+      question: "Est-ce que je m'engage en écrivant ?",
+      answer:
+        "Non. Le message et l'appel sont gratuits et sans engagement. Vous n'êtes engagé qu'après avoir accepté un devis par écrit.",
+    },
+    {
+      question: "Peut-on se rencontrer ?",
+      answer:
+        "Tout se fait à distance : par téléphone, WhatsApp, e-mail ou appel vidéo. Vous n'avez pas besoin de vous déplacer.",
+    },
+    {
+      question: "Je ne sais pas encore ce qu'il me faut.",
+      answer:
+        "Ce n'est pas un problème. Choisissez « Pas encore décidé » et décrivez simplement votre activité. La bonne formule se choisit pendant l'appel.",
+    },
+    {
+      question: "Combien coûte un site ?",
+      answer: `À partir de ${websitePrice}, payés en ${stageCount} fois ${stageShare} %, au fil des étapes. Les formules mensuelles commencent à ${monthlyPrice} par mois. Tous les prix sont sur la page Tarifs.`,
+    },
+    {
+      question: "Que dois-je préparer ?",
+      answer:
+        "Rien pour ce premier message. Pour le projet, il faudra votre logo et vos éléments existants, comme des photos. Les textes sont rédigés pour vous.",
+    },
+  ],
+  en: [
+    {
+      question: "What happens after I send the message?",
+      answer: `You get a confirmation email right away, then a reply within ${replyDays}. A short call follows to understand your business, then you receive a clear quote.`,
+    },
+    {
+      question: "Am I committing to anything by writing?",
+      answer:
+        "No. The message and the call are free and without commitment. You are only committed once you accept a quote in writing.",
+    },
+    {
+      question: "Can we meet in person?",
+      answer: "Everything is done remotely: by phone, WhatsApp, email or video call. You don't need to travel.",
+    },
+    {
+      question: "I don't know yet what I need.",
+      answer:
+        'That\'s fine. Choose "Not decided yet" and simply describe your business. The right plan is chosen during the call.',
+    },
+    {
+      question: "How much does a website cost?",
+      answer: `From ${websitePrice}, paid in ${stageCount} parts of ${stageShare}% as the project moves forward. Monthly plans start at ${monthlyPrice} a month. All prices are on the Pricing page.`,
+    },
+    {
+      question: "What do I need to prepare?",
+      answer:
+        "Nothing for this first message. For the project, you will need your logo and existing materials, such as photos. The text is written for you.",
+    },
+  ],
 };
 
 const errorText: Record<FieldError, { fr: string; en: string }> = {
@@ -47,145 +155,254 @@ const errorText: Record<FieldError, { fr: string; en: string }> = {
   tooLong: { fr: "Ce texte est trop long.", en: "This text is too long." },
 };
 
-const fieldErrors = Object.entries(errors) as [keyof ContactForm, FieldError][];
 const needOptions = [
   ...services.map((s) => ({ value: s.id, label: s.name[locale] })),
   { value: "other", label: t.other[locale] },
 ];
-const invalid = (field: keyof ContactForm) => (errors[field] ? "true" : undefined);
-const describedBy = (field: keyof ContactForm) => (errors[field] ? `${field}-error` : undefined);
+const message = (field: keyof ContactForm) => {
+  const error = errors[field];
+  return error && errorText[error][locale];
+};
+
+const channels = [
+  { href: contactLinks.email, label: ui.email[locale], value: business.email, Icon: Email },
+  { href: contactLinks.phone, label: ui.phone[locale], value: business.phone.display, Icon: Phone },
+  { href: contactLinks.whatsapp, label: ui.whatsapp[locale], value: t.callOrMessage[locale], Icon: WhatsApp },
+];
+// Reviews about the contact experience: approach, process, single contact.
+const reviews = ["Sophie L.", "Marc D.", "Claire M."].flatMap(
+  (name) => testimonials[locale].find((item) => item.name === name) ?? [],
+);
+const card = "rounded-card bg-surface p-6 inset-ring inset-ring-ash-200 sm:p-8";
+const alert = "rounded-3xl bg-surface p-6 text-base font-medium text-danger-strong inset-ring-2 inset-ring-danger";
 ---
 
 <Layout
   locale={locale}
-  title={pageNames.contact[locale]}
+  title={titles.contact[locale]}
   description={descriptions.contact[locale]}
   alternates={routes.contact}
 >
-  <h1>{pageNames.contact[locale]}</h1>
-  <p>{descriptions.contact[locale]}</p>
+  <PageHeader
+    slot="full-width"
+    label={t.label[locale]}
+    title={t.title[locale]}
+    subtitle={descriptions.contact[locale]}
+    fadeTo="var(--color-paper)"
+  >
+    <Highlights items={highlights[locale]} class="mt-12" />
+  </PageHeader>
 
-  {status === "sent" && <p role="status">{t.sent[locale]}</p>}
-  {status === "failed" && <p role="alert">{t.failed[locale]}</p>}
-  {status === "limited" && <p role="alert">{t.limited[locale]}</p>}
-  {fieldErrors.length > 0 && (
-    <div role="alert">
-      <p>{t.errorSummary[locale]}</p>
-      <ul>
-        {fieldErrors.map(([field]) => (
-          <li>
-            <a href={`#${field}`}>{t[field][locale]}</a>
-          </li>
-        ))}
-      </ul>
-    </div>
-  )}
+  <div slot="full-width" class="paper-fade-out pb-24 sm:pb-32">
+    {/* After sending, the confirmation card stretches to the sidebar's height so both columns end together. */}
+    <div
+      class:list={[
+        "site-width grid gap-6 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-8",
+        status === "sent" ? "items-stretch" : "items-start",
+      ]}
+    >
+      <div class="grid gap-6">
+        {status === "failed" && (
+          <p role="alert" class={alert}>
+            {t.failed[locale]}
+          </p>
+        )}
+        {status === "limited" && (
+          <p role="alert" class={alert}>
+            {t.limited[locale]}
+          </p>
+        )}
 
-  {status !== "sent" && (
-    <form method="post" novalidate>
-      <p>
-        <label for="name">{t.name[locale]}</label>
-        <input
-          id="name"
-          name="name"
-          autocomplete="name"
-          required
-          maxlength="100"
-          value={form.name}
-          aria-invalid={invalid("name")}
-          aria-describedby={describedBy("name")}
-        />
-        {errors.name && <span id="name-error">{errorText[errors.name][locale]}</span>}
-      </p>
-      <p>
-        <label for="email">{t.email[locale]}</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autocomplete="email"
-          required
-          maxlength="254"
-          value={form.email}
-          aria-invalid={invalid("email")}
-          aria-describedby={describedBy("email")}
-        />
-        {errors.email && <span id="email-error">{errorText[errors.email][locale]}</span>}
-      </p>
-      <p>
-        <label for="business">
-          {t.business[locale]} ({t.optional[locale]})
-        </label>
-        <input
-          id="business"
-          name="business"
-          autocomplete="organization"
-          maxlength="200"
-          value={form.business}
-          aria-invalid={invalid("business")}
-          aria-describedby={describedBy("business")}
-        />
-        {errors.business && <span id="business-error">{errorText[errors.business][locale]}</span>}
-      </p>
-      <fieldset id="need" aria-describedby={describedBy("need")}>
-        <legend>{t.need[locale]}</legend>
-        {needOptions.map((option) => (
-          <label>
-            <input type="radio" name="need" value={option.value} required checked={form.need === option.value} />
-            {option.label}
-          </label>
-        ))}
-        {errors.need && <span id="need-error">{errorText[errors.need][locale]}</span>}
-      </fieldset>
-      <p>
-        <label for="plan">
-          {t.plan[locale]} ({t.optional[locale]})
-        </label>
-        <select id="plan" name="plan">
-          <option value="">{t.noPlan[locale]}</option>
-          {plans.map((plan) => (
-            <option value={plan.id} selected={form.plan === plan.id}>
-              {plan.name[locale]}
-            </option>
-          ))}
-        </select>
-      </p>
-      <p>
-        <label for="message">{t.message[locale]}</label>
-        <textarea
-          id="message"
-          name="message"
-          rows="6"
-          required
-          maxlength="5000"
-          aria-invalid={invalid("message")}
-          aria-describedby={describedBy("message")}
-        >{form.message}</textarea>
-        {errors.message && <span id="message-error">{errorText[errors.message][locale]}</span>}
-      </p>
-      <p>
-        <label for="source">
-          {t.source[locale]} ({t.optional[locale]})
-        </label>
-        <input id="source" name="source" maxlength="200" value={form.source} />
-      </p>
-      <div hidden>
-        <label for="fax">Fax</label>
-        <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
+        {status === "sent" ? (
+          <section
+            role="status"
+            aria-labelledby="sent-title"
+            class:list={[card, "flex flex-col items-center justify-center py-16 text-center sm:py-20"]}
+          >
+            <span class="grid size-16 place-items-center rounded-full bg-volt-soft text-volt-strong">
+              <Checkmark class="size-8 [--check:var(--color-volt-soft)]" />
+            </span>
+            <h2 id="sent-title" class="mt-6 text-3xl font-semibold tracking-title text-ink">
+              {t.sentTitle[locale]}
+            </h2>
+            <p class="mt-3 max-w-md text-lg leading-relaxed text-pretty text-ash-600">{t.sent[locale]}</p>
+            <Button href={path("home", locale)} size="lg" tone="surface" class="mt-8">
+              {t.backHome[locale]}
+            </Button>
+          </section>
+        ) : (
+          <form method="post" novalidate class:list={[card, "grid gap-8 sm:grid-cols-2"]}>
+            <TextField
+              id="name"
+              label={t.name[locale]}
+              placeholder={t.namePlaceholder[locale]}
+              autocomplete="name"
+              required
+              maxlength="100"
+              value={form.name}
+              error={message("name")}
+            />
+            <TextField
+              id="email"
+              label={t.email[locale]}
+              placeholder={t.emailPlaceholder[locale]}
+              type="email"
+              autocomplete="email"
+              required
+              maxlength="254"
+              value={form.email}
+              error={message("email")}
+            />
+            <TextField
+              id="business"
+              label={t.business[locale]}
+              placeholder={t.businessPlaceholder[locale]}
+              autocomplete="organization"
+              maxlength="200"
+              value={form.business}
+              error={message("business")}
+            />
+            <SelectField
+              id="plan"
+              label={t.plan[locale]}
+              options={[
+                { value: "", label: t.noPlan[locale] },
+                ...plans.map((plan) => ({ value: plan.id, label: plan.name[locale] })),
+              ]}
+              value={form.plan}
+            />
+            <ChoiceField
+              id="need"
+              label={t.need[locale]}
+              options={needOptions}
+              value={form.need}
+              required
+              error={message("need")}
+              class="sm:col-span-2"
+            />
+            <TextField
+              id="message"
+              label={t.message[locale]}
+              placeholder={t.messageHint[locale]}
+              multiline
+              rows={6}
+              required
+              maxlength="5000"
+              value={form.message}
+              error={message("message")}
+              class="sm:col-span-2"
+            />
+            <TextField
+              id="source"
+              label={t.source[locale]}
+              placeholder={t.sourcePlaceholder[locale]}
+              maxlength="200"
+              value={form.source}
+              error={message("source")}
+              class="sm:col-span-2"
+            />
+            <div hidden>
+              <label for="fax">Fax</label>
+              <input id="fax" name="fax" tabindex="-1" autocomplete="off" />
+            </div>
+            <input type="hidden" name="token" value={token} />
+            <div class="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between sm:gap-8">
+              <p class="max-w-sm px-1 text-sm leading-snug text-ash-600">
+                {t.privacy[locale]}{" "}
+                <a
+                  href={path("privacy", locale)}
+                  class="font-medium text-iris-strong underline underline-offset-2 hover:text-ink"
+                >
+                  {t.privacyLink[locale]}
+                </a>
+              </p>
+              <Button type="submit" size="lg" class="self-start sm:self-auto" data-submit>
+                {t.submit[locale]}
+              </Button>
+            </div>
+          </form>
+        )}
       </div>
-      <button type="submit">{t.submit[locale]}</button>
-    </form>
-  )}
 
-  <ul>
-    <li>
-      {ui.email[locale]}: <a href={contactLinks.email}>{business.email}</a>
-    </li>
-    <li>
-      {ui.phone[locale]}: <a href={contactLinks.phone}>{business.phone.display}</a>
-    </li>
-    <li>
-      <a href={contactLinks.whatsapp}>{ui.whatsapp[locale]}</a>
-    </li>
-  </ul>
+      <aside class="grid gap-6 lg:sticky lg:top-28">
+        <section aria-labelledby="direct-title" class={card}>
+          <h2 id="direct-title" class="text-2xl font-semibold tracking-title text-ink">
+            {t.direct[locale]}
+          </h2>
+          <p class="mt-2 text-base text-ash-600">{t.hours[locale]}</p>
+          <ul class="mt-6 grid gap-1">
+            {channels.map(({ href, label, value, Icon }) => (
+              <li>
+                <a
+                  href={href}
+                  class="group -mx-3 flex items-center gap-4 rounded-2xl p-3 transition-colors duration-300 hover:bg-paper focus-visible:bg-paper focus-visible:outline-2 focus-visible:outline-iris-strong motion-reduce:transition-none"
+                >
+                  <span class="grid size-11 flex-none place-items-center rounded-xl bg-paper text-ink transition-colors duration-300 group-hocus:bg-white motion-reduce:transition-none">
+                    <Icon class="size-5" />
+                  </span>
+                  <span class="grid min-w-0">
+                    <span class="text-sm text-ash-600">{label}</span>
+                    <span class="truncate font-medium text-ink">{value}</span>
+                  </span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section aria-labelledby="next-title" class={card}>
+          <h2 id="next-title" class="text-2xl font-semibold tracking-title text-ink">
+            {t.next[locale]}
+          </h2>
+          <ol class="mt-6 grid gap-5">
+            {nextSteps[locale].map((step, index) => (
+              <li class="flex gap-4">
+                <span class="grid size-8 flex-none place-items-center rounded-full bg-ink text-sm font-semibold text-paper tabular-nums">
+                  {index + 1}
+                </span>
+                <span class="grid gap-1 pt-1">
+                  <span class="font-medium text-ink">{step.title}</span>
+                  <span class="text-base leading-relaxed text-ash-600">{step.text}</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </section>
+      </aside>
+    </div>
+  </div>
+
+  <ReviewGrid
+    id="contact-reviews"
+    label={t.reviewsLabel[locale]}
+    title={t.reviewsTitle[locale]}
+    note={testimonialsNote[locale]}
+    items={reviews}
+    class="pt-8 pb-24 sm:pb-32"
+  />
+
+  <Faq
+    id="contact-faq"
+    label={t.faqLabel[locale]}
+    title={t.faqTitle[locale]}
+    items={faq[locale]}
+    class="pb-24 sm:pb-32"
+  />
 </Layout>
+
+<script>
+  // One click sends: the button is disabled while the page submits, and enabled again if the visitor comes back.
+  const submit = document.querySelector<HTMLButtonElement>("[data-submit]");
+  submit?.form?.addEventListener("submit", () => {
+    submit.disabled = true;
+    submit.setAttribute("aria-busy", "true");
+  });
+  addEventListener("pageshow", () => {
+    if (!submit) return;
+    submit.disabled = false;
+    submit.removeAttribute("aria-busy");
+  });
+
+  // After a failed submit, put the cursor in the first field to fix. Its error is read out with it.
+  document.querySelector<HTMLElement>('form [aria-invalid="true"]:not([hidden])')?.focus();
+</script>

@@ -1,8 +1,9 @@
 import { RESEND_API_KEY } from "astro:env/server";
 import type { AstroGlobal } from "astro";
 import { business } from "../data/business";
-import { workingDays, type Locale } from "../data/i18n";
-import { plans, policies, services, type PlanId } from "../data/offer";
+import { confirmationEmail, notificationEmail } from "./email";
+import type { Locale } from "../data/i18n";
+import { contract, plans, services, type PlanId } from "../data/offer";
 
 export const needs = [...services.map((s) => s.id), "other"] as const;
 export type Need = (typeof needs)[number];
@@ -61,7 +62,7 @@ export function validate(form: ContactForm): ContactErrors {
 }
 
 const attempts = new Map<string, number[]>();
-const windowMs = 60 * 60 * 1000;
+const windowMs = contract.ipMemoryHours * 60 * 60 * 1000;
 const maxAttempts = 5;
 
 export function isRateLimited(ip: string): boolean {
@@ -70,6 +71,19 @@ export function isRateLimited(ip: string): boolean {
   recent.push(now);
   attempts.set(ip, recent);
   return recent.length > maxAttempts;
+}
+
+// One token per displayed form. A token is claimed before sending, so a double click or a resubmitted form never
+// sends twice. Kept in memory as long as the rate limit window.
+const usedTokens = new Map<string, number>();
+const tokenPattern = /^[0-9a-f-]{36}$/;
+
+function claimToken(token: string): boolean {
+  const now = Date.now();
+  for (const [key, time] of usedTokens) if (now - time > windowMs) usedTokens.delete(key);
+  if (!tokenPattern.test(token) || usedTokens.has(token)) return false;
+  usedTokens.set(token, now);
+  return true;
 }
 
 async function send(email: Record<string, unknown>): Promise<void> {
@@ -81,52 +95,35 @@ async function send(email: Record<string, unknown>): Promise<void> {
   if (!response.ok) throw new Error(`Resend ${response.status}: ${await response.text()}`);
 }
 
-const confirmation = {
-  subject: { fr: "Votre message a bien été reçu", en: "Your message has been received" },
-  body: {
-    fr: (days: string) =>
-      `Bonjour,\n\nMerci pour votre message. Vous recevrez une réponse sous ${days}, du lundi au vendredi.\n\nPour toute question en attendant : ${business.email} ou ${business.phone.display} (appel ou WhatsApp).\n\nCet e-mail est envoyé automatiquement, merci de ne pas y répondre.\n\n${business.name}\n${business.url}`,
-    en: (days: string) =>
-      `Hello,\n\nThank you for your message. You will get a reply within ${days}, Monday to Friday.\n\nIf you have a question in the meantime: ${business.email} or ${business.phone.display} (call or WhatsApp).\n\nThis email is sent automatically, please do not reply.\n\n${business.name}\n${business.url}`,
-  },
-};
-
 export async function sendContact(form: ContactForm, locale: Locale, page: string): Promise<void> {
-  const notification = [
-    `Nom: ${form.name}`,
-    `E-mail: ${form.email}`,
-    `Entreprise / site: ${form.business || "-"}`,
-    `Besoin: ${form.need}`,
-    `Formule: ${form.plan || "-"}`,
-    `Source: ${form.source || "-"}`,
-    `Langue: ${locale}`,
-    `Page: ${page}`,
-    "",
-    form.message,
-  ].join("\n");
-
+  const notification = notificationEmail(form, locale, page);
   await send({
     from: `${business.name} <${business.noReplyEmail}>`,
     to: [business.email],
     reply_to: form.email,
-    subject: `Nouveau message: ${form.name}`,
-    text: notification,
+    ...notification,
   });
 
+  // The message has arrived: a failed confirmation is only logged, so the visitor is not asked to send it again.
   // Fixed text only: user input never goes into mail sent to an address the user typed.
-  await send({
-    from: `${business.name} <${business.noReplyEmail}>`,
-    to: [form.email],
-    subject: confirmation.subject[locale],
-    text: confirmation.body[locale](workingDays(policies.inquiryReplyWorkingDays, locale)),
-    headers: { "Auto-Submitted": "auto-generated" },
-  });
+  try {
+    await send({
+      from: `${business.name} <${business.noReplyEmail}>`,
+      to: [form.email],
+      ...confirmationEmail(locale),
+      headers: { "Auto-Submitted": "auto-generated" },
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 export type ContactState = {
   form: ContactForm;
   errors: ContactErrors;
   status: "idle" | "sent" | "failed" | "limited";
+  /** Sent back with the form so the same submission is only handled once. */
+  token: string;
 };
 
 export async function handleContact(astro: AstroGlobal, locale: Locale): Promise<ContactState | Response> {
@@ -135,25 +132,32 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
     const plan = url.searchParams.get("plan") ?? "";
     const form = readForm(new FormData());
     form.plan = plans.some((p) => p.id === plan) ? (plan as PlanId) : "";
+    const need = url.searchParams.get("need") ?? "";
     if (form.plan) form.need = form.plan === "essentiel" ? "care" : "google";
-    return { form, errors: {}, status: url.searchParams.has("sent") ? "sent" : "idle" };
+    else if ((needs as readonly string[]).includes(need)) form.need = need as Need;
+    return { form, errors: {}, status: url.searchParams.has("sent") ? "sent" : "idle", token: crypto.randomUUID() };
   }
 
   const data = await request.formData();
   const form = readForm(data);
+  const token = String(data.get("token") ?? "");
   if (data.get("fax")) return astro.redirect(`${url.pathname}?sent`, 303);
 
   const errors = validate(form);
-  if (Object.keys(errors).length) return { form, errors, status: "idle" };
+  if (Object.keys(errors).length) return { form, errors, status: "idle", token };
 
   const ip = request.headers.get("x-forwarded-for")?.split(",")[0].trim() || astro.clientAddress;
-  if (isRateLimited(ip)) return { form, errors, status: "limited" };
+  if (isRateLimited(ip)) return { form, errors, status: "limited", token };
+
+  // Already sent (or being sent) with this token: show the confirmation without sending again.
+  if (!claimToken(token)) return astro.redirect(`${url.pathname}?sent`, 303);
 
   try {
     await sendContact(form, locale, request.headers.get("referer") ?? url.pathname);
   } catch (error) {
     console.error(error);
-    return { form, errors, status: "failed" };
+    usedTokens.delete(token);
+    return { form, errors, status: "failed", token };
   }
   return astro.redirect(`${url.pathname}?sent`, 303);
 }
