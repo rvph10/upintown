@@ -1,37 +1,233 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import { processors } from "../data/business";
-import type { Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
-import { routes } from "../data/routes";
-import { pageNames } from "../data/ui";
+import LegalLayout from "../layouts/LegalLayout.astro";
+import LegalSection from "../components/LegalSection.astro";
+import { business, contactLinks, legal, processors } from "../data/business";
+import { lowerFirst, type Locale } from "../data/i18n";
+import { contract } from "../data/offer";
+import { path } from "../data/routes";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const t = {
-  processors: { fr: "Prestataires", en: "Service providers" },
-};
+const fr = locale === "fr";
+const email = business.email;
+const months = contract.prospectRetentionMonths;
+const hours = contract.ipMemoryHours;
+const authority = "https://www.autoriteprotectiondonnees.be";
+
+const titles = fr
+  ? [
+      "Qui est responsable",
+      "Données traitées et pourquoi",
+      "Ce que ce site ne fait pas",
+      "Durée de conservation",
+      "Prestataires",
+      "Vos droits",
+      "Sécurité",
+      "Sites des clients",
+    ]
+  : [
+      "Who is responsible",
+      "Data processed and why",
+      "What this site does not do",
+      "Retention",
+      "Service providers",
+      "Your rights",
+      "Security",
+      "Client websites",
+    ];
+const ids = ["controller", "data", "no-tracking", "retention", "providers", "rights", "security", "client-sites"];
+const section = (index: number) => ({ id: ids[index], index, title: titles[index] });
 ---
 
-<Layout
-  locale={locale}
-  title={pageNames.privacy[locale]}
-  description={descriptions.privacy[locale]}
-  alternates={routes.privacy}
->
-  <h1>{pageNames.privacy[locale]}</h1>
-  <section>
-    <h2>{t.processors[locale]}</h2>
-    <ul>
-      {processors.map((p) => (
+<LegalLayout locale={locale} route="privacy" updated={legal.privacyUpdated}>
+  <LegalSection {...section(0)}>
+    {fr ? (
+      <p>
+        Le responsable du traitement est {legal.owner}, qui exerce sous le nom {business.name}, {legal.address.street},{" "}
+        {legal.address.postalCode} {legal.address.city}, numéro d'entreprise {legal.companyNumber}. Pour toute question
+        sur vos données&nbsp;: <a href={contactLinks.email}>{email}</a>.
+      </p>
+    ) : (
+      <p>
+        The controller is {legal.owner}, trading as {business.name}, {legal.address.street}, {legal.address.postalCode}{" "}
+        {legal.address.city}, company number {legal.companyNumber}. For any question about your data:{" "}
+        <a href={contactLinks.email}>{email}</a>.
+      </p>
+    )}
+  </LegalSection>
+
+  <LegalSection {...section(1)}>
+    {fr ? (
+      <ul>
         <li>
-          {p.name}: {p.purpose[locale]}
-          {"country" in p && <span>({p.country[locale]})</span>}
+          <strong class="font-medium text-ink">Formulaire de contact.</strong> Nom, e-mail, entreprise ou site
+          (facultatif), besoin, formule, message et comment vous avez connu {business.name}. Ces données servent à
+          répondre à votre demande et à préparer un devis, à votre demande. Elles sont envoyées par e-mail et ne sont
+          pas enregistrées sur le serveur. Un e-mail de confirmation vous est envoyé.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Échanges et appels.</strong> Les e-mails, messages WhatsApp et appels
+          (téléphone, WhatsApp, Google Meet) servent à préparer et à suivre votre projet. Les appels ne sont jamais
+          enregistrés ni transcrits.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Clients.</strong> Coordonnées professionnelles, numéro d'entreprise ou de
+          TVA, fichiers fournis pour le site (logo, photos, textes), devis et factures. Ces données servent à exécuter
+          le contrat et à respecter les obligations comptables et fiscales.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Paiements.</strong> Les abonnements sont payés par Stripe, qui traite les
+          données de paiement. {business.name} ne voit jamais votre numéro de carte. Les projets sont payés par virement
+          : le nom et le compte de l'émetteur figurent alors sur le relevé bancaire.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Protection contre les abus.</strong> Pour limiter les envois automatiques
+          du formulaire, l'adresse IP est gardée en mémoire {hours} heure au maximum, sans être enregistrée. C'est un
+          intérêt légitime&nbsp;: protéger le site.
+        </li>
+      </ul>
+    ) : (
+      <ul>
+        <li>
+          <strong class="font-medium text-ink">Contact form.</strong> Name, email, business or website (optional), need,
+          plan, message and how you heard about {business.name}. This data is used to answer your request and prepare a
+          quote, at your request. It is sent by email and not stored on the server. A confirmation email is sent to you.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Messages and calls.</strong> Emails, WhatsApp messages and calls (phone,
+          WhatsApp, Google Meet) are used to prepare and follow your project. Calls are never recorded or transcribed.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Clients.</strong> Business contact details, company or VAT number, files
+          provided for the site (logo, photos, text), quotes and invoices. This data is used to perform the contract and
+          to meet accounting and tax obligations.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Payments.</strong> Subscriptions are paid through Stripe, which processes
+          the payment data. {business.name} never sees your card number. Projects are paid by bank transfer: the payer's
+          name and account then appear on the bank statement.
+        </li>
+        <li>
+          <strong class="font-medium text-ink">Abuse protection.</strong> To limit automated form submissions, the IP
+          address is kept in memory for {hours} hour at most, without being stored. This is a legitimate interest:
+          protecting the site.
+        </li>
+      </ul>
+    )}
+  </LegalSection>
+
+  <LegalSection {...section(2)}>
+    {fr ? (
+      <p>
+        Ce site ne dépose aucun cookie, n'utilise aucun outil publicitaire ni de suivi, et le serveur n'enregistre pas
+        de journal des visites. Vos données ne sont jamais vendues ni utilisées pour une décision automatisée.
+      </p>
+    ) : (
+      <p>
+        This site sets no cookies and uses no advertising or tracking tools, and the server keeps no log of visits. Your
+        data is never sold or used for automated decisions.
+      </p>
+    )}
+  </LegalSection>
+
+  <LegalSection {...section(3)}>
+    {fr ? (
+      <ul>
+        <li>Demande sans suite&nbsp;: {months} mois après le dernier échange, puis suppression.</li>
+        <li>
+          Clients : pendant le contrat, puis suppression des fichiers et données du site selon les{" "}
+          <a href={path("terms", locale)}>conditions générales</a>.
+        </li>
+        <li>Devis et factures&nbsp;: pendant la durée imposée par la loi belge pour la comptabilité et la TVA.</li>
+        <li>Adresse IP pour la protection contre les abus&nbsp;: {hours} heure au maximum, en mémoire.</li>
+      </ul>
+    ) : (
+      <ul>
+        <li>Requests that do not lead to a project: {months} months after the last exchange, then deleted.</li>
+        <li>
+          Clients: for the duration of the contract, then site files and data are deleted as described in the{" "}
+          <a href={path("terms", locale)}>terms of service</a>.
+        </li>
+        <li>Quotes and invoices: for the period required by Belgian accounting and VAT law.</li>
+        <li>IP address for abuse protection: {hours} hour at most, in memory.</li>
+      </ul>
+    )}
+  </LegalSection>
+
+  <LegalSection {...section(4)}>
+    <p>
+      {fr
+        ? `${business.name} fait appel aux prestataires suivants, qui traitent les données uniquement pour le service décrit\u00a0:`
+        : `${business.name} uses the following providers, which process data only for the service described:`}
+    </p>
+    <ul>
+      {processors.map((processor) => (
+        <li>
+          <strong class="font-medium text-ink">{processor.name}</strong> ({processor.country[locale]})
+          {fr ? "\u00a0: " : ": "}
+          {lowerFirst(processor.purpose[locale])}
         </li>
       ))}
     </ul>
-  </section>
-</Layout>
+    <p>
+      {fr
+        ? "Les transferts hors de l'Union européenne sont encadrés par les garanties prévues par le RGPD (clauses contractuelles types de la Commission européenne ou cadre de protection des données UE-États-Unis)."
+        : "Transfers outside the European Union are covered by the safeguards provided by the GDPR (European Commission standard contractual clauses or the EU-US Data Privacy Framework)."}
+    </p>
+  </LegalSection>
+
+  <LegalSection {...section(5)}>
+    {fr ? (
+      <>
+        <p>
+          Vous pouvez demander l'accès à vos données, leur correction, leur suppression, leur portabilité, la limitation
+          de leur traitement, ou vous opposer à un traitement fondé sur l'intérêt légitime. Écrivez à{" "}
+          <a href={contactLinks.email}>{email}</a>&nbsp;: vous recevez une réponse dans un délai d'un mois.
+        </p>
+        <p>
+          Si vous estimez que vos données ne sont pas traitées correctement, vous pouvez introduire une plainte auprès
+          de l'<a href={authority}>Autorité de protection des données</a>.
+        </p>
+      </>
+    ) : (
+      <>
+        <p>
+          You can ask to access, correct, delete or port your data, to restrict its processing, or object to processing
+          based on legitimate interest. Write to <a href={contactLinks.email}>{email}</a>: you will get an answer within
+          one month.
+        </p>
+        <p>
+          If you believe your data is not handled properly, you can lodge a complaint with the Belgian{" "}
+          <a href={authority}>Data Protection Authority</a>.
+        </p>
+      </>
+    )}
+  </LegalSection>
+
+  <LegalSection {...section(6)}>
+    <p>
+      {fr
+        ? "Les comptes sont protégés par une double authentification, avec clé physique pour les principaux services. Le site est servi en HTTPS, le serveur n'expose que les ports web et il est mis à jour régulièrement."
+        : "Accounts are protected by two-factor authentication, with a hardware key for the main services. The site is served over HTTPS, the server exposes only web ports and is updated regularly."}
+    </p>
+  </LegalSection>
+
+  <LegalSection {...section(7)}>
+    {fr ? (
+      <p>
+        Pour les sites et messageries qu'{business.name} gère pour ses clients, le client est responsable du traitement
+        et {business.name} agit comme sous-traitant, selon l'accord en annexe des{" "}
+        <a href={path("terms", locale)}>conditions générales</a>.
+      </p>
+    ) : (
+      <p>
+        For the sites and email {business.name} manages for its clients, the client is the controller and{" "}
+        {business.name} acts as processor, under the agreement annexed to the{" "}
+        <a href={path("terms", locale)}>terms of service</a>.
+      </p>
+    )}
+  </LegalSection>
+</LegalLayout>

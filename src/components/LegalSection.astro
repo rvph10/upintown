@@ -1,0 +1,20 @@
+---
+interface Props {
+  id: string;
+  /** Position in the document, shown as 01, 02... */
+  index: number;
+  title: string;
+}
+
+const { id, index, title } = Astro.props;
+---
+
+<section aria-labelledby={id} class="border-t border-ash-300 py-10 first:border-t-0 first:pt-0">
+  <h2 id={id} class="flex gap-4 text-2xl font-semibold tracking-title text-ink">
+    <span class="tabular-nums text-ash-600" aria-hidden="true">
+      {String(index + 1).padStart(2, "0")}
+    </span>
+    {title}
+  </h2>
+  <slot />
+</section>

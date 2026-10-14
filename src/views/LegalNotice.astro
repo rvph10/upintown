@@ -1,66 +1,132 @@
 ---
-import Layout from "../layouts/Layout.astro";
+import LegalLayout from "../layouts/LegalLayout.astro";
+import LegalSection from "../components/LegalSection.astro";
 import { business, contactLinks, legal } from "../data/business";
 import type { Locale } from "../data/i18n";
-import { descriptions } from "../data/meta";
-import { routes } from "../data/routes";
-import { pageNames } from "../data/ui";
+import { path } from "../data/routes";
 
 interface Props {
   locale: Locale;
 }
 
 const { locale } = Astro.props;
-const t = {
-  publisher: { fr: "Éditeur du site", en: "Site publisher" },
-  tradeName: { fr: "Nom commercial", en: "Trade name" },
-  owner: { fr: "Responsable", en: "Owner" },
-  form: { fr: "Forme juridique", en: "Legal form" },
-  address: { fr: "Siège", en: "Registered address" },
-  companyNumber: { fr: "Numéro d'entreprise (BCE)", en: "Company number (CBE)" },
-  vat: { fr: "TVA", en: "VAT" },
-  contact: { fr: "Contact", en: "Contact" },
-  host: { fr: "Hébergement", en: "Hosting" },
-};
+const fr = locale === "fr";
+const address = `${legal.address.street}, ${legal.address.postalCode} ${legal.address.city}, ${legal.address.country[locale]}`;
+
+const publisher = [
+  { term: fr ? "Nom commercial" : "Trade name", value: business.name },
+  { term: fr ? "Responsable" : "Owner", value: legal.owner },
+  { term: fr ? "Forme juridique" : "Legal form", value: legal.form[locale] },
+  { term: fr ? "Siège" : "Registered address", value: address },
+  { term: fr ? "Numéro d'entreprise (BCE)" : "Company number (CBE)", value: legal.companyNumber },
+  { term: fr ? "TVA" : "VAT", value: `${legal.vatNumber}${legal.vatExempt ? `. ${legal.vatMention[locale]}` : ""}` },
+];
+
+const sections = [
+  { id: "publisher", title: fr ? "Éditeur du site" : "Site publisher" },
+  { id: "host", title: fr ? "Hébergement" : "Hosting" },
+  { id: "intellectual-property", title: fr ? "Propriété intellectuelle" : "Intellectual property" },
+  { id: "content", title: fr ? "Contenu et liens" : "Content and links" },
+  { id: "privacy", title: fr ? "Données personnelles et cookies" : "Personal data and cookies" },
+  { id: "law", title: fr ? "Droit applicable" : "Governing law" },
+];
+const [publisherSection, hostSection, ipSection, contentSection, privacySection, lawSection] = sections.map(
+  (section, index) => ({ ...section, index }),
+);
 ---
 
-<Layout
-  locale={locale}
-  title={pageNames.legalNotice[locale]}
-  description={descriptions.legalNotice[locale]}
-  alternates={routes.legalNotice}
->
-  <h1>{pageNames.legalNotice[locale]}</h1>
-  <section>
-    <h2>{t.publisher[locale]}</h2>
-    <dl>
-      <dt>{t.tradeName[locale]}</dt>
-      <dd>{business.name}</dd>
-      <dt>{t.owner[locale]}</dt>
-      <dd>{legal.owner}</dd>
-      <dt>{t.form[locale]}</dt>
-      <dd>{legal.form[locale]}</dd>
-      <dt>{t.address[locale]}</dt>
-      <dd>
-        {legal.address.street}, {legal.address.postalCode} {legal.address.city}, {legal.address.country[locale]}
-      </dd>
-      <dt>{t.companyNumber[locale]}</dt>
-      <dd>{legal.companyNumber}</dd>
-      <dt>{t.vat[locale]}</dt>
-      <dd>
-        {legal.vatNumber}
-        {legal.vatExempt && <span>. {legal.vatMention[locale]}</span>}
-      </dd>
-      <dt>{t.contact[locale]}</dt>
-      <dd>
-        <a href={contactLinks.email}>{business.email}</a>, <a href={contactLinks.phone}>{business.phone.display}</a>
-      </dd>
-    </dl>
-  </section>
-  <section>
-    <h2>{t.host[locale]}</h2>
+<LegalLayout locale={locale} route="legalNotice" updated={legal.noticeUpdated}>
+  <LegalSection {...publisherSection}>
     <p>
-      {legal.host.name}, {legal.host.address}. <a href={legal.host.url}>{legal.host.url}</a>
+      {fr
+        ? `Le site ${new URL(business.url).host} est édité par\u00a0:`
+        : `The website ${new URL(business.url).host} is published by:`}
     </p>
-  </section>
-</Layout>
+    <dl class="mt-6 divide-y divide-ash-300 border-y border-ash-300">
+      {publisher.map((row) => (
+        <div class="grid gap-1 py-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+          <dt class="font-medium text-ink">{row.term}</dt>
+          <dd>{row.value}</dd>
+        </div>
+      ))}
+      <div class="grid gap-1 py-4 sm:grid-cols-[14rem_1fr] sm:gap-6">
+        <dt class="font-medium text-ink">Contact</dt>
+        <dd>
+          <a href={contactLinks.email}>{business.email}</a>, <a href={contactLinks.phone}>{business.phone.display}</a>
+        </dd>
+      </div>
+    </dl>
+  </LegalSection>
+
+  <LegalSection {...hostSection}>
+    <p>
+      {legal.host.name}, {legal.host.address}. <a href={legal.host.url}>{new URL(legal.host.url).host}</a>
+    </p>
+  </LegalSection>
+
+  <LegalSection {...ipSection}>
+    {fr ? (
+      <>
+        <p>
+          Les textes, le design, le logo et le code de ce site appartiennent à {business.name}, sauf mention contraire.
+          Toute reproduction, même partielle, demande un accord écrit préalable.
+        </p>
+        <p>Les marques et logos de tiers cités sur ce site appartiennent à leurs propriétaires respectifs.</p>
+      </>
+    ) : (
+      <>
+        <p>
+          The text, design, logo and code of this site belong to {business.name}, unless stated otherwise. Any
+          reproduction, even partial, requires prior written consent.
+        </p>
+        <p>Third-party trademarks and logos mentioned on this site belong to their respective owners.</p>
+      </>
+    )}
+  </LegalSection>
+
+  <LegalSection {...contentSection}>
+    {fr ? (
+      <>
+        <p>
+          Les informations de ce site sont données à titre général et peuvent changer. Pour une prestation, seuls le
+          devis accepté et les <a href={path("terms", locale)}>conditions générales</a> font foi.
+        </p>
+        <p>
+          Les liens vers d'autres sites sont fournis pour votre confort. {business.name} n'est pas responsable de leur
+          contenu.
+        </p>
+      </>
+    ) : (
+      <>
+        <p>
+          The information on this site is general and may change. For any service, only the accepted quote and the{" "}
+          <a href={path("terms", locale)}>terms of service</a> apply.
+        </p>
+        <p>Links to other sites are provided for convenience. {business.name} is not responsible for their content.</p>
+      </>
+    )}
+  </LegalSection>
+
+  <LegalSection {...privacySection}>
+    {fr ? (
+      <p>
+        Ce site ne dépose aucun cookie. Les statistiques de visite sont mesurées sans cookies, avec un outil
+        auto-hébergé. Le traitement de vos données est décrit dans la{" "}
+        <a href={path("privacy", locale)}>politique de confidentialité</a>.
+      </p>
+    ) : (
+      <p>
+        This site sets no cookies. Visit statistics are measured without cookies, with a self-hosted tool. How your data
+        is handled is described in the <a href={path("privacy", locale)}>privacy policy</a>.
+      </p>
+    )}
+  </LegalSection>
+
+  <LegalSection {...lawSection}>
+    <p>
+      {fr
+        ? "Ce site et ces mentions sont soumis au droit belge."
+        : "This site and this notice are governed by Belgian law."}
+    </p>
+  </LegalSection>
+</LegalLayout>

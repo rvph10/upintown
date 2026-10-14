@@ -1,0 +1,57 @@
+---
+import LegalLayout from "../layouts/LegalLayout.astro";
+import LegalSection from "../components/LegalSection.astro";
+import type { Locale } from "../data/i18n";
+import { contract } from "../data/offer";
+import { getTerms } from "../data/terms";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+const terms = getTerms(locale);
+---
+
+<LegalLayout locale={locale} route="terms" updated={contract.updated}>
+  {terms.sections.map((section, index) => (
+    <LegalSection id={section.id} index={index} title={section.title}>
+      {section.blocks.map((block) =>
+        typeof block === "string" ? (
+          <p set:html={block} />
+        ) : (
+          <ul>
+            {block.list.map((item) => (
+              <li set:html={item} />
+            ))}
+          </ul>
+        ),
+      )}
+    </LegalSection>
+  ))}
+
+  <section aria-labelledby={terms.annex.id} class="mt-6 rounded-card bg-surface p-6 sm:p-10">
+    <h2 id={terms.annex.id} class="text-3xl font-semibold tracking-title text-balance text-ink">
+      {terms.annex.title}
+    </h2>
+    <p class="mt-4">{terms.annex.intro}</p>
+    {terms.annex.sections.map((section) => (
+      <section aria-labelledby={section.id} class="mt-8 border-t border-ash-200 pt-8">
+        <h3 id={section.id} class="text-xl font-semibold tracking-title text-ink">
+          {section.title}
+        </h3>
+        {section.blocks.map((block) =>
+          typeof block === "string" ? (
+            <p set:html={block} />
+          ) : (
+            <ul>
+              {block.list.map((item) => (
+                <li set:html={item} />
+              ))}
+            </ul>
+          ),
+        )}
+      </section>
+    ))}
+  </section>
+</LegalLayout>
