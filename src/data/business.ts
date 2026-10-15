@@ -29,7 +29,7 @@ export const legal = {
   /** ISO date of the last legal notice change. */
   noticeUpdated: "2026-10-13",
   /** ISO date of the last privacy policy change. */
-  privacyUpdated: "2026-10-13",
+  privacyUpdated: "2026-10-15",
   owner: "Raphaël Genu",
   form: { fr: "Personne physique (indépendant)", en: "Sole trader" } satisfies Localized,
   address: {

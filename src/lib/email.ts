@@ -2,7 +2,9 @@ import { business, contactLinks } from "../data/business";
 import { nextSteps } from "../data/contact";
 import { htmlLang, workingDays, type Locale } from "../data/i18n";
 import { planById, policies, services, type PlanId } from "../data/offer";
+import { questionnaire, type Question } from "../data/questionnaire";
 import type { ContactForm } from "./contact";
+import type { Answers } from "./questionnaire";
 
 // Emails cannot read CSS variables: these are the hex values of the tokens in src/styles/global.css.
 const color = {
@@ -218,6 +220,106 @@ export function notificationEmail(form: ContactForm, locale: Locale, page: strin
       preheader: escapeHtml(form.message.slice(0, 120)),
       body,
       footer: `${business.name} · formulaire de contact`,
+    }),
+    text,
+  };
+}
+
+const questionnaireCopy = {
+  subject: { fr: "Votre questionnaire a bien été reçu", en: "Your questionnaire has been received" },
+  received: { fr: "Questionnaire reçu", en: "Questionnaire received" },
+  title: { fr: "Merci pour vos réponses.", en: "Thank you for your answers." },
+  intro: {
+    fr: "Elles servent de base à l'appel d'analyse, puis à la rédaction de vos textes. Si quelque chose vous revient, écrivez simplement par e-mail ou WhatsApp.",
+    en: "They are the starting point for the analysis call, then for writing your text. If anything comes to mind later, just send it by email or WhatsApp.",
+  },
+};
+
+/** Sent to the address the client typed: fixed text only, like the contact confirmation. */
+export function questionnaireConfirmationEmail(locale: Locale) {
+  const c = questionnaireCopy;
+  const host = new URL(business.url).host;
+  const body = `
+    ${pill(c.received[locale])}
+    <div style="margin-top:20px;">${heading(c.title[locale])}</div>
+    ${paragraph(c.intro[locale])}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin-top:32px;"><tr>
+      <td style="padding:20px 24px;border-radius:24px;background:${color.paper};font-family:${font};font-size:15px;line-height:1.6;color:${color.ash600};">
+        ${link(contactLinks.email, business.email)}<br>
+        ${link(contactLinks.phone, business.phone.display)} (${confirmationCopy.callOrWhatsApp[locale]})
+      </td>
+    </tr></table>`;
+  const footer = `${confirmationCopy.automatic[locale]}<br>${business.name} · ${link(business.url, host)}`;
+  const text = [
+    c.title[locale],
+    "",
+    c.intro[locale],
+    "",
+    `${business.email}, ${business.phone.display} (${confirmationCopy.callOrWhatsApp[locale]})`,
+    "",
+    confirmationCopy.automatic[locale],
+    `${business.name}, ${business.url}`,
+  ].join("\n");
+
+  return {
+    subject: c.subject[locale],
+    html: layout({ locale, title: c.subject[locale], preheader: c.intro[locale], body, footer }),
+    text,
+  };
+}
+
+/** Sent to UpInTown, in French, every question in order. Everything the client typed is escaped. */
+export function questionnaireNotificationEmail(answers: Answers, locale: Locale) {
+  const display = (question: Question) => {
+    const value = answers[question.id];
+    return question.kind === "choice" ? (question.options?.find((o) => o.value === value)?.label.fr ?? "") : value;
+  };
+  const sections = questionnaire
+    .map((section) => {
+      const rows = section.questions
+        .map((question, index) => {
+          const value = display(question);
+          const answer = value
+            ? escapeHtml(value).replace(/\r?\n/g, "<br>")
+            : `<span style="color:${color.ash600};opacity:0.6;">Non renseigné</span>`;
+          return `
+          <tr><td style="padding:12px 0;${index ? `border-top:1px solid ${color.ash200};` : ""}font-family:${font};">
+            <div style="font-size:14px;font-weight:600;color:${color.ink};">${question.label.fr}</div>
+            <div style="margin-top:4px;font-size:15px;line-height:1.5;color:${color.ash600};word-break:break-word;">${answer}</div>
+          </td></tr>`;
+        })
+        .join("");
+      return `
+        <h2 style="margin:32px 0 4px;font-family:${font};font-size:20px;font-weight:600;letter-spacing:-0.02em;color:${color.ink};">${section.title.fr}</h2>
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0">${rows}</table>`;
+    })
+    .join("");
+
+  const company = escapeHtml(answers.businessName);
+  const body = `
+    ${heading("Nouveau questionnaire")}
+    ${paragraph(`${company}, envoyé par ${escapeHtml(answers.contactName)} (langue ${locale.toUpperCase()}).`, 12)}
+    ${sections}
+    ${button(`mailto:${answers.email}`, "Répondre")}`;
+
+  const text = [
+    `Questionnaire: ${answers.businessName}`,
+    `Langue: ${locale}`,
+    ...questionnaire.flatMap((section) => [
+      "",
+      section.title.fr.toUpperCase(),
+      ...section.questions.map((question) => `${question.label.fr}:\n${display(question) || "-"}\n`),
+    ]),
+  ].join("\n");
+
+  return {
+    subject: `Questionnaire: ${answers.businessName}`,
+    html: layout({
+      locale: "fr",
+      title: "Nouveau questionnaire",
+      preheader: `${company}, ${escapeHtml(answers.contactName)}`,
+      body,
+      footer: `${business.name} · questionnaire de projet`,
     }),
     text,
   };

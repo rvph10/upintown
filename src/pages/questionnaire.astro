@@ -1,0 +1,11 @@
+---
+import Questionnaire from "../views/Questionnaire.astro";
+import { handleQuestionnaire } from "../lib/questionnaire";
+
+export const prerender = false;
+
+const result = await handleQuestionnaire(Astro, "fr");
+if (result instanceof Response) return result;
+---
+
+<Questionnaire locale="fr" {...result} />

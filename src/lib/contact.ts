@@ -79,7 +79,7 @@ export function isRateLimited(ip: string): boolean {
   return recent.length > maxAttempts;
 }
 
-function isOverSendLimit(): boolean {
+export function isOverSendLimit(): boolean {
   const now = Date.now();
   while (sends.length && now - sends[0] >= windowMs) sends.shift();
   if (sends.length >= maxSends) return true;
@@ -88,7 +88,7 @@ function isOverSendLimit(): boolean {
 }
 
 /** The proxy (Traefik) appends the address it sees, so only the last entry cannot be set by the visitor. */
-function clientIp(request: Request, fallback: string): string {
+export function clientIp(request: Request, fallback: string): string {
   return request.headers.get("x-forwarded-for")?.split(",").at(-1)?.trim() || fallback;
 }
 
@@ -97,7 +97,7 @@ function clientIp(request: Request, fallback: string): string {
 const usedTokens = new Map<string, number>();
 const tokenPattern = /^[0-9a-f-]{36}$/;
 
-function claimToken(token: string): boolean {
+export function claimToken(token: string): boolean {
   const now = Date.now();
   for (const [key, time] of usedTokens) if (now - time > windowMs) usedTokens.delete(key);
   if (!tokenPattern.test(token) || usedTokens.has(token)) return false;
@@ -105,7 +105,12 @@ function claimToken(token: string): boolean {
   return true;
 }
 
-async function send(email: Record<string, unknown>): Promise<void> {
+/** Frees a token after a failed send, so the visitor can try again. */
+export function releaseToken(token: string): void {
+  usedTokens.delete(token);
+}
+
+export async function send(email: Record<string, unknown>): Promise<void> {
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, "Content-Type": "application/json" },
@@ -179,7 +184,7 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
   if (!claimToken(token)) return astro.redirect(`${url.pathname}?sent`, 303);
 
   if (isOverSendLimit()) {
-    usedTokens.delete(token);
+    releaseToken(token);
     return { form, errors, status: "failed", token };
   }
 
@@ -187,7 +192,7 @@ export async function handleContact(astro: AstroGlobal, locale: Locale): Promise
     await sendContact(form, locale, request.headers.get("referer") ?? url.pathname);
   } catch (error) {
     console.error(error);
-    usedTokens.delete(token);
+    releaseToken(token);
     return { form, errors, status: "failed", token };
   }
   // Only a real send carries a value: the confirmation page counts it as a conversion, see docs/analytics.md.

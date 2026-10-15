@@ -24,8 +24,8 @@ const translations = new Map(
 export default defineConfig({
   site: business.url,
   trailingSlash: "never",
-  // The contact form is the only request body, a few kB at most.
-  adapter: node({ mode: "standalone", bodySizeLimit: 64 * 1024 }),
+  // Form posts only: a contact message is a few kB, a long project questionnaire stays well under 1 MB.
+  adapter: node({ mode: "standalone", bodySizeLimit: 1024 * 1024 }),
   // Behind the proxy, lets Astro trust the forwarded host and protocol so the form's origin check sees the real site.
   security: {
     allowedDomains: [{ hostname: new URL(business.url).hostname, protocol: "https" }],
@@ -56,7 +56,9 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.startsWith(url("/components")),
+      filter: (page) =>
+        !page.startsWith(url("/components")) &&
+        !Object.values(routes.questionnaire).some((pathname) => page.startsWith(url(pathname))),
       serialize(item) {
         const links = translations.get(item.url.replace(/\/$/, "")) ?? translations.get(item.url);
         return links ? { ...item, links } : item;

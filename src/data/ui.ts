@@ -14,6 +14,7 @@ export const pageNames: Record<RouteId, Localized> = {
   legalNotice: { fr: "Mentions légales", en: "Legal notice" },
   privacy: { fr: "Confidentialité", en: "Privacy policy" },
   terms: { fr: "Conditions générales", en: "Terms of service" },
+  questionnaire: { fr: "Questionnaire", en: "Questionnaire" },
 };
 
 /** Header links in order; a hash points to a section of that page. */

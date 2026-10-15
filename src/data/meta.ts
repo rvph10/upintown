@@ -36,6 +36,10 @@ export const titles = {
     fr: "Contact : demander un devis de site internet",
     en: "Contact: request a website quote",
   },
+  questionnaire: {
+    fr: "Questionnaire de projet",
+    en: "Project questionnaire",
+  },
 } satisfies Partial<Record<RouteId, Localized>>;
 
 export const descriptions: Record<RouteId, Localized> = {
@@ -70,6 +74,10 @@ export const descriptions: Record<RouteId, Localized> = {
   contact: {
     fr: `Décrivez votre besoin, réponse sous ${workingDays(policies.inquiryReplyWorkingDays, "fr")}.`,
     en: `Describe what you need, reply within ${workingDays(policies.inquiryReplyWorkingDays, "en")}.`,
+  },
+  questionnaire: {
+    fr: "Vos réponses servent de base à l'appel d'analyse et à la rédaction de vos textes.",
+    en: "Your answers are the starting point for the analysis call and for writing your text.",
   },
   legalNotice: {
     fr: "Mentions légales du site upintown.dev.",

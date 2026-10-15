@@ -12,6 +12,8 @@ export const routes = {
   legalNotice: { fr: "/mentions-legales", en: "/en/legal-notice" },
   privacy: { fr: "/confidentialite", en: "/en/privacy" },
   terms: { fr: "/conditions-generales", en: "/en/terms" },
+  // Unlisted: sent to website clients only, never linked from the site.
+  questionnaire: { fr: "/questionnaire", en: "/en/questionnaire" },
 } as const satisfies Record<string, Localized>;
 
 export type RouteId = keyof typeof routes;
