@@ -43,3 +43,6 @@ docs/
 # Local Claude Code settings
 .claude/settings.local.json
 CLAUDE.md
+
+# Local social media assets
+social/

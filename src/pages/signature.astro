@@ -1,0 +1,59 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Button from "../components/ui/Button.astro";
+import { locales } from "../data/i18n";
+import { signatureHtml } from "../lib/email";
+
+export const prerender = false;
+
+if (import.meta.env.PROD) return new Response(null, { status: 404 });
+
+const signatures = locales.map((locale) => ({ locale, html: signatureHtml(locale) }));
+---
+
+<Layout locale="fr" title="Email signature" description="Email signature" alternates={{}} noindex>
+  <div class="grid gap-12 py-16">
+    <header class="grid gap-2">
+      <h1 class="text-5xl font-bold tracking-tight">Email signature</h1>
+      <p class="text-ash-600">
+        Zoho Mail: Settings, Signatures, add one per language, open the editor's Insert HTML and paste the HTML.
+      </p>
+    </header>
+
+    {signatures.map(({ locale, html }) => (
+      <section class="grid gap-5" data-signature={html}>
+        <h2 class="text-2xl font-semibold tracking-title uppercase">{locale}</h2>
+        <div class="rounded-card bg-surface p-8 inset-ring inset-ring-ash-200 sm:p-10">
+          <p class="mb-6 text-ash-600">Bonne journée,</p>
+          <Fragment set:html={html} />
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <Button data-copy="html" icon={false}>
+            Copy HTML
+          </Button>
+          <Button data-copy="rich" tone="surface" icon={false}>
+            Copy signature
+          </Button>
+        </div>
+      </section>
+    ))}
+  </div>
+</Layout>
+
+<script>
+  document.querySelectorAll<HTMLElement>("[data-signature]").forEach((section) => {
+    const html = section.dataset.signature!;
+    section.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (button.dataset.copy === "rich") {
+          await navigator.clipboard.write([
+            new ClipboardItem({ "text/html": new Blob([html], { type: "text/html" }) }),
+          ]);
+        } else {
+          await navigator.clipboard.writeText(html);
+        }
+        console.log("Signature copied", button.dataset.copy);
+      });
+    });
+  });
+</script>

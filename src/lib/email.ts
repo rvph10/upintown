@@ -1,6 +1,7 @@
-import { business, contactLinks } from "../data/business";
+import { business, contactLinks, legal } from "../data/business";
 import { nextSteps } from "../data/contact";
 import { htmlLang, workingDays, type Locale } from "../data/i18n";
+import { titles } from "../data/meta";
 import { planById, policies, services, type PlanId } from "../data/offer";
 import { questionnaire, type Question } from "../data/questionnaire";
 import type { ContactForm } from "./contact";
@@ -12,6 +13,7 @@ const color = {
   white: "#ffffff",
   ink: "#000000",
   ash200: "#e6e6e6",
+  ash300: "#cfcfcf",
   ash600: "#333333",
   irisStrong: "#7a45f0",
   voltSoft: "#dcffdb",
@@ -19,6 +21,8 @@ const color = {
 };
 const font = "'Inter Tight', -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif";
 const logo = new URL("/email/logo.png", business.url).href;
+// The mark on its own paper tile, so it stays visible when a mail client switches to dark mode. 144px shown at 48px.
+const signatureLogo = new URL("/email/signature-logo.png", business.url).href;
 
 export function escapeHtml(text: string): string {
   return text
@@ -323,4 +327,32 @@ export function questionnaireNotificationEmail(answers: Answers, locale: Locale)
     }),
     text,
   };
+}
+
+const signatureCopy = {
+  companyNumber: { fr: "N° d'entreprise", en: "Company number" },
+};
+
+/** Zoho Mail signature: one hosted image, everything else is text so it still reads with images blocked. */
+export function signatureHtml(locale: Locale) {
+  const host = new URL(business.url).host;
+  const item = (href: string, text: string) =>
+    `<a href="${escapeHtml(href)}" style="color:${color.ink};font-weight:500;text-decoration:none;white-space:nowrap;">${text}</a>`;
+  const dot = `<span style="color:${color.ash300};">&nbsp;&middot;&nbsp;</span>`;
+
+  return `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;font-family:${font};">
+  <tr>
+    <td valign="top" style="padding:2px 16px 0 0;">
+      <a href="${business.url}" style="text-decoration:none;"><img src="${signatureLogo}" width="48" height="48" alt="${business.name}" style="display:block;width:48px;height:48px;border:0;"></a>
+    </td>
+    <td valign="top" style="font-family:${font};">
+      <div style="font-size:16px;line-height:1.35;font-weight:600;letter-spacing:-0.02em;color:${color.ink};">${business.name}</div>
+      <div style="font-size:14px;line-height:1.45;color:${color.ash600};">${titles.home[locale]}</div>
+      <div style="padding-top:10px;font-size:13px;line-height:1.7;color:${color.ash600};">
+        ${item(business.url, host)}${dot}${item(contactLinks.email, business.email)}${dot}${item(contactLinks.phone, business.phone.display)}<br>
+        <span style="white-space:nowrap;">${signatureCopy.companyNumber[locale]} ${legal.companyNumber}</span>
+      </div>
+    </td>
+  </tr>
+</table>`;
 }
