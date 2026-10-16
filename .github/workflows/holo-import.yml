@@ -1,6 +1,7 @@
 # Turns a Holo article queued by src/pages/api/holo.ts into a pull request.
 # Triggered by repository_dispatch, which always runs this file and the import script from main: nothing pushed
-# to a holo/* branch is executed. The branch is only read for the delivery (inbox/<slug>.json) and owner fields.
+# to a branch is executed. The holo-inbox branch is only read for the delivery (inbox/<slug>.json), and the
+# holo/<slug> branch for the fields set during review.
 name: Holo import
 
 on:
@@ -42,8 +43,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Fetch the article branch
-        run: git fetch --no-tags origin "refs/heads/holo/$SLUG:refs/remotes/origin/holo/$SLUG"
+      - name: Fetch the delivery and the article branch
+        run: |
+          git fetch --no-tags origin "refs/heads/holo-inbox:refs/remotes/origin/holo-inbox"
+          # The article branch exists only after a first import; it holds the fields set during review.
+          git fetch --no-tags origin "refs/heads/holo/$SLUG:refs/remotes/origin/holo/$SLUG" || true
 
       - name: Import the article
         run: node scripts/holo-import.ts "$SLUG"

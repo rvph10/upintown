@@ -55,6 +55,9 @@ export function inboxFile(delivery: HoloDelivery): string {
 
 class GitHubError extends Error {}
 
+/** Branch holding Holo's raw deliveries. Never merged or rebuilt, so an import can always be run again. */
+export const inboxBranch = "holo-inbox";
+
 /** Minimal GitHub REST client for the one branch and file a delivery touches. */
 function github(token: string, repo: string) {
   return async (method: string, path: string, body?: unknown): Promise<{ status: number; data: any }> => {
@@ -77,13 +80,13 @@ function github(token: string, repo: string) {
 }
 
 /**
- * Saves the delivery as `inbox/<slug>.json` on branch `holo/<slug>`, then asks GitHub to run the import workflow.
- * The workflow runs from `main`, so nothing pushed to a `holo/*` branch is ever executed.
+ * Saves the delivery as `inbox/<slug>.json` on the inbox branch, then asks GitHub to run the import workflow.
+ * The workflow runs from `main` and only reads the delivery as data, so nothing on that branch is ever executed.
  */
 export async function queueImport(delivery: HoloDelivery, token: string, repo: string): Promise<void> {
   const api = github(token, repo);
   const { slug } = delivery.article;
-  const branch = `holo/${slug}`;
+  const branch = inboxBranch;
   const file = `inbox/${slug}.json`;
   const content = inboxFile(delivery);
 

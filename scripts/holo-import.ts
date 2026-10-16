@@ -63,7 +63,9 @@ function git(...args: string[]): string | null {
 }
 
 async function readArticle(): Promise<Article> {
-  const raw = values.payload ? await readFile(values.payload, "utf8") : git("show", `${branch}:inbox/${slug}.json`);
+  const raw = values.payload
+    ? await readFile(values.payload, "utf8")
+    : git("show", `origin/holo-inbox:inbox/${slug}.json`);
   if (!raw) throw new Error(`No delivery found for ${slug}`);
   const { article } = JSON.parse(raw) as { article: Article };
   if (article?.slug !== slug) throw new Error(`Delivery slug ${article?.slug} does not match ${slug}`);
