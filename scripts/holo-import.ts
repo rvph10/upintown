@@ -77,7 +77,11 @@ async function readArticle(): Promise<Article> {
 
 /** Fields the owner sets during review, kept when Holo updates the article. */
 function ownerFields(): { service?: ServiceId; category?: BlogCategoryId; project?: string } {
-  const source = git("show", `${branch}:${postFile("fr")}`) ?? git("show", `HEAD:${postFile("fr")}`);
+  // On the article branch, only a commit by a person counts: the import's own output is not a review.
+  const reviewed = git("log", "-1", "--format=%ae", branch, "--", postFile("fr"))?.trim();
+  const fromBranch =
+    reviewed && !reviewed.includes("github-actions[bot]") ? git("show", `${branch}:${postFile("fr")}`) : null;
+  const source = fromBranch ?? git("show", `HEAD:${postFile("fr")}`);
   if (!source) return {};
   const field = (key: string) => new RegExp(`^${key}: "?([^"\\n]+)"?$`, "m").exec(source)?.[1];
   const service = field("service") as ServiceId | undefined;
