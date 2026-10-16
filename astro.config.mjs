@@ -44,6 +44,10 @@ export default defineConfig({
   env: {
     schema: {
       RESEND_API_KEY: envField.string({ context: "server", access: "secret" }),
+      // Holo blog webhook (src/pages/api/holo.ts). Without them the endpoint answers 503.
+      HOLO_WEBHOOK_SECRET: envField.string({ context: "server", access: "secret", optional: true }),
+      HOLO_GITHUB_TOKEN: envField.string({ context: "server", access: "secret", optional: true }),
+      HOLO_GITHUB_REPO: envField.string({ context: "server", access: "secret", optional: true }),
       // Read at build time: the pages are static.
       PUBLIC_UMAMI_SCRIPT_URL: envField.string({ context: "client", access: "public", optional: true, url: true }),
       PUBLIC_UMAMI_WEBSITE_ID: envField.string({ context: "client", access: "public", optional: true }),

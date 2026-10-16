@@ -1,0 +1,85 @@
+# Turns a Holo article queued by src/pages/api/holo.ts into a pull request.
+# Triggered by repository_dispatch, which always runs this file and the import script from main: nothing pushed
+# to a holo/* branch is executed. The branch is only read for the delivery (inbox/<slug>.json) and owner fields.
+name: Holo import
+
+on:
+  repository_dispatch:
+    types: [holo-article]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: holo-${{ github.event.client_payload.slug }}
+  cancel-in-progress: false
+
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Only ever used through this variable, never interpolated into a script.
+      SLUG: ${{ github.event.client_payload.slug }}
+    steps:
+      - name: Check the slug
+        run: '[[ "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]'
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 10.11.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Fetch the article branch
+        run: git fetch --no-tags origin "refs/heads/holo/$SLUG:refs/remotes/origin/holo/$SLUG"
+
+      - name: Import the article
+        run: node scripts/holo-import.ts "$SLUG"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
+
+      - name: Only content changed
+        run: |
+          changed=$(git status --porcelain --untracked-files=all | awk '{print $2}')
+          echo "$changed"
+          if echo "$changed" | grep -vE "^src/(content/posts|assets/blog)/"; then
+            echo "The import touched files outside the blog content." && exit 1
+          fi
+
+      - name: Build the site
+        run: pnpm build
+        env:
+          RESEND_API_KEY: build-check
+
+      - name: Push the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -C "holo/$SLUG"
+          git add src/content/posts src/assets/blog
+          git commit -m "Import Holo article $SLUG"
+          git push --force origin "holo/$SLUG"
+
+      - name: Open or update the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title=$(sed -n 's/^title: "\(.*\)"$/\1/p' "src/content/posts/fr/$SLUG.md")
+          if gh pr view "holo/$SLUG" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr edit "holo/$SLUG" --body-file "$RUNNER_TEMP/pr-body.md"
+          else
+            gh pr create --base main --head "holo/$SLUG" --title "Blog: $title" --body-file "$RUNNER_TEMP/pr-body.md"
+          fi
