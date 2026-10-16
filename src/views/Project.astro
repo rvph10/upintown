@@ -3,13 +3,13 @@ import { Image } from "astro:assets";
 import Layout from "../layouts/Layout.astro";
 import CallToAction from "../components/CallToAction.astro";
 import PageHeader from "../components/PageHeader.astro";
-import ArrowUpRight from "../components/icons/ArrowUpRight.astro";
+import ProjectTeaser from "../components/ProjectTeaser.astro";
 import Checkmark from "../components/icons/Checkmark.astro";
 import Button from "../components/ui/Button.astro";
 import type { Locale } from "../data/i18n";
 import { projectTags, type ProjectTag } from "../data/projectTags";
 import { getProjects, projectAlternates, type Project } from "../data/projects";
-import { path, projectPath } from "../data/routes";
+import { path } from "../data/routes";
 import { ui } from "../data/ui";
 
 interface Props {
@@ -170,38 +170,7 @@ const gallery = data.gallery.map((image) => {
     )}
   </article>
 
-  {nextProject && (
-    <nav aria-label={t.next[locale]} class="pb-24 sm:pb-32">
-      <a
-        href={projectPath(nextProject.slug, locale)}
-        data-reveal
-        class="group grid items-center gap-2 rounded-card bg-paper p-2 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-iris-strong sm:gap-3 sm:p-3 md:grid-cols-2"
-      >
-        <div class="flex flex-col gap-10 p-6 sm:p-10">
-          <span class="text-ui font-semibold text-ash-600">{t.next[locale]}</span>
-          <span class="grid gap-1">
-            <span class="text-3xl font-medium tracking-title text-ink sm:text-4xl">{nextProject.data.title}</span>
-            <span class="text-lg text-ash-600">{nextProject.data.sector}</span>
-          </span>
-          <span
-            class="grid size-14 place-items-center rounded-full bg-ink text-white transition-transform duration-500 ease-curtain group-hocus:rotate-45 motion-reduce:transition-none"
-            aria-hidden="true"
-          >
-            <ArrowUpRight class="size-6" />
-          </span>
-        </div>
-        <div class="overflow-hidden rounded-3xl">
-          <Image
-            src={nextProject.data.cover}
-            alt=""
-            widths={[480, 800, 1200]}
-            sizes="(min-width: 48rem) 50vw, 100vw"
-            class="aspect-4/3 w-full object-cover transition-transform duration-500 ease-curtain group-hocus:scale-[1.04] motion-reduce:transition-none"
-          />
-        </div>
-      </a>
-    </nav>
-  )}
+  {nextProject && <ProjectTeaser project={nextProject} locale={locale} label={t.next[locale]} />}
 
   <CallToAction
     title={t.ctaTitle[locale]}

@@ -1,0 +1,303 @@
+---
+import { Image } from "astro:assets";
+import { render } from "astro:content";
+import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PostCard from "../components/PostCard.astro";
+import ProjectTeaser from "../components/ProjectTeaser.astro";
+import Checkmark from "../components/icons/Checkmark.astro";
+import Desktop from "../components/icons/Desktop.astro";
+import Location from "../components/icons/Location.astro";
+import Wrench from "../components/icons/Wrench.astro";
+import Button from "../components/ui/Button.astro";
+import { blogCategories } from "../data/blogCategories";
+import { formatPrice, type Locale, type Localized } from "../data/i18n";
+import { featuresOnlyIn, services, websiteIncluded, type ServiceId } from "../data/offer";
+import { formatPostDate, getPosts, postAlternates, readingTime, type Post } from "../data/posts";
+import { getProjects } from "../data/projects";
+import { path } from "../data/routes";
+import { ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+  post: Post;
+}
+
+const { locale, post } = Astro.props;
+const { data } = post;
+const { Content, headings } = await render(post);
+const alternates = await postAlternates(post.slug);
+const sections = headings.filter((heading) => heading.depth === 2);
+
+const service = services.find((s) => s.id === data.service)!;
+const price = `${ui.from[locale]} ${formatPrice(service.fromPrice, locale)}${service.monthly ? ui.perMonth[locale] : ""}`;
+const icons = { website: Desktop, care: Wrench, google: Location } satisfies Record<ServiceId, typeof Desktop>;
+const ServiceIcon = icons[service.id];
+const included: Record<ServiceId, string[]> = {
+  website: websiteIncluded.map((item) => item[locale]),
+  care: featuresOnlyIn("essentiel", locale),
+  google: featuresOnlyIn("visibilite", locale, "essentiel"),
+};
+
+// Articles about the same service come first.
+const related = (await getPosts(locale))
+  .filter((other) => other.slug !== post.slug)
+  .sort((a, b) => Number(b.data.service === data.service) - Number(a.data.service === data.service))
+  .slice(0, 3);
+
+const project = data.project ? (await getProjects(locale)).find((entry) => entry.slug === data.project) : undefined;
+
+const t = {
+  allPosts: { fr: "Tous les articles", en: "All articles" },
+  contents: { fr: "Dans cet article", en: "In this article" },
+  pitch: {
+    website: { fr: "Un site qui fait ce travail pour vous ?", en: "A website that does this work for you?" },
+    care: { fr: "Et si vous n'aviez plus à vous en occuper ?", en: "What if you never had to deal with it again?" },
+    google: {
+      fr: "Être trouvé sur Google, sans y passer vos soirées ?",
+      en: "Get found on Google, without spending your evenings on it?",
+    },
+  } satisfies Record<ServiceId, Localized>,
+  included: { fr: "Compris", en: "Included" },
+  seeService: { fr: "Voir le service", en: "See the service" },
+  example: { fr: "Un exemple concret", en: "A real example" },
+  readMore: { fr: "À lire aussi", en: "Keep reading" },
+  ctaTitle: { fr: "Une question sur votre site ?", en: "A question about your website?" },
+};
+---
+
+<Layout
+  locale={locale}
+  title={data.metaTitle ?? data.title}
+  description={data.metaDescription ?? data.excerpt}
+  alternates={alternates}
+>
+  <PageHeader
+    slot="full-width"
+    label={blogCategories[data.category].name[locale]}
+    title={data.title}
+    subtitle={data.excerpt}
+  >
+    <p class="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-ui text-ash-600">
+      <time datetime={data.date.toISOString()}>{formatPostDate(data.date, locale)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readingTime(post.minutes, locale)}</span>
+    </p>
+  </PageHeader>
+
+  <article aria-labelledby="page-title">
+    <div data-opening-image style="--delay: 300ms" class="relative overflow-hidden rounded-card bg-paper">
+      <Image
+        src={data.cover}
+        alt={data.coverAlt}
+        widths={[800, 1400, 2000]}
+        sizes="(min-width: 90rem) 88rem, 100vw"
+        loading="eager"
+        class="aspect-4/3 w-full object-cover md:aspect-[21/9]"
+      />
+    </div>
+
+    {/* Contents and the offer on the side, the article in the main column. */}
+    <div class="grid gap-12 py-24 sm:py-32 lg:grid-cols-[minmax(0,4fr)_minmax(0,8fr)] lg:gap-16">
+      <aside class="hidden lg:sticky lg:top-32 lg:grid lg:gap-3 lg:self-start">
+        {sections.length > 1 && (
+          <nav aria-labelledby="post-contents" class="rounded-3xl bg-paper p-7">
+            <h2 id="post-contents" class="text-ui font-semibold text-ash-600">
+              {t.contents[locale]}
+            </h2>
+            <ol class="mt-4 grid gap-1">
+              {sections.map((section) => (
+                <li>
+                  <a
+                    href={`#${section.slug}`}
+                    class="-mx-3 block rounded-2xl px-3 py-2 leading-snug text-ink transition-colors duration-200 hover:bg-white focus-visible:outline-2 focus-visible:outline-iris-strong motion-reduce:transition-none"
+                  >
+                    {section.text}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
+        <div class="rounded-3xl bg-surface p-7 inset-ring inset-ring-ash-200">
+          <span class="grid size-12 place-items-center rounded-full bg-paper">
+            <ServiceIcon class="size-6 text-ink" />
+          </span>
+          <p class="mt-6 text-xl font-medium tracking-title text-balance text-ink">{service.tagline[locale]}</p>
+          <p class="mt-2 text-ui text-ash-600">{price}</p>
+          <Button href={path("contact", locale)} full class="mt-6">
+            {ui.requestQuote[locale]}
+          </Button>
+        </div>
+      </aside>
+
+      <div class="min-w-0">
+        <div class="post-body max-w-2xl">
+          <Content />
+        </div>
+
+        {/* Shown on every screen: on phones it is the first offer the reader meets. */}
+        <section
+          aria-labelledby="post-offer"
+          data-reveal
+          class="mt-20 grid gap-10 rounded-card bg-paper p-7 inset-ring inset-ring-ash-200 sm:p-10 xl:grid-cols-2"
+        >
+          <div class="flex flex-col">
+            <span class="grid size-14 place-items-center rounded-full bg-white">
+              <ServiceIcon class="size-7 text-ink" />
+            </span>
+            <p class="mt-10 text-ui font-semibold text-ash-600">{service.name[locale]}</p>
+            <h2 id="post-offer" class="mt-2 text-3xl font-medium tracking-title text-balance text-ink">
+              {t.pitch[service.id][locale]}
+            </h2>
+            <p class="mt-4 text-lg text-ash-600">{price}</p>
+            <div class="mt-8 flex flex-wrap gap-3 xl:mt-auto xl:pt-8">
+              <Button href={path("contact", locale)}>{ui.requestQuote[locale]}</Button>
+              <Button href={path(service.route, locale)} tone="surface" icon={false}>
+                {t.seeService[locale]}
+              </Button>
+            </div>
+          </div>
+          <div class="rounded-3xl bg-white p-7">
+            <p class="text-ui font-semibold text-ash-600">{t.included[locale]}</p>
+            <ul class="mt-5 grid gap-4 text-ink">
+              {included[service.id].slice(0, 5).map((item) => (
+                <li class="flex items-start gap-3">
+                  <Checkmark class="mt-0.5 size-5 flex-none text-volt [--check:var(--color-white)]" />
+                  {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      </div>
+    </div>
+  </article>
+
+  {project && <ProjectTeaser project={project} locale={locale} label={t.example[locale]} />}
+
+  {related.length > 0 && (
+    <section aria-labelledby="related-title" class="pb-24 sm:pb-32">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="related-title" class="text-3xl font-medium tracking-title text-ink">
+          {t.readMore[locale]}
+        </h2>
+        <Button href={path("blog", locale)} tone="surface" icon={false}>
+          {t.allPosts[locale]}
+        </Button>
+      </div>
+      <ul data-reveal="group" class="mt-10 grid gap-x-3 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+        {related.map((other) => (
+          <li>
+            <PostCard post={other} locale={locale} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <CallToAction
+    title={t.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
+</Layout>
+
+<style>
+  /* Markdown has no classes: the article text is styled from its wrapper. */
+  .post-body {
+    color: var(--color-ash-600);
+    font-size: var(--text-lg);
+    line-height: 1.75;
+    text-wrap: pretty;
+
+    & :global(> * + *) {
+      margin-top: 1.5rem;
+    }
+
+    & :global(> p:first-child) {
+      color: var(--color-ink);
+      font-size: var(--text-xl);
+      line-height: 1.6;
+    }
+
+    & :global(h2) {
+      margin-top: 4rem;
+      scroll-margin-top: 7rem;
+      color: var(--color-ink);
+      font-size: var(--text-3xl);
+      font-weight: 500;
+      letter-spacing: var(--tracking-title);
+      line-height: 1.2;
+      text-wrap: balance;
+    }
+
+    & :global(h3) {
+      margin-top: 2.5rem;
+      color: var(--color-ink);
+      font-size: var(--text-xl);
+      font-weight: 600;
+      letter-spacing: var(--tracking-title);
+    }
+
+    & :global(:is(h2, h3) + *) {
+      margin-top: 1rem;
+    }
+
+    & :global(strong) {
+      color: var(--color-ink);
+      font-weight: 600;
+    }
+
+    & :global(a) {
+      color: var(--color-iris-strong);
+      font-weight: 500;
+      text-decoration: underline;
+      text-underline-offset: 0.2em;
+    }
+
+    & :global(:is(ul, ol)) {
+      display: grid;
+      gap: 0.75rem;
+      padding-left: 1.25rem;
+    }
+
+    & :global(ul) {
+      list-style: disc;
+    }
+
+    & :global(ol) {
+      list-style: decimal;
+    }
+
+    & :global(li::marker) {
+      color: var(--color-ink);
+    }
+
+    & :global(blockquote) {
+      margin-block: 3rem;
+      border-radius: 1.5rem;
+      background: var(--color-paper);
+      padding: 2rem;
+      color: var(--color-ink);
+      font-size: var(--text-quote);
+      line-height: var(--text-quote--line-height);
+      letter-spacing: var(--text-quote--letter-spacing);
+    }
+
+    & :global(img) {
+      width: 100%;
+      height: auto;
+      margin-block: 3rem;
+      border-radius: var(--radius-card);
+      background: var(--color-paper);
+    }
+
+    & :global(hr) {
+      margin-block: 4rem;
+      border-color: var(--color-ash-200);
+    }
+  }
+</style>

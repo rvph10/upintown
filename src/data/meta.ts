@@ -32,6 +32,10 @@ export const titles = {
     fr: "Projets : exemples de sites vitrines",
     en: "Projects: example small business websites",
   },
+  blog: {
+    fr: "Blog : conseils pour votre site internet",
+    en: "Blog: advice for your small business website",
+  },
   contact: {
     fr: "Contact : demander un devis de site internet",
     en: "Contact: request a website quote",
@@ -70,6 +74,10 @@ export const descriptions: Record<RouteId, Localized> = {
   projects: {
     fr: "Sites internet réalisés par UpInTown.",
     en: "Websites built by UpInTown.",
+  },
+  blog: {
+    fr: "Conseils pratiques sur les sites internet, Google et l'e-mail professionnel pour les indépendants et petites entreprises.",
+    en: "Practical advice on websites, Google and professional email for independents and small businesses.",
   },
   contact: {
     fr: `Décrivez votre besoin, réponse sous ${workingDays(policies.inquiryReplyWorkingDays, "fr")}.`,

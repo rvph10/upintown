@@ -8,6 +8,7 @@ export const routes = {
   localSeo: { fr: "/services/referencement-local", en: "/en/services/local-seo" },
   pricing: { fr: "/tarifs", en: "/en/pricing" },
   projects: { fr: "/projets", en: "/en/projects" },
+  blog: { fr: "/blog", en: "/en/blog" },
   contact: { fr: "/contact", en: "/en/contact" },
   legalNotice: { fr: "/mentions-legales", en: "/en/legal-notice" },
   privacy: { fr: "/confidentialite", en: "/en/privacy" },
@@ -24,4 +25,8 @@ export function path(route: RouteId, locale: Locale): string {
 
 export function projectPath(slug: string, locale: Locale): string {
   return `${routes.projects[locale]}/${slug}`;
+}
+
+export function postPath(slug: string, locale: Locale): string {
+  return `${routes.blog[locale]}/${slug}`;
 }

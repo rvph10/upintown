@@ -10,6 +10,7 @@ export const pageNames: Record<RouteId, Localized> = {
   localSeo: { fr: "Référencement local", en: "Local SEO" },
   pricing: { fr: "Tarifs", en: "Pricing" },
   projects: { fr: "Projets", en: "Projects" },
+  blog: { fr: "Blog", en: "Blog" },
   contact: { fr: "Contact", en: "Contact" },
   legalNotice: { fr: "Mentions légales", en: "Legal notice" },
   privacy: { fr: "Confidentialité", en: "Privacy policy" },

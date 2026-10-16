@@ -1,0 +1,87 @@
+---
+import { Image } from "astro:assets";
+import ArrowUpRight from "./icons/ArrowUpRight.astro";
+import { blogCategories } from "../data/blogCategories";
+import type { Locale } from "../data/i18n";
+import { formatPostDate, readingTime, type Post } from "../data/posts";
+import { postPath } from "../data/routes";
+
+interface Props {
+  post: Post;
+  locale: Locale;
+  /** Image beside the text on large screens, for the latest article. */
+  featured?: boolean;
+  heading?: "h2" | "h3";
+}
+
+const { post, locale, featured = false, heading: Heading = "h3" } = Astro.props;
+const { data } = post;
+
+const motion = "duration-500 ease-curtain motion-reduce:transition-none";
+---
+
+<a
+  href={postPath(post.slug, locale)}
+  class:list={[
+    "group block rounded-card focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-iris-strong",
+    featured && "grid items-center gap-2 bg-paper p-2 sm:gap-3 sm:p-3 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]",
+  ]}
+>
+  <div
+    data-reveal-image
+    class:list={["relative isolate overflow-hidden bg-paper", featured ? "rounded-3xl" : "rounded-card"]}
+  >
+    <Image
+      src={data.cover}
+      alt={data.coverAlt}
+      widths={featured ? [800, 1200, 1600] : [480, 800, 1200]}
+      sizes={featured ? "(min-width: 64rem) 50rem, 100vw" : "(min-width: 64rem) 26rem, (min-width: 48rem) 50vw, 100vw"}
+      class:list={["aspect-4/3 w-full object-cover transition-transform group-hocus:scale-[1.04]", motion]}
+    />
+    {!featured && (
+      <span
+        class:list={[
+          "absolute top-5 right-5 grid size-14 scale-75 place-items-center rounded-full bg-white text-ink opacity-0 transition-[opacity,scale] group-hocus:scale-100 group-hocus:opacity-100",
+          motion,
+        ]}
+        aria-hidden="true"
+      >
+        <ArrowUpRight class="size-6" />
+      </span>
+    )}
+  </div>
+  <div class:list={featured ? "flex h-full flex-col gap-8 p-6 sm:p-10" : "mt-6 px-1"}>
+    <p class="flex flex-wrap items-center gap-x-3 gap-y-2 text-ui text-ash-600">
+      <span class:list={["rounded-full px-3 py-1 text-sm font-medium text-ink", featured ? "bg-white" : "bg-paper"]}>
+        {blogCategories[data.category].name[locale]}
+      </span>
+      <span>{readingTime(post.minutes, locale)}</span>
+    </p>
+    <div class:list={[featured && "lg:my-auto"]}>
+      <Heading
+        class:list={[
+          "font-medium tracking-title text-balance text-ink",
+          featured ? "text-3xl sm:text-4xl" : "mt-4 text-2xl",
+        ]}
+      >
+        {data.title}
+      </Heading>
+      <p class:list={["leading-relaxed text-pretty text-ash-600", featured ? "mt-4 text-lg" : "mt-3"]}>
+        {data.excerpt}
+      </p>
+    </div>
+    {featured && (
+      <div class="flex items-center justify-between gap-6">
+        <time datetime={data.date.toISOString()} class="text-ui text-ash-600">
+          {formatPostDate(data.date, locale)}
+        </time>
+        <span
+          class="grid size-14 place-items-center rounded-full bg-ink text-white transition-transform duration-500 ease-curtain group-hocus:rotate-45 motion-reduce:transition-none"
+          aria-hidden="true"
+        >
+          <ArrowUpRight class="size-6" />
+        </span>
+      </div>
+    )}
+  </div>
+</a>

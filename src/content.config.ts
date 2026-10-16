@@ -1,6 +1,8 @@
 import { defineCollection } from "astro:content";
 import { glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { blogCategoryIds } from "./data/blogCategories";
+import { serviceIds } from "./data/offer";
 import { projectTagIds } from "./data/projectTags";
 
 // Files live in `fr/` or `en/`; the same file name in both folders links the translations.
@@ -31,4 +33,30 @@ const projects = defineCollection({
     }),
 });
 
-export const collections = { projects };
+// Same layout as projects: `fr/` and `en/`, matched by file name.
+const posts = defineCollection({
+  loader: glob({ pattern: "{fr,en}/*.md", base: "./src/content/posts" }),
+  schema: ({ image }) =>
+    z.object({
+      title: z.string(),
+      /** One or two sentences, on cards and under the title. */
+      excerpt: z.string(),
+      /** Search result title and description, when they differ from the title and excerpt. */
+      metaTitle: z.string().optional(),
+      metaDescription: z.string().optional(),
+      category: z.enum(blogCategoryIds),
+      cover: image(),
+      coverAlt: z.string(),
+      date: z.coerce.date(),
+      /** The service the article leads to, for its calls to action. */
+      service: z.enum(serviceIds),
+      /** A project from `src/content/projects` shown as an example, by file name. */
+      project: z.string().optional(),
+      /** Holo article id, for articles imported by `scripts/holo-import.ts`. */
+      holoId: z.string().optional(),
+      /** Drafts show in development only. */
+      draft: z.boolean().default(false),
+    }),
+});
+
+export const collections = { projects, posts };

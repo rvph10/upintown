@@ -1,0 +1,9 @@
+---
+import Blog from "../../views/Blog.astro";
+
+// Dev only until the first real article: then remove these two lines so the page is built statically.
+export const prerender = false;
+if (import.meta.env.PROD) return new Response(null, { status: 404 });
+---
+
+<Blog locale="fr" />

@@ -1,0 +1,109 @@
+---
+import Layout from "../layouts/Layout.astro";
+import CallToAction from "../components/CallToAction.astro";
+import PageHeader from "../components/PageHeader.astro";
+import PostCard from "../components/PostCard.astro";
+import Sparkle from "../components/icons/Sparkle.astro";
+import Button from "../components/ui/Button.astro";
+import { formatPrice, type Locale } from "../data/i18n";
+import { descriptions, titles } from "../data/meta";
+import { website } from "../data/offer";
+import { getPosts } from "../data/posts";
+import { path, routes } from "../data/routes";
+import { pageNames, ui } from "../data/ui";
+
+interface Props {
+  locale: Locale;
+}
+
+const { locale } = Astro.props;
+
+const t = {
+  title: {
+    fr: "Des conseils clairs pour faire travailler votre site.",
+    en: "Clear advice to put your website to work.",
+  },
+  subtitle: {
+    fr: "Site internet, Google, e-mail professionnel : des réponses simples aux questions que se posent les indépendants et petites entreprises.",
+    en: "Websites, Google, professional email: simple answers to the questions independents and small businesses ask.",
+  },
+  latest: { fr: "Dernier article", en: "Latest article" },
+  all: { fr: "Tous les articles", en: "All articles" },
+  promoTitle: { fr: "Pas le temps de tout faire vous-même ?", en: "No time to do it all yourself?" },
+  promoText: {
+    fr: "Votre site, votre e-mail et votre fiche Google, pris en charge à prix fixe.",
+    en: "Your website, email and Google profile, taken care of at a fixed price.",
+  },
+  promoPrice: { fr: "Site à partir de", en: "Websites from" },
+  seePricing: { fr: "Voir les tarifs", en: "See pricing" },
+};
+
+const [latest, ...rest] = await getPosts(locale);
+// The offer card takes a place in the grid, after the first row on large screens.
+const promoIndex = Math.min(rest.length, 3);
+---
+
+<Layout locale={locale} title={titles.blog[locale]} description={descriptions.blog[locale]} alternates={routes.blog}>
+  <PageHeader slot="full-width" label={pageNames.blog[locale]} title={t.title[locale]} subtitle={t.subtitle[locale]} />
+
+  {latest && (
+    <section aria-label={t.latest[locale]} class="pt-12 sm:pt-16">
+      <div data-reveal>
+        <PostCard post={latest} locale={locale} featured heading="h2" />
+      </div>
+    </section>
+  )}
+
+  {rest.length > 0 && (
+    <section aria-labelledby="posts-title" class="py-24 sm:py-32">
+      <h2 id="posts-title" class="text-3xl font-medium tracking-title text-ink">
+        {t.all[locale]}
+      </h2>
+      <ul data-reveal="group" class="mt-10 grid gap-x-3 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+        {rest.slice(0, promoIndex).map((post) => (
+          <li>
+            <PostCard post={post} locale={locale} />
+          </li>
+        ))}
+        <li>
+          <aside
+            aria-labelledby="blog-promo-title"
+            class="flex h-full flex-col rounded-card bg-paper p-7 inset-ring inset-ring-ash-200 sm:p-10"
+          >
+            <span class="grid size-14 place-items-center rounded-full bg-white">
+              <Sparkle class="size-7 text-ink" />
+            </span>
+            <h3 id="blog-promo-title" class="mt-10 text-3xl font-medium tracking-title text-balance text-ink">
+              {t.promoTitle[locale]}
+            </h3>
+            <p class="mt-4 text-lg leading-relaxed text-pretty text-ash-600">{t.promoText[locale]}</p>
+            <div class="mt-auto pt-10">
+              <p class="text-ui text-ash-600">
+                {t.promoPrice[locale]}{" "}
+                <span class="text-lg font-semibold text-ink">{formatPrice(website.fromPrice, locale)}</span>
+              </p>
+              <div class="mt-5 flex flex-wrap gap-3">
+                <Button href={path("contact", locale)}>{ui.requestQuote[locale]}</Button>
+                <Button href={path("pricing", locale)} tone="surface" icon={false}>
+                  {t.seePricing[locale]}
+                </Button>
+              </div>
+            </div>
+          </aside>
+        </li>
+        {rest.slice(promoIndex).map((post) => (
+          <li>
+            <PostCard post={post} locale={locale} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <CallToAction
+    title={ui.ctaTitle[locale]}
+    text={ui.ctaText[locale]}
+    primary={{ href: path("contact", locale), label: ui.requestQuote[locale] }}
+    call={ui.ctaCall[locale]}
+  />
+</Layout>
