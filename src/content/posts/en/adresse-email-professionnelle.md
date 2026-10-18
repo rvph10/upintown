@@ -5,8 +5,8 @@ excerpt: "Moving from a Gmail address to contact@your-business.com: what it chan
 metaTitle: "Professional email address: a guide for small businesses"
 metaDescription: "Why an email address in your business name builds trust, what you need to set one up, and how to switch without losing your old messages."
 category: email
-cover: ../../../assets/mockups/phones/dashboard-on-foam-cubes.jpg
-coverAlt: "A smartphone resting on grey foam cubes, showing an app."
+cover: ../../../assets/blog/adresse-email-professionnelle/cover.webp
+coverAlt: "A person with their face out of frame types on the trackpad of a laptop whose screen shows an email with an envelope icon, grey lines of text and a blue button."
 date: 2026-10-15
 service: care
 ---
