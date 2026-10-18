@@ -4,8 +4,8 @@ excerpt: "Passer d'une adresse Gmail à contact@votre-entreprise.be : ce que ça
 metaTitle: "Adresse e-mail professionnelle : le guide pour indépendants"
 metaDescription: "Pourquoi une adresse e-mail à votre nom inspire confiance, ce qu'il faut pour la créer, et comment changer d'adresse sans perdre vos anciens messages."
 category: email
-cover: ../../../assets/mockups/phones/dashboard-on-foam-cubes.jpg
-coverAlt: "Un smartphone posé sur des cubes de mousse gris affiche une application."
+cover: ../../../assets/blog/adresse-email-professionnelle/cover.webp
+coverAlt: "Une personne dont on ne voit pas le visage tape sur le pavé tactile d'un ordinateur portable dont l'écran affiche un e-mail avec une icône d'enveloppe, des lignes grises et un bouton bleu."
 date: 2026-10-15
 service: care
 ---
