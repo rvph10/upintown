@@ -4,8 +4,8 @@ excerpt: "Remercier, rester calme, ne rien révéler sur vos clients : une méth
 metaTitle: "Répondre aux avis Google : méthode et exemples"
 metaDescription: "Comment répondre aux avis Google positifs et négatifs, quoi éviter, et que faire face à un faux avis. Une méthode simple avec des exemples à adapter."
 category: google
-cover: ../../../assets/mockups/phones/finance-app-on-rock.jpg
-coverAlt: "Un smartphone en équilibre sur un rocher sombre affiche une application."
+cover: ../../../assets/blog/repondre-avis-google/cover.webp
+coverAlt: "Vue par-dessus l'épaule d'une personne qui tient un smartphone à deux mains et s'apprête à taper dans le champ de réponse sous une carte d'avis à cinq étoiles jaunes."
 date: 2026-10-14
 service: google
 ---
