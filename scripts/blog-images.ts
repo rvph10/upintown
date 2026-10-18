@@ -80,7 +80,7 @@ const pickSchema = {
         type: "object",
         properties: {
           name: { type: "string" },
-          choice: { type: "integer", minimum: 1, maximum: candidates },
+          choice: { type: "integer" },
           altFr: { type: "string" },
           altEn: { type: "string" },
           problem: { type: "string" },
