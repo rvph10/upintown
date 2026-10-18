@@ -4,8 +4,8 @@ excerpt: "Ce que vous payez une fois, ce que vous payez chaque mois, et les ques
 metaTitle: "Prix d'un site internet : ce que vous payez vraiment"
 metaDescription: "Création, hébergement, nom de domaine, entretien : ce que comprend le prix d'un site internet pour un indépendant, et comment comparer deux devis."
 category: website
-cover: ../../../assets/mockups/websites/payment-cards-laptop.jpg
-coverAlt: "Un ordinateur portable posé sur un canapé bleu affiche la page d'accueil d'un site."
+cover: ../../../assets/blog/prix-site-internet/cover.webp
+coverAlt: "Vue par-dessus l'épaule d'une personne qui pose un doigt sur un ordinateur portable affichant une page de site, tout en tenant à côté une tablette qui montre une autre mise en page avec des coches et une pastille orange."
 date: 2026-10-16
 service: website
 ---
