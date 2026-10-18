@@ -5,8 +5,8 @@ excerpt: "Thank people, stay calm, reveal nothing about your customers: a simple
 metaTitle: "Replying to Google reviews: a method with examples"
 metaDescription: "How to reply to positive and negative Google reviews, what to avoid, and what to do about a fake review. A simple method with examples to adapt."
 category: google
-cover: ../../../assets/mockups/phones/finance-app-on-rock.jpg
-coverAlt: "A smartphone balanced on a dark rock, showing an app."
+cover: ../../../assets/blog/repondre-avis-google/cover.webp
+coverAlt: "Over the shoulder view of a person holding a smartphone with both hands, about to type in the reply field below a five-star review card."
 date: 2026-10-14
 service: google
 ---
