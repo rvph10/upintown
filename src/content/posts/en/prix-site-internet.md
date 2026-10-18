@@ -5,8 +5,8 @@ excerpt: "What you pay once, what you pay every month, and the questions to ask 
 metaTitle: "Small business website cost: what you really pay for"
 metaDescription: "Build, hosting, domain name, upkeep: what the price of a small business website covers, and how to compare two quotes."
 category: website
-cover: ../../../assets/mockups/websites/payment-cards-laptop.jpg
-coverAlt: "A laptop on a blue sofa showing a website homepage."
+cover: ../../../assets/blog/prix-site-internet/cover.webp
+coverAlt: "Over the shoulder view of a person with one finger on a laptop showing a website page, while holding a tablet beside it that shows another layout with check marks and an orange dot."
 date: 2026-10-16
 service: website
 ---
