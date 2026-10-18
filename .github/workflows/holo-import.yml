@@ -53,6 +53,7 @@ jobs:
         run: node scripts/holo-import.ts "$SLUG"
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FAL_KEY: ${{ secrets.FAL_KEY }}
           PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
 
       - name: Only content changed

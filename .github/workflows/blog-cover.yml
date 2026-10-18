@@ -1,0 +1,106 @@
+# Generates a new cover for one blog post and proposes it in a pull request: on the article's holo/<slug> branch
+# when it is still under review, else on a cover/<slug> branch from main.
+name: Blog cover
+
+on:
+  workflow_dispatch:
+    inputs:
+      slug:
+        description: "Post file name (the Holo slug)"
+        required: true
+      hint:
+        description: "Optional direction, for example: a phone instead, top-down"
+        required: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: blog-cover-${{ inputs.slug }}
+  cancel-in-progress: false
+
+jobs:
+  cover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      # Only ever used through these variables, never interpolated into a script.
+      SLUG: ${{ inputs.slug }}
+      HINT: ${{ inputs.hint }}
+    steps:
+      - name: Check the slug
+        run: '[[ "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]'
+
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          persist-credentials: true
+
+      - uses: pnpm/action-setup@ea17c68df8912ef543352723c149a84f56e3d413 # v6.1.0
+        with:
+          version: 10.11.0
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Take the post from its review branch, if any
+        run: |
+          if git fetch --no-tags origin "refs/heads/holo/$SLUG:refs/remotes/origin/holo/$SLUG"; then
+            echo "BRANCH=holo/$SLUG" >> "$GITHUB_ENV"
+            # Only the post files: scripts always run from main.
+            git checkout "origin/holo/$SLUG" -- "src/content/posts/fr/$SLUG.md" "src/content/posts/en/$SLUG.md"
+            git checkout "origin/holo/$SLUG" -- "src/assets/blog/$SLUG" 2>/dev/null || true
+          else
+            echo "BRANCH=cover/$SLUG" >> "$GITHUB_ENV"
+          fi
+
+      - name: Generate the cover
+        run: node scripts/blog-cover.ts "$SLUG" --hint "$HINT"
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          FAL_KEY: ${{ secrets.FAL_KEY }}
+          PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
+
+      - name: Only content changed
+        run: |
+          changed=$(git status --porcelain --untracked-files=all | awk '{print $2}')
+          echo "$changed"
+          if echo "$changed" | grep -vE "^src/(content/posts|assets/blog)/"; then
+            echo "The cover touched files outside the blog content." && exit 1
+          fi
+
+      - name: Build the site
+        run: pnpm build
+        env:
+          RESEND_API_KEY: build-check
+
+      - name: Push the branch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/content/posts src/assets/blog
+          if [[ "$BRANCH" == holo/* ]]; then
+            # Keep the review branch's history: the new commit goes on top of it.
+            tree=$(git write-tree)
+            commit=$(git commit-tree "$tree" -p "origin/$BRANCH" -m "New cover for $SLUG")
+            git push origin "$commit:refs/heads/$BRANCH"
+          else
+            git switch -C "$BRANCH"
+            git commit -m "New cover for $SLUG"
+            git push --force origin "$BRANCH"
+          fi
+
+      - name: Open or update the pull request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh pr view "$BRANCH" --json state --jq .state 2>/dev/null | grep -q OPEN; then
+            gh pr comment "$BRANCH" --body-file "$RUNNER_TEMP/pr-body.md"
+          else
+            gh pr create --base main --head "$BRANCH" --title "Blog: new cover for $SLUG" --body-file "$RUNNER_TEMP/pr-body.md"
+          fi

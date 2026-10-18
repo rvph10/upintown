@@ -52,7 +52,6 @@ A natural British English translation for the same readers, not a word-for-word 
 - `slug`: the page address in that language, 2 to 5 words from the main search phrase, lowercase, words joined by hyphens, no accents, no articles or filler words (for example `creer-site-internet` or `website-cost`). The English slug is in English.
 - `excerpt`: one or two plain sentences under 200 characters, shown on cards and under the title.
 - `metaTitle`: under 60 characters, keeping the main search phrase of the original meta title (Holo chose it for search). `metaDescription`: under 155 characters.
-- `coverAlt`: describe what the cover image shows, from the description given.
 - `body`: the full article in Markdown, without the title (the page shows it). Keep every image line and every link exactly as given, including the image paths.
 
 Write `flags` and the `reason` of each change in French: the owner reviews them.

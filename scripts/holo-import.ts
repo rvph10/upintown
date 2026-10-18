@@ -7,26 +7,12 @@
 import { execFileSync } from "node:child_process";
 import { mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { parseArgs } from "node:util";
-import Anthropic from "@anthropic-ai/sdk";
-import sharp from "sharp";
 import { blogCategories, blogCategoryIds, type BlogCategoryId } from "../src/data/blogCategories.ts";
 import type { ServiceId } from "../src/data/offer";
+import { illustrate, type Illustrated } from "./blog-images.ts";
+import { askJson } from "./claude.ts";
 
-// Override with HOLO_AI_MODEL to compare models on the same article.
-const model = process.env.HOLO_AI_MODEL ?? "claude-sonnet-5-5";
-// Haiku has no server-side refusal fallback.
-const fallback = model.startsWith("claude-haiku")
-  ? {}
-  : { betas: ["server-side-fallback-2026-07-01"], fallbacks: "default" as const };
 const serviceIds = ["website", "care", "google"] as const satisfies readonly ServiceId[];
-
-// Images may only come from Holo's storage.
-const imageHost = (url: URL) =>
-  url.protocol === "https:" &&
-  url.hostname.endsWith(".supabase.co") &&
-  url.pathname.startsWith("/storage/v1/object/public/");
-const imageTypes = ["image/png", "image/jpeg", "image/webp", "image/avif", "image/gif"];
-const maxImageBytes = 15 * 1024 * 1024;
 
 const { positionals, values } = parseArgs({
   allowPositionals: true,
@@ -143,33 +129,6 @@ function assertNoHtml(markdown: string) {
   if (tag) throw new Error(`Raw HTML is not accepted in articles: ${tag[0].slice(0, 80)}`);
 }
 
-async function saveImage(source: string, name: string): Promise<{ file: string; preview: Buffer }> {
-  const url = new URL(source);
-  if (!imageHost(url)) throw new Error(`Image host not allowed: ${url.hostname}`);
-  const response = await fetch(url, { redirect: "error", signal: AbortSignal.timeout(30_000) });
-  if (!response.ok) throw new Error(`Image download failed (${response.status}): ${source}`);
-  const type = response.headers.get("content-type")?.split(";")[0].trim() ?? "";
-  if (!imageTypes.includes(type)) throw new Error(`Image type not allowed (${type}): ${source}`);
-  if (Number(response.headers.get("content-length") ?? 0) > maxImageBytes)
-    throw new Error(`Image too large: ${source}`);
-  const input = Buffer.from(await response.arrayBuffer());
-  if (input.length > maxImageBytes) throw new Error(`Image too large: ${source}`);
-
-  // Re-encoding drops metadata and anything hidden in the original file; Astro makes the responsive sizes.
-  const image = sharp(input, { limitInputPixels: 50_000_000 }).rotate();
-  await image
-    .clone()
-    .resize({ width: 2400, withoutEnlargement: true })
-    .webp({ quality: 82 })
-    .toFile(`${assetDir}/${name}`);
-  const preview = await image
-    .clone()
-    .resize({ width: 1024, withoutEnlargement: true })
-    .webp({ quality: 70 })
-    .toBuffer();
-  return { file: assetRef(name), preview };
-}
-
 const localeSchema = {
   type: "object",
   properties: {
@@ -178,10 +137,9 @@ const localeSchema = {
     excerpt: { type: "string" },
     metaTitle: { type: "string" },
     metaDescription: { type: "string" },
-    coverAlt: { type: "string" },
     body: { type: "string" },
   },
-  required: ["title", "slug", "excerpt", "metaTitle", "metaDescription", "coverAlt", "body"],
+  required: ["title", "slug", "excerpt", "metaTitle", "metaDescription", "body"],
   additionalProperties: false,
 };
 
@@ -221,7 +179,6 @@ type Localized = {
   excerpt: string;
   metaTitle: string;
   metaDescription: string;
-  coverAlt: string;
   body: string;
 };
 interface Edited {
@@ -233,35 +190,9 @@ interface Edited {
   flags: { quote: string; reason: string }[];
 }
 
-async function edit(request: object, cover: Buffer): Promise<Edited> {
+async function edit(request: object): Promise<Edited> {
   const system = await readFile(new URL("./holo-import-prompt.md", import.meta.url), "utf8");
-  const client = new Anthropic();
-  const stream = client.beta.messages.stream({
-    model,
-    max_tokens: 64000,
-    ...fallback,
-    output_config: { effort: "high", format: { type: "json_schema", schema: outputSchema } },
-    system,
-    messages: [
-      {
-        role: "user",
-        content: [
-          { type: "image", source: { type: "base64", media_type: "image/webp", data: cover.toString("base64") } },
-          { type: "text", text: `The cover image is attached.\n\n${JSON.stringify(request, null, 2)}` },
-        ],
-      },
-    ],
-  });
-  const message = await stream.finalMessage();
-  if (message.stop_reason === "refusal")
-    throw new Error(`Claude declined the article (${message.stop_details?.category})`);
-  if (message.stop_reason === "max_tokens") throw new Error("Claude's answer was cut off (max_tokens)");
-  const text = message.content.find((block) => block.type === "text");
-  if (!text || text.type !== "text") throw new Error("Claude returned no text");
-  console.log(
-    `${message.model}: ${message.usage.input_tokens} input tokens, ${message.usage.output_tokens} output tokens`,
-  );
-  return JSON.parse(text.text) as Edited;
+  return askJson<Edited>(system, [{ type: "text", text: JSON.stringify(request, null, 2) }], outputSchema);
 }
 
 const sorted = (items: Iterable<string>) => [...items].sort().join("\n");
@@ -298,7 +229,7 @@ function frontmatter(
   address: string,
   fields: Record<string, string | undefined>,
   article: Article,
-  cover: string,
+  coverAlt: string,
 ) {
   const lines = [
     `title: ${JSON.stringify(post.title)}`,
@@ -307,8 +238,8 @@ function frontmatter(
     `metaTitle: ${JSON.stringify(post.metaTitle)}`,
     `metaDescription: ${JSON.stringify(post.metaDescription)}`,
     `category: ${fields.category}`,
-    `cover: ${cover}`,
-    `coverAlt: ${JSON.stringify(post.coverAlt)}`,
+    `cover: ${assetRef("cover.webp")}`,
+    `coverAlt: ${JSON.stringify(coverAlt)}`,
     `date: ${article.publishedAt.slice(0, 10)}`,
     `service: ${fields.service}`,
     ...(fields.project ? [`project: ${fields.project}`] : []),
@@ -324,6 +255,7 @@ function prBody(
   addresses: Record<"fr" | "en", string>,
   notes: string[],
   links: string[],
+  images: Record<string, Illustrated>,
 ) {
   const quote = (text: string) => text.replace(/\n/g, " ").replace(/\|/g, "\\|");
   const choice = (label: string, value: string, suggested: string, owned: boolean) =>
@@ -348,7 +280,7 @@ function prBody(
     ...notes.map((note) => `- [ ] ${note}`),
     "- [ ] French text reads well and every fact is true",
     "- [ ] English translation reads naturally",
-    "- [ ] Cover image and its description fit",
+    "- [ ] Images and their descriptions fit",
     "",
     "## Changes made to Holo's French text",
     ...(edited.changes.length
@@ -361,6 +293,18 @@ function prBody(
     "",
     "## External links",
     ...(links.length ? links.map((link) => `- ${link}`) : ["None."]),
+    "",
+    "## Images",
+    "Generated with fal.ai. To redo the cover only: Actions, Blog cover, Run workflow with this slug and an optional hint.",
+    ...Object.entries(images).flatMap(([name, image]) => [
+      "",
+      `<details><summary>${name}: ${image.alt.fr}</summary>`,
+      "",
+      "```",
+      image.prompt,
+      "```",
+      "</details>",
+    ]),
   ].join("\n");
 }
 
@@ -369,18 +313,16 @@ const kept = ownerFields();
 const source = cleanBody(article.contentMarkdown);
 assertNoHtml(source);
 
-// Fresh images on every run, so an update never leaves old files behind.
+// Holo's images are replaced by generated ones: the cover, and at most one image in the text, where Holo put its
+// first one. Fresh files on every run, so an update never leaves old ones behind.
 await rm(assetDir, { recursive: true, force: true });
-await mkdir(assetDir, { recursive: true });
-const inline = [...source.matchAll(imagePattern)];
-const coverSource = article.featuredImage ?? inline[0]?.[2];
-if (!coverSource) throw new Error("The article has no image to use as cover");
-const cover = await saveImage(coverSource, "cover.webp");
 let body = source;
+const inline = [...source.matchAll(imagePattern)];
 for (const [index, match] of inline.entries()) {
-  const saved = await saveImage(match[2], `image-${index + 1}.webp`);
-  body = body.replace(match[0], `![${match[1]}](${saved.file})`);
+  body = body.replace(match[0], index === 0 ? `![](${assetRef("image-1.webp")})` : "");
 }
+body = body.replace(/\n{3,}/g, "\n\n");
+const imageNames = ["cover.webp", ...(inline.length ? ["image-1.webp"] : [])];
 
 const request = {
   categories: blogCategoryIds.map((id) => ({ id, name: blogCategories[id].name.fr })),
@@ -396,7 +338,7 @@ if (values["dry-run"]) {
   process.exit(0);
 }
 
-const edited = await edit(request, cover.preview);
+const edited = await edit(request);
 const notes = verify(edited, body);
 const addresses = { fr: kept.slugs.fr ?? edited.fr.slug, en: kept.slugs.en ?? edited.en.slug };
 const fields = {
@@ -404,12 +346,31 @@ const fields = {
   category: kept.category ?? edited.category,
   project: kept.project,
 };
+const images = await illustrate({
+  title: edited.fr.title,
+  body: edited.fr.body.replaceAll(assetRef(""), ""),
+  service: fields.service,
+  names: imageNames,
+  dir: assetDir,
+});
+for (const [name, image] of Object.entries(images)) {
+  if (image.note) notes.push(`${name}: ${image.note}`);
+}
 for (const locale of ["fr", "en"] as const) {
+  const post = edited[locale];
+  if (images["image-1.webp"])
+    post.body = post.body.replace(
+      /!\[[^\]]*\]\(([^)]*image-1\.webp)\)/,
+      `![${images["image-1.webp"].alt[locale]}]($1)`,
+    );
   await mkdir(`src/content/posts/${locale}`, { recursive: true });
-  await writeFile(postFile(locale), frontmatter(edited[locale], addresses[locale], fields, article, cover.file));
+  await writeFile(
+    postFile(locale),
+    frontmatter(post, addresses[locale], fields, article, images["cover.webp"].alt[locale]),
+  );
 }
 
-const summary = prBody(article, edited, kept, addresses, notes, linksIn(body).split("\n").filter(Boolean));
+const summary = prBody(article, edited, kept, addresses, notes, linksIn(body).split("\n").filter(Boolean), images);
 if (process.env.PR_BODY_FILE) await writeFile(process.env.PR_BODY_FILE, summary);
 else console.log(summary);
 console.log(`Wrote ${postFile("fr")}, ${postFile("en")} and ${assetDir}`);
