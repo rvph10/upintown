@@ -1,5 +1,6 @@
 ---
 title: "How to reply to Google reviews, even negative ones"
+urlSlug: reply-to-google-reviews
 excerpt: "Thank people, stay calm, reveal nothing about your customers: a simple method for replying to Google reviews, with examples to adapt."
 metaTitle: "Replying to Google reviews: a method with examples"
 metaDescription: "How to reply to positive and negative Google reviews, what to avoid, and what to do about a fake review. A simple method with examples to adapt."

@@ -1,5 +1,6 @@
 ---
 title: "Professional email address: why and how to switch to your business name"
+urlSlug: professional-email-address
 excerpt: "Moving from a Gmail address to contact@your-business.com: what it changes for your customers, and how to switch without losing a single message."
 metaTitle: "Professional email address: a guide for small businesses"
 metaDescription: "Why an email address in your business name builds trust, what you need to set one up, and how to switch without losing your old messages."

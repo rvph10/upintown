@@ -33,12 +33,18 @@ const projects = defineCollection({
     }),
 });
 
-// Same layout as projects: `fr/` and `en/`, matched by file name.
+// Same layout as projects: `fr/` and `en/`, matched by file name. The file name is also the address unless
+// `urlSlug` sets a shorter or translated one; the file name then redirects to it.
 const posts = defineCollection({
   loader: glob({ pattern: "{fr,en}/*.md", base: "./src/content/posts" }),
   schema: ({ image }) =>
     z.object({
       title: z.string(),
+      /** The address in this language, when it differs from the file name. Never change it once published. */
+      urlSlug: z
+        .string()
+        .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+        .optional(),
       /** One or two sentences, on cards and under the title. */
       excerpt: z.string(),
       /** Search result title and description, when they differ from the title and excerpt. */

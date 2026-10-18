@@ -1,4 +1,5 @@
 // @ts-check
+import { readdirSync, readFileSync } from "node:fs";
 import { defineConfig, envField, fontProviders } from "astro/config";
 import node from "@astrojs/node";
 import sitemap from "@astrojs/sitemap";
@@ -19,6 +20,15 @@ const translations = new Map(
     ];
     return locales.map((locale) => [url(route[locale]), links]);
   }),
+);
+
+// Blog posts with a `urlSlug` also answer at their file name with a redirect, which stays out of the sitemap.
+const postRedirects = new Set(
+  locales.flatMap((locale) =>
+    readdirSync(`src/content/posts/${locale}`)
+      .filter((file) => /^urlSlug: /m.test(readFileSync(`src/content/posts/${locale}/${file}`, "utf8")))
+      .map((file) => url(`${routes.blog[locale]}/${file.replace(/\.md$/, "")}`)),
+  ),
 );
 
 export default defineConfig({
@@ -62,6 +72,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.startsWith(url("/components")) &&
+        !postRedirects.has(page.replace(/\/$/, "")) &&
         !Object.values(routes.questionnaire).some((pathname) => page.startsWith(url(pathname))),
       serialize(item) {
         const links = translations.get(item.url.replace(/\/$/, "")) ?? translations.get(item.url);

@@ -27,7 +27,7 @@ interface Props {
 const { locale, post } = Astro.props;
 const { data } = post;
 const { Content, headings } = await render(post);
-const alternates = await postAlternates(post.slug);
+const alternates = await postAlternates(post.key);
 const sections = headings.filter((heading) => heading.depth === 2);
 
 const service = services.find((s) => s.id === data.service)!;
@@ -42,7 +42,7 @@ const included: Record<ServiceId, string[]> = {
 
 // Articles about the same service come first.
 const related = (await getPosts(locale))
-  .filter((other) => other.slug !== post.slug)
+  .filter((other) => other.key !== post.key)
   .sort((a, b) => Number(b.data.service === data.service) - Number(a.data.service === data.service))
   .slice(0, 3);
 

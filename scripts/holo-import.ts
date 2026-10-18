@@ -75,22 +75,45 @@ async function readArticle(): Promise<Article> {
   return article;
 }
 
-/** Fields the owner sets during review, kept when Holo updates the article. */
-function ownerFields(): { service?: ServiceId; category?: BlogCategoryId; project?: string } {
+const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** The post file as reviewed on the article branch, else as published on main. */
+function existingPost(locale: "fr" | "en"): { source: string; published: boolean } | null {
   // On the article branch, only a commit by a person counts: the import's own output is not a review.
-  const reviewed = git("log", "-1", "--format=%ae", branch, "--", postFile("fr"))?.trim();
+  const reviewed = git("log", "-1", "--format=%ae", branch, "--", postFile(locale))?.trim();
   const fromBranch =
-    reviewed && !reviewed.includes("github-actions[bot]") ? git("show", `${branch}:${postFile("fr")}`) : null;
-  const source = fromBranch ?? git("show", `HEAD:${postFile("fr")}`);
-  if (!source) return {};
-  const field = (key: string) => new RegExp(`^${key}: "?([^"\\n]+)"?$`, "m").exec(source)?.[1];
-  const service = field("service") as ServiceId | undefined;
-  const category = field("category") as BlogCategoryId | undefined;
-  const project = field("project");
+    reviewed && !reviewed.includes("github-actions[bot]") ? git("show", `${branch}:${postFile(locale)}`) : null;
+  if (fromBranch) return { source: fromBranch, published: false };
+  const fromMain = git("show", `HEAD:${postFile(locale)}`);
+  return fromMain ? { source: fromMain, published: true } : null;
+}
+
+const field = (source: string, key: string) => new RegExp(`^${key}: "?([^"\\n]+)"?$`, "m").exec(source)?.[1];
+
+/** Fields the owner sets during review, kept when Holo updates the article. A published address never changes. */
+function ownerFields(): {
+  service?: ServiceId;
+  category?: BlogCategoryId;
+  project?: string;
+  slugs: Partial<Record<"fr" | "en", string>>;
+} {
+  const slugs: Partial<Record<"fr" | "en", string>> = {};
+  for (const locale of ["fr", "en"] as const) {
+    const post = existingPost(locale);
+    const kept = post && field(post.source, "urlSlug");
+    if (kept && slugPattern.test(kept)) slugs[locale] = kept;
+    else if (post?.published) slugs[locale] = slug;
+  }
+  const source = existingPost("fr")?.source;
+  if (!source) return { slugs };
+  const service = field(source, "service") as ServiceId | undefined;
+  const category = field(source, "category") as BlogCategoryId | undefined;
+  const project = field(source, "project");
   return {
     service: service && serviceIds.includes(service) ? service : undefined,
     category: category && blogCategoryIds.includes(category) ? category : undefined,
     project: project && /^[a-z0-9-]+$/.test(project) ? project : undefined,
+    slugs,
   };
 }
 
@@ -151,13 +174,14 @@ const localeSchema = {
   type: "object",
   properties: {
     title: { type: "string" },
+    slug: { type: "string" },
     excerpt: { type: "string" },
     metaTitle: { type: "string" },
     metaDescription: { type: "string" },
     coverAlt: { type: "string" },
     body: { type: "string" },
   },
-  required: ["title", "excerpt", "metaTitle", "metaDescription", "coverAlt", "body"],
+  required: ["title", "slug", "excerpt", "metaTitle", "metaDescription", "coverAlt", "body"],
   additionalProperties: false,
 };
 
@@ -193,6 +217,7 @@ const outputSchema = {
 
 type Localized = {
   title: string;
+  slug: string;
   excerpt: string;
   metaTitle: string;
   metaDescription: string;
@@ -251,6 +276,7 @@ function verify(edited: Edited, source: string): string[] {
     if (imagesIn(post.body) !== imagesIn(source)) throw new Error(`The ${locale} body lost or changed an image`);
     if (linksIn(post.body) !== linksIn(source)) throw new Error(`The ${locale} body lost or changed a link`);
     assertNoHtml(post.body);
+    if (!slugPattern.test(post.slug) || post.slug.length > 60) throw new Error(`Invalid ${locale} slug: ${post.slug}`);
     for (const key of Object.keys(post) as (keyof Localized)[]) {
       const fixed = post[key].replace(/\s*[–—]\s*/g, ", ");
       if (fixed !== post[key])
@@ -267,9 +293,16 @@ function verify(edited: Edited, source: string): string[] {
   return notes;
 }
 
-function frontmatter(post: Localized, fields: Record<string, string | undefined>, article: Article, cover: string) {
+function frontmatter(
+  post: Localized,
+  address: string,
+  fields: Record<string, string | undefined>,
+  article: Article,
+  cover: string,
+) {
   const lines = [
     `title: ${JSON.stringify(post.title)}`,
+    ...(address !== slug ? [`urlSlug: ${address}`] : []),
     `excerpt: ${JSON.stringify(post.excerpt)}`,
     `metaTitle: ${JSON.stringify(post.metaTitle)}`,
     `metaDescription: ${JSON.stringify(post.metaDescription)}`,
@@ -288,6 +321,7 @@ function prBody(
   article: Article,
   edited: Edited,
   kept: ReturnType<typeof ownerFields>,
+  addresses: Record<"fr" | "en", string>,
   notes: string[],
   links: string[],
 ) {
@@ -305,7 +339,7 @@ function prBody(
     choice("Service (calls to action)", service, edited.service, Boolean(kept.service)),
     choice("Category", `${category} (${blogCategories[category].name.fr})`, edited.category, Boolean(kept.category)),
     `- Project shown as an example: ${kept.project ? `\`${kept.project}\`` : "none (add \`project: <slug>\` to both files to show one)"}`,
-    `- Pages: \`/blog/${slug}\` and \`/en/blog/${slug}\``,
+    `- Pages: \`/blog/${addresses.fr}\` and \`/en/blog/${addresses.en}\`${kept.slugs.fr || kept.slugs.en ? "" : " (to shorten one, edit \`urlSlug\` in its file)"}`,
     "",
     "## To check before merging",
     ...(edited.flags.length
@@ -364,6 +398,7 @@ if (values["dry-run"]) {
 
 const edited = await edit(request, cover.preview);
 const notes = verify(edited, body);
+const addresses = { fr: kept.slugs.fr ?? edited.fr.slug, en: kept.slugs.en ?? edited.en.slug };
 const fields = {
   service: kept.service ?? edited.service,
   category: kept.category ?? edited.category,
@@ -371,10 +406,10 @@ const fields = {
 };
 for (const locale of ["fr", "en"] as const) {
   await mkdir(`src/content/posts/${locale}`, { recursive: true });
-  await writeFile(postFile(locale), frontmatter(edited[locale], fields, article, cover.file));
+  await writeFile(postFile(locale), frontmatter(edited[locale], addresses[locale], fields, article, cover.file));
 }
 
-const summary = prBody(article, edited, kept, notes, linksIn(body).split("\n").filter(Boolean));
+const summary = prBody(article, edited, kept, addresses, notes, linksIn(body).split("\n").filter(Boolean));
 if (process.env.PR_BODY_FILE) await writeFile(process.env.PR_BODY_FILE, summary);
 else console.log(summary);
 console.log(`Wrote ${postFile("fr")}, ${postFile("en")} and ${assetDir}`);

@@ -1,5 +1,6 @@
 ---
 title: "How much does a website cost for a small business?"
+urlSlug: website-cost
 excerpt: "What you pay once, what you pay every month, and the questions to ask so you can compare two quotes without surprises."
 metaTitle: "Small business website cost: what you really pay for"
 metaDescription: "Build, hosting, domain name, upkeep: what the price of a small business website covers, and how to compare two quotes."
