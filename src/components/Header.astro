@@ -1,7 +1,12 @@
 ---
+import { Image } from "astro:assets";
+import repairPhone from "../assets/projects/reparation-electromenager/phone.webp";
+import rollinLaptop from "../assets/projects/rollin/laptop.webp";
+import vireliaWebsite from "../assets/projects/virelia/website.webp";
 import { business, contactLinks } from "../data/business";
-import { locales, type Locale, type Localized } from "../data/i18n";
-import { services } from "../data/offer";
+import { formatPrice, locales, type Locale, type Localized } from "../data/i18n";
+import { services, type ServiceId } from "../data/offer";
+import { getProjects } from "../data/projects";
 import { path } from "../data/routes";
 import { mainNav, pageNames, ui } from "../data/ui";
 import ArrowUpRight from "./icons/ArrowUpRight.astro";
@@ -44,17 +49,32 @@ const serviceIcon =
 const panel = "h-0 overflow-hidden";
 
 const serviceIcons = { website: Desktop, care: Wrench, google: Location };
-const serviceLinks = services.map((service) => ({
-  href: path(service.route, locale),
-  name: service.name[locale],
-  tagline: service.tagline[locale],
-  Icon: serviceIcons[service.id],
-}));
+// The desktop services menu shows each service with a real project, by file name.
+const previews: Record<ServiceId, { project: string; image: ImageMetadata }> = {
+  website: { project: "rollin", image: rollinLaptop },
+  care: { project: "virelia", image: vireliaWebsite },
+  google: { project: "reparation-electromenager", image: repairPhone },
+};
+const projects = await getProjects(locale);
+const serviceLinks = services.map((service) => {
+  const project = projects.find((entry) => entry.slug === previews[service.id].project);
+  return {
+    id: service.id,
+    href: path(service.route, locale),
+    name: service.name[locale],
+    tagline: service.tagline[locale],
+    price: `${ui.from[locale]} ${formatPrice(service.fromPrice, locale)}${service.monthly ? ui.perMonth[locale] : ""}`,
+    image: previews[service.id].image,
+    project: project?.data.title,
+    Icon: serviceIcons[service.id],
+  };
+});
 
-const links = mainNav.map(({ route, hash, label }) => {
+const links = mainNav.map(({ route, hash, label, wide }) => {
   const page = path(route, locale);
   return {
     route,
+    wide,
     href: hash ? `${page}#${hash}` : page,
     label: (label ?? pageNames[route])[locale],
     // A section link never marks the current page.
@@ -75,7 +95,7 @@ const links = mainNav.map(({ route, hash, label }) => {
     >
       {ui.skipToContent[locale]}
     </a>
-    <div class="flex items-center justify-between gap-3 md:gap-12 lg:gap-36">
+    <div class="flex items-center justify-between gap-3 md:gap-10 lg:gap-36">
       <a href={path("home", locale)} class="flex flex-none items-center justify-center rounded-full pl-2">
         <Logo class="size-9 text-ink" />
         <span class="sr-only">{business.name}</span>
@@ -86,7 +106,7 @@ const links = mainNav.map(({ route, hash, label }) => {
             <li
               data-services={link.route === "services" ? "" : undefined}
               data-nav-item
-              class="flex items-center gap-1"
+              class:list={["flex items-center gap-1", link.wide && "max-xl:hidden"]}
             >
               <a href={link.href} aria-current={link.current ? "page" : undefined} class="group block text-ink">
                 <RollText>{link.label}</RollText>
@@ -157,11 +177,11 @@ const links = mainNav.map(({ route, hash, label }) => {
 
     <!-- Grows by --menu-h while the header's negative margin cancels it, so the menu overlays the page. -->
     <div id="services-menu" data-services-menu inert class:list={[panel, "w-0 min-w-full max-md:hidden"]}>
-      <div class="px-2 pt-4 pb-2">
-        <ul class="grid gap-1">
+      <div class="grid gap-2 px-2 pt-4 pb-2 lg:grid-cols-[1fr_18rem]">
+        <ul class="grid content-start gap-1">
           {serviceLinks.map((service) => (
             <li>
-              <a href={service.href} class={serviceItem}>
+              <a href={service.href} data-service-link={service.id} class={serviceItem}>
                 <span class={serviceIcon}>
                   <service.Icon class="size-5 text-ink" />
                 </span>
@@ -174,6 +194,22 @@ const links = mainNav.map(({ route, hash, label }) => {
             </li>
           ))}
         </ul>
+        {/* The hovered or focused service with one of its projects; the list carries the same links for everyone. */}
+        <div class="relative overflow-hidden rounded-2xl bg-paper max-lg:hidden" aria-hidden="true">
+          {serviceLinks.map((service, index) => (
+            <figure
+              data-service-preview={service.id}
+              data-active={index === 0 ? "" : undefined}
+              class="absolute inset-0 scale-[1.04] opacity-0 transition duration-500 ease-curtain data-active:scale-100 data-active:opacity-100 motion-reduce:transition-none"
+            >
+              <Image src={service.image} alt="" widths={[320, 640]} sizes="18rem" class="size-full object-cover" />
+              <figcaption class="absolute inset-x-2 bottom-2 grid gap-0.5 rounded-xl bg-white/90 px-3 py-2 backdrop-blur-md">
+                {service.project && <span class="truncate text-sm font-semibold text-ink">{service.project}</span>}
+                <span class="text-sm text-ash-600">{service.price}</span>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
       </div>
     </div>
 
@@ -348,6 +384,17 @@ const links = mainNav.map(({ route, hash, label }) => {
     setOpen(mouse || openMenu() !== "services" ? "services" : null);
   });
   menus.mobile.toggle.addEventListener("click", () => setOpen(openMenu() === "mobile" ? null : "mobile"));
+
+  // The preview follows the service under the pointer or the keyboard focus.
+  const previews = menus.services.panel.querySelectorAll<HTMLElement>("[data-service-preview]");
+  menus.services.panel.querySelectorAll<HTMLElement>("[data-service-link]").forEach((link) => {
+    const show = () =>
+      previews.forEach((preview) => {
+        preview.toggleAttribute("data-active", preview.dataset.servicePreview === link.dataset.serviceLink);
+      });
+    link.addEventListener("pointerenter", show);
+    link.addEventListener("focus", show);
+  });
   header.addEventListener("focusout", (event) => {
     if (!header.contains(event.relatedTarget as Node | null)) setOpen(null);
   });

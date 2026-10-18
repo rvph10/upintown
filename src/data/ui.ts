@@ -18,12 +18,13 @@ export const pageNames: Record<RouteId, Localized> = {
   questionnaire: { fr: "Questionnaire", en: "Questionnaire" },
 };
 
-/** Header links in order; a hash points to a section of that page. */
-export const mainNav: readonly { route: RouteId; hash?: string; label?: Localized }[] = [
+/** Header links in order; a hash points to a section of that page. `wide` links only fit the desktop bar from 1280px. */
+export const mainNav: readonly { route: RouteId; hash?: string; label?: Localized; wide?: boolean }[] = [
   { route: "services" },
-  { route: "home", hash: "process", label: { fr: "Méthode", en: "Process" } },
+  { route: "home", hash: "process", label: { fr: "Méthode", en: "Process" }, wide: true },
   { route: "pricing" },
   { route: "projects" },
+  { route: "blog" },
 ];
 
 export const ui = {

@@ -35,7 +35,7 @@ const columns = [
   {
     id: "footer-explore",
     title: text.explore[locale],
-    links: (["projects", "pricing", "contact"] as const).map((route) => ({
+    links: (["projects", "pricing", "blog", "contact"] as const).map((route) => ({
       href: path(route, locale),
       label: pageNames[route][locale],
     })),
