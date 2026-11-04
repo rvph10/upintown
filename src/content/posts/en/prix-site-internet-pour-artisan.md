@@ -1,73 +1,79 @@
 ---
 title: "How much does a website cost for a tradesperson?"
 urlSlug: website-cost-tradesperson
-excerpt: "Build it yourself, hire an agency or choose an all-inclusive offer: what each option changes in your budget, in money and in time."
-metaTitle: "Website cost for a tradesperson: the three options"
-metaDescription: "Build it yourself, hire an agency or choose an all-inclusive provider: what really changes in a tradesperson's website bill in Belgium."
+excerpt: "What a trades website really needs to do, what moves the price, and what that comes to in actual figures over a first year."
+metaTitle: "Website cost for a tradesperson"
+metaDescription: "What a trades website needs to do, what moves the price, what comes back every year, and a worked example of the cost over a first year."
 category: website
 cover: ../../../assets/blog/prix-site-internet-pour-artisan/cover.webp
 coverAlt: "A person seen from behind holds a tablet and taps the middle card, marked with a check icon, among three website cards side by side."
 date: 2026-10-22
+updated: 2026-11-04
 service: website
 holoId: "d260abf8-3e27-45f1-b32f-b2aafedbcd0e"
 ---
 
-You need a website for your business, and one question always comes up before you start: how much will it cost? It is a fair question. Between a site you build yourself, an agency and an all-inclusive provider, the bill does not tell the same story. And the price shown is only part of the answer. You also need to look at the time you spend on it, what is really included, and what you will still have to manage once the site is online. Here are the three approaches compared, without jargon, to help you choose with confidence.
+A plumber, electrician or joiner doesn't need the same website as a marketing agency. Their customers are often searching on a phone, sometimes in a hurry, and want two answers: "Do they work where I live?" and "How do I reach them?". So the right price depends on what your site actually has to do. For what a quote usually covers, see [how much a small business website costs](/en/blog/website-cost). Here, the focus is on what changes for someone in the trades.
 
-## Three ways to build a website, three cost logics
+## What a trades website has to do
 
-You are not comparing three prices: you are comparing three ways of working. Each one moves the cost somewhere else. Doing it yourself moves the cost onto your time. An agency moves it onto the invoice and the project management. An all-inclusive offer moves it onto a clear package and a single point of contact. Understanding that shift is already half the way to choosing.
+There is no need to aim for anything grand. A few things do most of the work:
 
-## Building your website yourself
+- **A visible phone number**, tappable on a mobile, right at the top of the page.
+- **The area you cover**, spelt out: Liège and around, Walloon Brabant, a radius around Namur.
+- **Each of your trades, one by one.** A page on bathroom refits and another on emergency call-outs work better than one long list.
+- **Photos of your real jobs.** They persuade far better than any generic picture.
+- **A short quote request**, easy to fill in on a phone, ideally with room for a photo of the problem.
+- **Your reviews and your legal information.** In Belgium, the Federal Public Service Economy [sets out what must be shown](https://news.economie.fgov.be/203681-informations-obligatoires-sur-le-site-web-de-votre-entreprise/), including your company number.
 
-When you build your site yourself, the up-front spend can look modest: a domain name, hosting, sometimes a paid theme or add-on. That is the visible part, and it is often the part that catches the eye.
+If a quote offers much more than this, ask what the extra will do for your customers.
 
-The invisible part is time. You have to learn the tool, write the text, choose and prepare the images, then go back over every detail until the page holds together. This work happens in the evening, between two jobs or two appointments. It appears on no invoice, but it exists.
+## What moves the price
 
-Then comes the life of the site. A site does not stand still: you have to handle updates, keep an eye on security, renew the domain name, maintain the professional email address and fix whatever breaks. Every small technical change comes back to you. For a self-employed person or a small business, this often ends up coming last, and the site grows old with nobody looking after it.
+Four things really affect the cost of a trades website.
 
-Doing it yourself has a real merit: you stay in control and you only pay for what you use. The other side is that the real cost is measured in hours, and those hours are taken from your trade.
+**The number of pages.** A one-trade business doesn't have the same needs as a general contractor with six specialities.
 
-## Going through an agency
+**The text.** You know how to fit a boiler, but not necessarily how to explain in three sentences why someone should pick you. If the provider writes it, the price should say so. If not, it falls to you, in the evening, after work.
 
-An agency charges for teamwork: advice, graphic design, writing, development, then project management. That is what justifies a higher budget, and it makes sense when the project is complex, needs a strong visual identity or custom features.
+**The photos.** Already got some? Good. It is often enough to take them as you go, with your customers' permission, rather than paying for a shoot.
 
-What often stays with you, however, is everything that comes after. Hosting, the professional email address, technical updates and small changes are frequently charged on top, project by project, or turned into a new request each time. You also speak to several people depending on the stage, which lengthens delays when you need a quick change.
+**What happens after launch.** New opening hours, a new service, an email address, a domain to renew. This is where offers differ most.
 
-None of this is a flaw in itself. It is simply a different model: a project-based service with a precise scope, which assumes that you keep an eye on the day-to-day side.
+## Which option suits which tradesperson?
 
-## An all-inclusive offer at a fixed price
+There are three routes, and [the article on ways to build a site](/en/blog/small-business-website) compares them in detail. For someone in the trades, this is what matters:
 
-There is a third way, closer to what many self-employed people are looking for: entrust the whole site and its care to a single provider, at a fixed price.
+- **Doing it yourself** or using an AI tool can work if you are starting out, if word of mouth fills your diary and if you enjoy it. The real cost is your evenings.
+- **An agency** makes sense for something larger: several teams, a brand to build, custom features.
+- **A provider who builds the site and then looks after it** suits you if you want one person handling everything, so you can forget about it between jobs.
 
-This is the UpInTown model. UpInTown creates your business's website and then looks after it every month: hosting, domain name, professional email address and small changes. For a website project, the text is written for you and the site goes live in 3 to 5 weeks. Small changes are handled within 2 working days.
+## A worked example over a first year
 
-Three points set this approach apart in the budget of a tradesperson or a small business.
+Take a tradesperson who wants a home page, a services page and a page per service, with a contact form and legal pages. Here is what that comes to at UpInTown's public prices.
 
-A fixed, announced price. You know what the service covers, rather than discovering separate lines for hosting, email or maintenance.
+| Item | Amount | When |
+| --- | --- | --- |
+| Building the site, text included | From €1,200 | Once |
+| Essential plan: hosting, security, domain, email, small changes | €89 a month, or €1,068 a year | Monthly |
+| **First-year total** | **From €2,268** | |
 
-A single point of contact. One person follows your site, from creation to care. You do not have to explain your business again with every request.
+If you also want your Google presence looked after, the Visibility plan replaces Essential: €159 a month plus a €150 setup fee, or €2,058 over a year, and €3,258 in total with the website. It covers your Google Business Profile, directories and replies to reviews.
 
-You stay the owner. The domain name, the site and the content remain yours. UpInTown works remotely, for clients throughout French-speaking Belgium, whether you are in Liège, Namur, Charleroi, Mons or Wavre.
+No plan is compulsory: the site is yours once paid for, and you can look after it yourself. An extra page costs €150. The [service details](/en/services/website-creation) and [all prices](/en/pricing) are online.
 
-Local search is added from the Visibility plan, with follow-up of your Google Business Profile, your reviews and directories such as the Pages d'Or. UpInTown explains every term simply, without promising a place in search results.
+## Questions to ask before you sign
 
-## What makes the bill vary, whatever you choose
+Whoever you talk to, five questions will clear things up:
 
-Before comparing amounts, look at what lies behind them. The number of pages and the amount of content to produce count. Writing the text and preparing the visuals weigh in too. A business that already has its photos and text starts from a different point than one starting from zero.
+1. Is the quoted price fixed or an estimate?
+2. Is the text included?
+3. Will the domain and the site be in my name?
+4. Who answers if something stops working, and how quickly?
+5. What will a small change cost, such as a new number or a photo?
 
-Also think about what happens after the site goes live: hosting, the email address, updates and small changes. This is where the models really part ways, because these are the items that come back every month or every year.
-
-## How to choose
-
-A few questions are enough to see clearly, whichever provider you consider.
-
-Who answers if something stops working on the site? Is the quoted price fixed or estimated? What is included, and what will be charged separately? Do I own the domain name, the site and the content? How long does it take to get a change made?
-
-If the answers are clear and in writing, you are comparing like with like. If they stay vague, the price shown does not mean much.
+If the answers are clear and in writing, you are comparing like with like.
 
 ## In short
 
-Building your site yourself leaves you in control, but it costs you time, every month. An agency brings you teamwork, with a scope often limited to the project. An all-inclusive offer at a fixed price takes the technical burden off you and leaves you a single contact, so that the site keeps going without you.
-
-The right choice is not the one with the lowest amount, but the one whose total cost, in money and in time, matches what you want to handle yourself. If you would rather focus on your trade and have a site that is looked after without thinking about it, UpInTown can take care of it.
+A trades website doesn't need to be big. It has to show your number, your area, your trades and your real work, and stay up to date. Look at the total over a year rather than just the build price, and choose according to how much time you want to spend on it.

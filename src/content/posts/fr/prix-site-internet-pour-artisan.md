@@ -1,73 +1,79 @@
 ---
 title: "Combien coûte un site internet pour un artisan ?"
 urlSlug: prix-site-internet-artisan
-excerpt: "Faire soi-même, passer par une agence ou choisir une offre tout inclus : ce que chaque option change dans votre budget, en argent comme en temps."
-metaTitle: "Prix d'un site internet pour artisan : les trois options"
-metaDescription: "Faire son site soi-même, passer par une agence ou un prestataire tout inclus : ce qui change vraiment dans la facture d'un artisan en Belgique."
+excerpt: "Ce qu'un site d'artisan doit vraiment faire, ce qui fait varier son prix, et ce que cela donne en chiffres sur une première année."
+metaTitle: "Prix d'un site internet pour artisan"
+metaDescription: "Ce qu'un site d'artisan doit faire, ce qui fait varier son prix, ce qui revient chaque année, et un exemple chiffré pour une première année."
 category: website
 cover: ../../../assets/blog/prix-site-internet-pour-artisan/cover.webp
 coverAlt: "Une personne vue de dos tient une tablette et touche du doigt la carte centrale, surlignée par une coche, parmi trois cartes de sites web côte à côte."
 date: 2026-10-22
+updated: 2026-11-04
 service: website
 holoId: "d260abf8-3e27-45f1-b32f-b2aafedbcd0e"
 ---
 
-Vous avez besoin d'un site internet pour votre activité, et une question revient toujours avant de vous lancer : combien cela va coûter ? La question est légitime. Entre un site que vous montez vous-même, une agence et un prestataire tout inclus, la facture ne raconte pas la même histoire. Et le prix affiché n'est qu'une partie de la réponse. Il faut aussi regarder le temps que vous y consacrez, ce qui est réellement inclus, et ce qu'il vous restera à gérer une fois le site en ligne. Voici les trois approches comparées, sans jargon, pour vous aider à choisir en connaissance de cause.
+Un plombier, un électricien ou un menuisier n'a pas besoin du même site qu'une agence de communication. Ses clients cherchent souvent depuis leur téléphone, parfois dans l'urgence, et veulent une réponse à deux questions : « Est-ce qu'il travaille chez moi ? » et « Comment je le joins ? ». Le juste prix dépend donc de ce que votre site doit vraiment faire. Pour le détail de ce que comprend un devis en général, voyez [le prix d'un site internet](/blog/prix-site-internet). Ici, on regarde ce qui change pour un artisan.
 
-## Trois façons de faire un site, trois logiques de coût
+## Ce qu'un site d'artisan doit faire
 
-Vous ne comparez pas trois prix : vous comparez trois façons de travailler. Chacune déplace le coût ailleurs. Le faire soi-même déplace le coût sur votre temps. L'agence le déplace sur la facture et le suivi de projet. Une offre tout inclus le déplace sur un forfait clair et un interlocuteur unique. Comprendre ce déplacement, c'est déjà choisir la moitié du chemin.
+Inutile de viser un site imposant. Quelques éléments font l'essentiel du travail :
 
-## Faire son site soi-même
+- **Un numéro de téléphone visible**, sur lequel on peut appuyer depuis un mobile, dès le haut de la page.
+- **Votre zone d'intervention**, en toutes lettres : Liège et environs, le Brabant wallon, un rayon autour de Namur.
+- **Vos métiers, un par un.** Une page pour la rénovation de salle de bain et une pour le dépannage répondent mieux qu'une liste unique.
+- **Des photos de vos vrais chantiers.** Elles convainquent bien plus qu'une image générique.
+- **Une demande de devis courte**, facile à remplir sur un téléphone, éventuellement avec une photo du problème.
+- **Vos avis et vos informations légales.** Le SPF Economie [rappelle les mentions obligatoires](https://news.economie.fgov.be/203681-informations-obligatoires-sur-le-site-web-de-votre-entreprise/), dont votre numéro d'entreprise.
 
-Quand vous construisez votre site vous-même, la dépense de départ peut sembler modeste : un nom de domaine, un hébergement, parfois un thème ou un module payant. C'est la partie visible, et c'est souvent celle qui attire l'attention.
+Si un devis vous propose beaucoup plus que cela, demandez à quoi ce supplément va servir pour vos clients.
 
-La partie invisible, c'est le temps. Il faut apprendre l'outil, écrire les textes, choisir et préparer les images, puis reprendre chaque détail jusqu'à ce que la page tienne debout. Ce travail se fait le soir, entre deux chantiers ou deux rendez-vous. Il ne figure sur aucune facture, mais il existe.
+## Ce qui fait varier la facture
 
-Ensuite vient la vie du site. Un site ne reste pas en place : il faut gérer les mises à jour, surveiller la sécurité, renouveler le nom de domaine, maintenir l'adresse e-mail professionnelle et corriger ce qui casse. Chaque petite modification technique repasse par vous. Pour un indépendant ou une petite entreprise, cela finit souvent par passer après tout le reste, et le site vieillit sans que personne ne s'en occupe.
+Quatre choses pèsent vraiment sur le prix d'un site d'artisan.
 
-Le faire soi-même a un vrai mérite : vous gardez la main et vous ne payez que ce que vous utilisez. La contrepartie, c'est que le coût réel se mesure en heures, et que ces heures sont prises sur votre métier.
+**Le nombre de pages.** Un artisan qui fait un seul métier n'a pas les mêmes besoins qu'une entreprise générale avec six spécialités.
 
-## Passer par une agence
+**Les textes.** Vous savez poser une chaudière, pas forcément expliquer en trois phrases pourquoi vous choisir. Si le prestataire les rédige, le prix doit le dire. Sinon, ce travail vous revient, le soir, après les chantiers.
 
-Une agence facture un travail d'équipe : conseil, conception graphique, rédaction, développement, puis pilotage du projet. C'est ce qui justifie une enveloppe plus élevée, et c'est cohérent quand le projet est complexe, qu'il demande une identité visuelle poussée ou des fonctionnalités sur mesure.
+**Les photos.** Vous en avez déjà ? Tant mieux. Il suffit souvent d'en prendre au fil des chantiers, avec l'accord de vos clients, plutôt que de prévoir une séance payante.
 
-Ce qui reste souvent à votre charge, en revanche, ce sont les suites. L'hébergement, l'adresse e-mail professionnelle, les mises à jour techniques et les petites modifications sont fréquemment facturés en plus, projet par projet, ou renvoyés à une demande à chaque fois. Vous parlez aussi à plusieurs personnes selon l'étape, ce qui allonge les délais quand vous avez besoin d'un changement rapide.
+**Ce qui se passe après la mise en ligne.** Un horaire qui change, un nouveau service, une adresse e-mail, un nom de domaine à renouveler. C'est là que les offres se séparent le plus.
 
-Rien de tout cela n'est un défaut en soi. C'est simplement un modèle différent : une prestation au projet, avec un périmètre précis, qui suppose que vous gardiez un œil sur la partie courante.
+## Quelle option pour quel artisan ?
 
-## Une offre tout inclus à prix fixe
+Trois voies existent, et [l'article sur les façons de créer un site](/blog/creer-site-internet-petite-entreprise) les compare en détail. Pour un artisan, voici ce qu'il faut en retenir :
 
-Il existe une troisième voie, plus proche de ce que cherchent beaucoup d'indépendants : confier l'ensemble du site et de son entretien à un seul prestataire, à prix fixe.
+- **Le faire vous-même** ou passer par un outil d'IA peut convenir si vous débutez, si votre carnet se remplit par le bouche-à-oreille et si vous aimez ça. Le vrai coût, ce sont vos soirées.
+- **Une agence** se justifie pour un projet plus large : plusieurs équipes, une image de marque à construire, des fonctions sur mesure.
+- **Un prestataire qui fait le site et s'en occupe ensuite** convient si vous voulez qu'une seule personne gère tout, et n'y plus penser entre deux chantiers.
 
-C'est le modèle d'UpInTown. UpInTown crée le site de votre activité et s'occupe ensuite de son entretien chaque mois : hébergement, nom de domaine, adresse e-mail professionnelle et petites modifications. Pour la création d'un site, les textes sont rédigés et la mise en ligne se fait en 3 à 5 semaines. Les petites modifications sont traitées sous 2 jours ouvrables.
+## Un exemple chiffré sur une première année
 
-Trois points distinguent cette approche dans le budget d'un artisan ou d'une petite entreprise.
+Prenons un artisan qui veut un site avec une page d'accueil, une page services et une page par service, formulaire de contact et mentions légales compris. Voici ce que cela donne avec les prix publics d'UpInTown.
 
-Un prix fixe et annoncé. Vous savez ce que la prestation couvre, plutôt que de découvrir des lignes séparées pour l'hébergement, l'e-mail ou la maintenance.
+| Poste | Montant | Quand |
+| --- | --- | --- |
+| Création du site, textes compris | À partir de 1 200 € | Une fois |
+| Formule Essentiel : hébergement, sécurité, domaine, e-mail, petites modifications | 89 € par mois, soit 1 068 € par an | Chaque mois |
+| **Total de la première année** | **À partir de 2 268 €** | |
 
-Un interlocuteur unique. Une seule personne suit votre site, de la création à l'entretien. Vous n'avez pas à réexpliquer votre activité à chaque demande.
+Si vous voulez aussi être suivi sur Google, la formule Visibilité remplace Essentiel : 159 € par mois et 150 € de mise en place, soit 2 058 € sur un an, et 3 258 € au total avec la création du site. Elle comprend la fiche Google, les annuaires et les réponses aux avis.
 
-Vous restez propriétaire. Le nom de domaine, le site et les contenus restent les vôtres. UpInTown travaille à distance, pour des clients partout en Belgique francophone, que vous soyez à Liège, Namur, Charleroi, Mons ou Wavre.
+Aucune formule n'est obligatoire : le site vous appartient une fois payé, et vous pouvez vous en occuper vous-même. Une page en plus coûte 150 €. Le [détail du service](/services/creation-site-internet) et [tous les tarifs](/tarifs) sont en ligne.
 
-Le référencement local s'ajoute à partir de la formule Visibilité, avec le suivi de votre fiche Google, de vos avis et des annuaires comme les Pages d'Or. UpInTown explique chaque terme simplement, sans promettre de place dans les résultats de recherche.
+## Les questions à poser avant de signer
 
-## Ce qui fait varier la facture, quel que soit votre choix
+Quel que soit le prestataire, cinq questions suffisent à y voir clair :
 
-Avant de comparer des montants, regardez ce qui se cache derrière. Le nombre de pages et la quantité de contenu à produire comptent. La rédaction des textes et la préparation des visuels pèsent aussi. Une activité qui a déjà ses photos et ses textes part d'un point différent d'une activité qui part de zéro.
+1. Le prix annoncé est-il fixe ou estimé ?
+2. Les textes sont-ils compris ?
+3. Le nom de domaine et le site seront-ils à mon nom ?
+4. Qui répond si quelque chose ne fonctionne plus, et sous quel délai ?
+5. Combien me coûtera une petite modification, comme un nouveau numéro ou une photo ?
 
-Pensez également à ce qui se passe après la mise en ligne : l'hébergement, l'adresse e-mail, les mises à jour et les petites modifications. C'est là que les modèles se séparent vraiment, parce que ce sont ces postes qui reviennent chaque mois ou chaque année.
-
-## Comment choisir
-
-Quelques questions suffisent à y voir clair, quel que soit le prestataire.
-
-Qui répond si quelque chose ne fonctionne plus sur le site ? Le prix annoncé est-il fixe ou estimé ? Qu'est-ce qui est inclus, et qu'est-ce qui sera facturé à part ? Suis-je propriétaire du nom de domaine, du site et des contenus ? Combien de temps faut-il pour obtenir une modification ?
-
-Si les réponses sont claires et écrites, vous comparez des offres comparables. Si elles restent floues, le prix affiché ne veut pas dire grand-chose.
+Si les réponses sont claires et écrites, vous comparez des offres comparables.
 
 ## En résumé
 
-Faire votre site vous-même vous laisse la main, mais vous coûte du temps, chaque mois. Une agence vous apporte un travail d'équipe, avec un périmètre souvent limité au projet. Une offre tout inclus à prix fixe vous retire la charge technique et vous laisse un seul contact, pour que le site continue de vivre sans vous.
-
-Le bon choix n'est pas celui qui affiche le montant le plus bas, mais celui dont le coût total, en argent comme en temps, correspond à ce que vous voulez gérer vous-même. Si vous préférez vous concentrer sur votre métier et garder un site entretenu sans y penser, UpInTown peut s'en charger.
+Un site d'artisan n'a pas besoin d'être grand. Il doit montrer votre numéro, votre zone, vos métiers et vos vrais chantiers, et rester à jour. Regardez le total sur un an plutôt que le seul prix de création, et choisissez selon le temps que vous voulez y passer.
