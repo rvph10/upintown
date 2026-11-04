@@ -1,18 +1,19 @@
 ---
-title: "Créer son site internet : 3 options pour une petite entreprise"
+title: "Créer son site internet : 4 options pour une petite entreprise"
 urlSlug: creer-site-internet-petite-entreprise
-excerpt: "Faire soi-même, passer par une agence ou choisir un service tout compris à prix fixe : ce que chaque option demande vraiment à un indépendant."
-metaTitle: "Créer son site internet petite entreprise : 3 options"
-metaDescription: "Faire soi-même, agence ou service tout compris : ce que chaque option demande vraiment à un indépendant, pour choisir sereinement."
+excerpt: "Faire soi-même, utiliser l'IA, passer par une agence ou choisir un service tout compris : ce que chaque option demande vraiment à un indépendant."
+metaTitle: "Créer son site internet petite entreprise : 4 options"
+metaDescription: "Faire soi-même, IA, agence ou service tout compris : ce que chaque option demande vraiment à un indépendant, pour choisir sereinement."
 category: website
 cover: ../../../assets/blog/creer-site-internet-petite-entreprise-soi-meme-agence-tout-compris/cover.webp
 coverAlt: "Par-dessus l'épaule d'une personne qui tient une tablette et touche du doigt un bloc de page, avec à l'écran des cartes photo et texte et un bouton qui s'assemblent en page de site."
 date: 2026-10-18
+updated: 2026-11-04
 service: website
 holoId: "985fc961-3d4a-4b21-8777-3770100fb388"
 ---
 
-Vous devez créer votre site internet pour votre petite entreprise, et trois voies s'ouvrent devant vous. La première consiste à le construire vous-même. La deuxième passe par une agence classique. La troisième consiste à confier l'ensemble à un service tout compris, à prix fixe. Chacune a un coût réel, en argent, en temps et en énergie. Voici ce que chaque option demande vraiment, pour que vous puissiez choisir en connaissance de cause.
+Vous devez créer votre site internet pour votre petite entreprise, et quatre voies s'ouvrent devant vous. La première consiste à le construire vous-même. La deuxième, à le faire générer par un outil d'intelligence artificielle. La troisième passe par une agence classique. La quatrième consiste à confier l'ensemble à un service tout compris, à prix fixe. Chacune a un coût réel, en argent, en temps et en énergie. Voici ce que chaque option demande vraiment, pour que vous puissiez choisir en connaissance de cause.
 
 ## Faire son site soi-même : peu de frais au départ, beaucoup de temps ensuite
 
@@ -26,9 +27,15 @@ Pour un indépendant ou une très petite entreprise, ce travail revient souvent 
 
 Faire soi-même reste un choix défendable quand vous aimez ce travail technique et que vous voulez apprendre. Cela devient plus difficile quand votre métier est ailleurs : conseiller, soigner, construire, réparer.
 
+## Laisser une IA générer le site : très rapide, mais à vérifier
+
+Un générateur crée en quelques instants une mise en page, des images et des textes à partir d'une simple description. Pour tester une idée ou publier une page simple, cela peut suffire.
+
+Le travail ne disparaît pas pour autant. Il faut relire chaque phrase, car l'outil peut inventer un service ou un délai, ajouter vos mentions légales, puis vous occuper de la suite vous-même. L'article [site internet par IA ou par un professionnel](/blog/site-internet-ia-ou-professionnel) détaille ce que ces outils règlent, et ce qu'ils laissent sans réponse.
+
 ## Passer par une agence classique : ce qu'elle facture et pourquoi le devis surprend
 
-La deuxième voie consiste à confier le projet à une agence. Vous bénéficiez de compétences solides, d'un design travaillé et d'un accompagnement sur mesure. Pour un projet vaste, avec des fonctionnalités particulières, cette approche se tient.
+Une autre voie consiste à confier le projet à une agence. Vous bénéficiez de compétences solides, d'un design travaillé et d'un accompagnement sur mesure. Pour un projet vaste, avec des fonctionnalités particulières, cette approche se tient.
 
 La difficulté apparaît souvent au moment du devis. Un site livré par une agence se construit à partir de nombreuses lignes distinctes : la conception, les textes, l'intégration, les fonctionnalités, puis, une fois le site en ligne, l'hébergement, la maintenance et les modifications. Chaque ligne a son prix, et l'addition finale dépasse parfois ce que l'indépendant avait en tête.
 
@@ -38,7 +45,7 @@ Ce fonctionnement n'a rien d'illégitime. Il correspond à une organisation con�
 
 ## Choisir un service tout compris à prix fixe : un interlocuteur unique
 
-La troisième voie consiste à déléguer l'ensemble du site à un seul prestataire, avec un prix fixe et un seul contact. C'est la façon de travailler d'UpInTown.
+La dernière voie consiste à déléguer l'ensemble du site à un seul prestataire, avec un prix fixe et un seul contact. C'est la façon de travailler d'UpInTown.
 
 Concrètement, il n'y a pas de lignes séparées à comparer. La création du site, les textes rédigés et la mise en ligne sont pris en charge, en trois à cinq semaines. Ensuite, l'entretien se poursuit chaque mois : hébergement, sécurité, nom de domaine, adresse e-mail professionnelle et petites modifications sous deux jours ouvrables.
 
@@ -54,9 +61,11 @@ UpInTown s'occupe de la partie technique et vous restez propriétaire de votre s
 
 ## Comment trancher selon votre situation
 
-Les trois options ne s'excluent pas, mais elles correspondent à des situations différentes.
+Ces options ne s'excluent pas, mais elles correspondent à des situations différentes. Si votre première question est le budget, voyez d'abord [combien coûte un site internet](/blog/prix-site-internet), ou [le cas d'un artisan](/blog/prix-site-internet-artisan).
 
 Si vous disposez de temps, que la technique vous intéresse et que votre site peut attendre, le faire soi-même reste possible. Comptez le temps réel, pas seulement le budget de départ.
+
+Si vous voulez tester une idée rapidement et que vous prenez le temps de tout relire, un outil d'IA peut suffire pour commencer.
 
 Si votre projet est vaste, avec des besoins très spécifiques, une agence classique peut convenir. Prévoyez alors le budget de fonctionnement, celui des modifications et de l'entretien, pas seulement celui de la création.
 
@@ -66,6 +75,6 @@ Une question simple aide à décider : dans six mois, qui s'occupera de votre si
 
 ## En résumé
 
-Créer son site internet pour une petite entreprise revient à choisir entre votre temps, un budget par projet ou un forfait mensuel. Faire soi-même coûte peu au départ mais demande des heures dans la durée. Une agence livre un travail solide au prix d'un devis détaillé et d'interventions facturées à l'unité. Un service tout compris à prix fixe échange cette souplesse contre de la simplicité : un contact, un prix connu, des modifications rapides.
+Créer son site internet pour une petite entreprise revient à choisir entre votre temps, un budget par projet ou un forfait mensuel. Faire soi-même coûte peu au départ mais demande des heures dans la durée. Un outil d'IA va plus vite, sans vous dispenser de vérifier et d'entretenir. Une agence livre un travail solide au prix d'un devis détaillé et d'interventions facturées à l'unité. Un service tout compris à prix fixe échange cette souplesse contre de la simplicité : un contact, un prix connu, des modifications rapides.
 
-UpInTown accompagne les indépendants et les petites entreprises de Belgique francophone qui doivent inspirer confiance, à Liège, Namur, Charleroi, Mons ou Wavre, avec une mise en ligne en trois à cinq semaines et un entretien continu. Si vous hésitez encore, posez la question simplement : la réponse dépend surtout du temps que vous voulez consacrer à votre site plutôt qu'à votre métier.
+UpInTown accompagne les indépendants et les petites entreprises de Belgique francophone qui doivent inspirer confiance, à Liège, Namur, Charleroi, Mons ou Wavre, avec une mise en ligne en trois à cinq semaines et un entretien continu. Le détail est sur la page [Création de site internet](/services/creation-site-internet), et les prix sur la page [Tarifs](/tarifs). Si vous hésitez encore, posez la question simplement : la réponse dépend surtout du temps que vous voulez consacrer à votre site plutôt qu'à votre métier.
