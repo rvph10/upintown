@@ -6,7 +6,7 @@ metaTitle: "AI website or a professional: which to choose?"
 metaDescription: "An AI-generated website is sometimes enough. What it leaves unsolved (accurate text, Google, email, upkeep) and how to choose for your business."
 category: website
 cover: ../../../assets/blog/site-internet-ia-ou-professionnel-que-choisir/cover.webp
-coverAlt: "Cover image to be generated."
+coverAlt: "A person holds a tablet in one hand and taps a highlighted block on a web page built from grey blocks, in front of an orange backdrop."
 date: 2026-11-04
 service: website
 ---

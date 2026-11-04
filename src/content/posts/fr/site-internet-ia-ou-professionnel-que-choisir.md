@@ -6,7 +6,7 @@ metaTitle: "Site internet par IA ou par un pro : que choisir ?"
 metaDescription: "Un site généré par IA peut suffire, parfois. Ce qu'il laisse sans réponse (textes, Google, e-mail, entretien) et comment choisir pour votre activité."
 category: website
 cover: ../../../assets/blog/site-internet-ia-ou-professionnel-que-choisir/cover.webp
-coverAlt: "Image de couverture à générer."
+coverAlt: "Une personne tient une tablette d'une main et touche du doigt un bloc surligné d'une page web composée de blocs gris, devant un décor orange."
 date: 2026-11-04
 service: website
 ---
