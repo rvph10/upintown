@@ -44,7 +44,7 @@ Quatre choses pèsent vraiment sur le prix d'un site d'artisan.
 
 Trois voies existent, et [l'article sur les façons de créer un site](/blog/creer-site-internet-petite-entreprise) les compare en détail. Pour un artisan, voici ce qu'il faut en retenir :
 
-- **Le faire vous-même** ou passer par un [outil d'IA](/blog/site-internet-ia-ou-professionnel) peut convenir si vous débutez, si votre carnet se remplit par le bouche-à-oreille et si vous aimez ça. Le vrai coût, ce sont vos soirées.
+- **Le faire vous-même** ou passer par un outil d'IA peut convenir si vous débutez, si votre carnet se remplit par le bouche-à-oreille et si vous aimez ça. Le vrai coût, ce sont vos soirées.
 - **Une agence** se justifie pour un projet plus large : plusieurs équipes, une image de marque à construire, des fonctions sur mesure.
 - **Un prestataire qui fait le site et s'en occupe ensuite** convient si vous voulez qu'une seule personne gère tout, et n'y plus penser entre deux chantiers.
 

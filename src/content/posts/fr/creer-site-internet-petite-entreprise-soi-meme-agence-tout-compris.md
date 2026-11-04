@@ -31,7 +31,7 @@ Faire soi-même reste un choix défendable quand vous aimez ce travail technique
 
 Un générateur crée en quelques instants une mise en page, des images et des textes à partir d'une simple description. Pour tester une idée ou publier une page simple, cela peut suffire.
 
-Le travail ne disparaît pas pour autant. Il faut relire chaque phrase, car l'outil peut inventer un service ou un délai, ajouter vos mentions légales, puis vous occuper de la suite vous-même. L'article [site internet par IA ou par un professionnel](/blog/site-internet-ia-ou-professionnel) détaille ce que ces outils règlent, et ce qu'ils laissent sans réponse.
+Le travail ne disparaît pas pour autant. Il faut relire chaque phrase, car l'outil peut inventer un service ou un délai, ajouter vos mentions légales, puis vous occuper de la suite vous-même.
 
 ## Passer par une agence classique : ce qu'elle facture et pourquoi le devis surprend
 

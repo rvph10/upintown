@@ -31,7 +31,7 @@ Doing it yourself remains a sensible choice when you enjoy technical work and wa
 
 A generator can produce a layout, images and text in moments from a short description. For testing an idea or publishing a simple page, that may be enough.
 
-The work doesn't disappear, though. You still have to read every sentence, because the tool can invent a service or a turnaround, add your legal information, then look after everything yourself. The article on [choosing between an AI website and a professional](/en/blog/ai-website-or-professional) sets out what these tools solve and what they leave open.
+The work doesn't disappear, though. You still have to read every sentence, because the tool can invent a service or a turnaround, add your legal information, then look after everything yourself.
 
 ## Going through a traditional agency: what it charges and why the quote comes as a surprise
 

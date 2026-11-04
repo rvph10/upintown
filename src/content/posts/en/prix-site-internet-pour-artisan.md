@@ -44,7 +44,7 @@ Four things really affect the cost of a trades website.
 
 There are three routes, and [the article on ways to build a site](/en/blog/small-business-website) compares them in detail. For someone in the trades, this is what matters:
 
-- **Doing it yourself** or using an [AI tool](/en/blog/ai-website-or-professional) can work if you are starting out, if word of mouth fills your diary and if you enjoy it. The real cost is your evenings.
+- **Doing it yourself** or using an AI tool can work if you are starting out, if word of mouth fills your diary and if you enjoy it. The real cost is your evenings.
 - **An agency** makes sense for something larger: several teams, a brand to build, custom features.
 - **A provider who builds the site and then looks after it** suits you if you want one person handling everything, so you can forget about it between jobs.
 
