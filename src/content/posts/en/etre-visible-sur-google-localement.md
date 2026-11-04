@@ -7,12 +7,12 @@ metaDescription: "Google Business Profile, reviews, directories, pages by town: 
 category: google
 cover: ../../../assets/blog/etre-visible-sur-google-localement/cover.webp
 coverAlt: "Over the shoulder of a person holding a smartphone and tapping the screen, which shows a map with a pin and a business card with five stars."
-date: 2026-10-24
+date: 2026-11-04
 service: google
 holoId: "15fbaed0-2782-4267-bcd5-0259c9a1086e"
 ---
 
-Among independents and small businesses, one question comes up again and again: how do you get found on Google by customers in your neighbourhood or town? The answer comes down to a few simple settings, then a presence that is looked after over time. UpInTown supports independent professionals and local services across French-speaking Belgium in this area. Here are the most common questions, with practical answers.
+Among independents and small businesses, one question comes up again and again: how do you get found on Google by customers in your neighbourhood or town? The answer comes down to a few simple settings, then a presence that is looked after over time. Here are the most common questions, with practical answers.
 
 ## Is the Google Business Profile the first place to start?
 
@@ -20,7 +20,7 @@ For many local searches, the business listing that Google displays is the first 
 
 ## Which reviews really matter?
 
-Reviews weigh on how a customer chooses, and they feed into local results. Three things count: how regularly new reviews arrive, the reply given to each one, and the fact that they come from real customers. Replying calmly, even to a mixed review, shows that you are reachable and reliable. Asking a satisfied customer for a review just after a job remains the simplest way to get one, with no tricks.
+Reviews weigh on how a customer chooses, and [Google says](https://support.google.com/business/answer/7091?hl=en) that more reviews and positive ratings can help your local ranking. Three things count: how regularly new reviews arrive, the reply given to each one, and the fact that they come from real customers. Replying calmly, even to a mixed review, shows that you are reachable and reliable. Asking a satisfied customer for a review just after a job remains the simplest way to get one, with no tricks. For how to answer them, here is [a method with examples](/en/blog/reply-to-google-reviews).
 
 ## Are local directories still useful?
 
@@ -36,7 +36,7 @@ Few people search for “local search optimisation”. They are more likely to t
 
 ## How long does it take to see a change?
 
-There is no guaranteed timescale. Local signals take time: a completed profile, regular reviews, consistent pages and identical details everywhere build up month after month. A fast website that is easy to read on a phone and kept up to date helps too. What matters is consistency rather than a one-off effort.
+There is no guaranteed timescale. Local signals take time: a completed profile, regular reviews, consistent pages and identical details everywhere build up month after month. A website that is easy to read on a phone and kept up to date also reassures the people who visit it. What matters is consistency rather than a one-off effort.
 
 ## What most often holds small businesses back?
 
@@ -44,11 +44,11 @@ Time, above all. Between customers, quotes and admin, the Google Business Profil
 
 ## What does monthly support change?
 
-Monthly support avoids starting from scratch every year. At UpInTown, the local search plan looks after the Google Business Profile, reviews, directories and website pages, every month, at a fixed price. Small changes you request are made within two working days, and one point of contact looks after your account. You remain the owner of your website, your domain name and your accounts.
+Monthly support avoids starting from scratch every year. At UpInTown, the Google Business Profile, reviews and directories are looked after from the Visibility plan, at a fixed price, and the Growth plan also adjusts your existing pages to match the searches that lead to them. Small changes you request are made within two working days, and one point of contact looks after your account. You remain the owner of your website, your domain name and your accounts. The details are on the [Local SEO](/en/services/local-seo) page, and the prices on the [Pricing](/en/pricing) page.
 
 ## Should you combine this with website care?
 
-Often, yes. A well-maintained website stays fast, secure and up to date, which supports local visibility rather than holding it back. UpInTown brings hosting, the professional email address and small changes together in a single website care plan. For a business whose online information is out of date, creating or rebuilding the website and then looking after it over time makes a coherent whole.
+Often, yes. A well-maintained website stays secure and up to date, and people arriving from Google find the right information there. All three UpInTown monthly plans include hosting, the professional email address and small changes, as set out on the [Website care](/en/services/website-care) page. For a business whose online information is out of date, creating or rebuilding the website and then looking after it over time makes a coherent whole.
 
 ## Where to start this week?
 
