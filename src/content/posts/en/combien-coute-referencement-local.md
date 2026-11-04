@@ -6,7 +6,7 @@ metaTitle: "Local SEO cost: what you are really paying for"
 metaDescription: "Local SEO: what is free, what a paid service covers, UpInTown's prices and the questions to ask before you sign anything."
 category: google
 cover: ../../../assets/blog/combien-coute-referencement-local/cover.webp
-coverAlt: "Cover image to be generated."
+coverAlt: "Top-down view of a person with one hand on a laptop trackpad and the other pointing at a block in a plan grid, next to a business profile card with a map, pin and row of stars."
 date: 2026-11-04
 service: google
 ---

@@ -6,7 +6,7 @@ metaTitle: "Prix du référencement local : ce que vous payez"
 metaDescription: "Référencement local : ce qui est gratuit, ce que couvre un service payant, les prix d'UpInTown et les questions à poser avant de signer."
 category: google
 cover: ../../../assets/blog/combien-coute-referencement-local/cover.webp
-coverAlt: "Image de couverture à générer."
+coverAlt: "Vue du dessus : une personne pose une main sur le pavé tactile d'un ordinateur portable et pointe du doigt un bloc dans une grille de forfaits, à côté d'une fiche d'établissement avec carte, repère et étoiles."
 date: 2026-11-04
 service: google
 ---
