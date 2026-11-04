@@ -1,7 +1,7 @@
 ---
 title: "Réparation d'électroménager"
 sector: "Dépannage à domicile"
-summary: "Un site clair et moderne pour un service local de réparation d'électroménager, pensé pour inspirer confiance, aller vite et réserver une intervention sans effort."
+summary: "Un site clair et moderne pour un service local de réparation d'électroménager : inspirer confiance, aller vite, réserver une intervention sans effort."
 context: "Quand un frigo ou un lave-linge tombe en panne, on cherche vite quelqu'un de fiable, souvent depuis son téléphone. Le site devait faire comprendre les services en quelques secondes, rassurer sur les techniciens et permettre de réserver une réparation sans friction."
 work:
   - "Les pannes les plus courantes mises en avant, appareil par appareil"

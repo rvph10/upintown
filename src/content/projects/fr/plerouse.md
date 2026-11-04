@@ -1,7 +1,7 @@
 ---
 title: "Plerouse"
 sector: "Concept, banque en ligne"
-summary: "Un concept de page d'accueil pour une banque moderne, qui mêle l'esthétique de la mode à une approche tech : clarté, précision et une identité visuelle forte."
+summary: "Un concept de page d'accueil pour une banque moderne, entre esthétique de la mode et approche tech : clarté, précision et identité visuelle forte."
 context: "Plerouse est un concept, pas un client réel. L'idée : imaginer la page d'accueil d'une banque en ligne qui se démarque des sites bancaires habituels, souvent froids et chargés, sans perdre la clarté et la confiance qu'on attend quand il s'agit d'argent."
 work:
   - "Une typographie affirmée, avec de grands titres qui posent une question"
