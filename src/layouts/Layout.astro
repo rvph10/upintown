@@ -19,7 +19,9 @@ interface Props {
 const { locale, title, description, alternates, noindex = false } = Astro.props;
 const site = Astro.site!;
 const canonical = new URL(Astro.url.pathname, site).href;
-const fullTitle = title === business.name ? title : `${title} | ${business.name}`;
+// The brand only follows the title when both fit, so search results do not cut the title short.
+const titleWithBrand = `${title} | ${business.name}`;
+const fullTitle = title === business.name || titleWithBrand.length > 60 ? title : titleWithBrand;
 
 const organization = {
   "@context": "https://schema.org",
