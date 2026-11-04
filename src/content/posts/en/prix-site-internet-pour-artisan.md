@@ -50,7 +50,7 @@ A single point of contact. One person follows your site, from creation to care. 
 
 You stay the owner. The domain name, the site and the content remain yours. UpInTown works remotely, for clients throughout French-speaking Belgium, whether you are in Liège, Namur, Charleroi, Mons or Wavre.
 
-Local search visibility is also part of the approach, with follow-up of your Google Business Profile, your reviews and directories such as the Pages d'Or. UpInTown explains every term simply, without promising a place in search results.
+Local search is added from the Visibility plan, with follow-up of your Google Business Profile, your reviews and directories such as the Pages d'Or. UpInTown explains every term simply, without promising a place in search results.
 
 ## What makes the bill vary, whatever you choose
 

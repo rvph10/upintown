@@ -37,7 +37,7 @@ Certains prestataires regroupent tout cela dans une formule mensuelle. D'autres 
 
 ## Les constructeurs de site : moins cher au départ ?
 
-Les outils comme Wix ou Squarespace affichent un abonnement mensuel modeste. Ils conviennent si vous avez le temps d'apprendre l'outil, d'écrire vos textes et de tout tenir à jour vous-même. Le vrai coût, c'est ce temps, pris sur votre métier.
+Les constructeurs de site en ligne affichent un abonnement mensuel modeste. Ils conviennent si vous avez le temps d'apprendre l'outil, d'écrire vos textes et de tout tenir à jour vous-même. Le vrai coût, c'est ce temps, pris sur votre métier.
 
 Un point à connaître avant de vous lancer : un site créé sur ces plateformes reste chez elles. Si vous voulez changer de prestataire plus tard, il faut en général refaire le site.
 

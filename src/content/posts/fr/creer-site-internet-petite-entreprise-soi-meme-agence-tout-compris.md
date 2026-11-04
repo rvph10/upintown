@@ -46,7 +46,7 @@ Trois points distinguent cette approche.
 
 D'abord, un interlocuteur unique. Vous ne parlez pas à un service commercial, puis à un service technique, puis à un service de facturation. Vous avez un contact, et c'est la même personne qui suit votre site dans le temps.
 
-Ensuite, un prix fixe. Vous savez à l'avance ce que le site coûte et ce que l'entretien coûte chaque mois. Pas de surprise au moment de la facture, pas de supplément découvert après coup.
+Ensuite, des prix publics. Vous savez à l'avance ce que le site coûte et ce que l'entretien coûte chaque mois. Ce qui sort du forfait, comme une nouvelle page, a un prix affiché ou est chiffré avant d'être fait.
 
 Enfin, des modifications rapides. Quand un tarif change ou qu'une nouvelle adresse doit être ajoutée, la demande part et la correction suit dans un délai connu. Vous n'avez pas à apprendre un outil ni à gérer des accès techniques.
 

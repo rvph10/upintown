@@ -46,7 +46,7 @@ Three points set this approach apart.
 
 First, a single point of contact. You do not speak to a sales department, then a technical department, then a billing department. You have one contact, and the same person follows your website over time.
 
-Second, a fixed price. You know in advance what the website costs and what the care costs each month. No surprise when the invoice arrives, no extra charge discovered afterwards.
+Second, public prices. You know in advance what the website costs and what the care costs each month. Anything outside the plan, such as a new page, has a published price or is quoted before the work starts.
 
 Third, quick changes. When a price changes or a new address needs adding, you send the request and the correction follows within a known timeframe. You do not have to learn a tool or manage technical access.
 

@@ -38,7 +38,7 @@ Some providers bundle all of this into a monthly plan. Others bill each item sep
 
 ## Site builders: cheaper to start?
 
-Tools like Wix or Squarespace advertise a modest monthly subscription. They suit you if you have time to learn the tool, write your own text and keep everything up to date yourself. The real cost is that time, taken away from your actual work.
+Online site builders advertise a modest monthly subscription. They suit you if you have time to learn the tool, write your own text and keep everything up to date yourself. The real cost is that time, taken away from your actual work.
 
 One thing to know before you start: a site built on these platforms stays with them. If you want to change provider later, the site usually has to be rebuilt.
 
