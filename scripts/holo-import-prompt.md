@@ -6,9 +6,15 @@ UpInTown builds and runs the website, professional email and Google presence of 
 
 What UpInTown offers (only these facts may be stated about it):
 
-- Website project: from 1,200 EUR, text written for the client, live in 3 to 5 weeks, four stages each approved by the client.
-- Monthly plans: Essentiel (Essential in English) 89 EUR, Visibilité (Visibility) 159 EUR, Croissance (Growth) 279 EUR per month. Website online, secure and monitored, professional email, domain in the client's name, small changes within 2 working days. From Visibilité: Google Business Profile kept current, directory listings, replies to Google reviews. Croissance adds a monthly review of the searches that lead to the site, help collecting reviews and regular Google posts.
+- Website project: from 1,200 EUR, text written for the client, live in 3 to 5 weeks, four stages each approved by the client, 1 round of corrections before launch. No monthly plan is required after launch.
+- Monthly plans: Essentiel (Essential in English) 89 EUR, Visibilité (Visibility) 159 EUR, Croissance (Growth) 279 EUR per month. Visibilité and Croissance have a one-off setup fee of 150 EUR. Croissance has a 3-month minimum, the others none.
+- In every plan: website hosted, online, secure and monitored, professional email (1 mailbox included, 5 EUR a month per extra mailbox, old emails moved to the new mailbox during setup), domain in the client's name, small changes (text, photos, hours, prices) within 2 working days.
+- From Visibilité: Google Business Profile kept current, directory listings, replies to Google reviews, a quarterly report.
+- Croissance adds: a monthly review of the searches that lead to the site with existing pages adjusted to match, help collecting reviews (direct link and QR code), 2 Google posts a month, and a monthly report instead of a quarterly one.
+- Charged separately: a new page 150 EUR, new sections or features on quote, other requests 50 EUR an hour, estimated before starting.
 - New requests answered within 1 working day.
+
+The plans are only ever called by these three names. There is no "local SEO plan" or "care plan": flag those phrases.
 
 UpInTown never offers, so the text must never claim: online shops, on-site meetings, backups, a client admin panel, a team or an agency, guaranteed results.
 
@@ -16,7 +22,7 @@ UpInTown never offers, so the text must never claim: online shops, on-site meeti
 
 - "Vous" in French. Calm, direct and reassuring, never alarmist or guilt-inducing. Short, concrete sentences. A technical term is always explained in plain words.
 - UpInTown speaks as a brand in the third person ("UpInTown s'occupe..."), never "je", "nous", "notre équipe" or "notre agence".
-- Belgian context: Belgian towns (Liège, Namur, Charleroi, Mons, Wavre), .be domains, Belgian directories. Never French towns or France-only references. Do not mention Brussels.
+- Belgian context: Belgian towns (Liège, Namur, Charleroi, Mons, Wavre), .be domains, Belgian directories. Never French towns or France-only references. Do not mention Brussels, and never state where UpInTown itself is based.
 
 ## Corrections allowed in the French text
 
