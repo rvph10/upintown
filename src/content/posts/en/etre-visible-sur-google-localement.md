@@ -54,4 +54,4 @@ Often, yes. A well-maintained website stays secure and up to date, and people ar
 
 Three actions are enough to get going: check that your Google Business Profile is complete, reply to any reviews waiting, and pick three towns where you really want to be found. The rest falls into place gradually, with a bit of method and regularity.
 
-Being visible locally on Google is not a one-off trick: it is a set of details kept up to date. UpInTown takes care of those details for independents and small businesses in French-speaking Belgium, with a fixed price and a single point of contact.
+Being visible locally on Google is not a one-off trick: it is a set of details kept up to date. UpInTown takes care of those details for independents and small businesses in French-speaking Belgium and France, with a fixed price and a single point of contact.

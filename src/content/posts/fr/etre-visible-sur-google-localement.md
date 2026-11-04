@@ -54,4 +54,4 @@ Souvent, oui. Un site entretenu reste sécurisé et à jour, et ceux qui arriven
 
 Trois gestes suffisent pour démarrer : vérifier que votre fiche Google est complète, répondre aux avis en attente et choisir trois communes où vous voulez vraiment être trouvé. Le reste s'installe progressivement, avec de la méthode et un peu de régularité.
 
-Être visible localement sur Google n'est pas une astuce isolée, c'est un ensemble de détails tenus à jour. UpInTown s'occupe de ces détails pour les indépendants et les petites entreprises en Belgique francophone, avec un prix fixe et un seul contact.
+Être visible localement sur Google n'est pas une astuce isolée, c'est un ensemble de détails tenus à jour. UpInTown s'occupe de ces détails pour les indépendants et les petites entreprises en Belgique francophone et en France, avec un prix fixe et un seul contact.
