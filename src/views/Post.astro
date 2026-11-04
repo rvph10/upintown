@@ -1,5 +1,5 @@
 ---
-import { Image } from "astro:assets";
+import { getImage, Image } from "astro:assets";
 import { render } from "astro:content";
 import Layout from "../layouts/Layout.astro";
 import CallToAction from "../components/CallToAction.astro";
@@ -12,7 +12,8 @@ import Location from "../components/icons/Location.astro";
 import Wrench from "../components/icons/Wrench.astro";
 import Button from "../components/ui/Button.astro";
 import { blogCategories } from "../data/blogCategories";
-import { formatPrice, type Locale, type Localized } from "../data/i18n";
+import { business } from "../data/business";
+import { formatPrice, htmlLang, type Locale, type Localized } from "../data/i18n";
 import { featuresOnlyIn, services, websiteIncluded, type ServiceId } from "../data/offer";
 import { formatPostDate, getPosts, postAlternates, readingTime, type Post } from "../data/posts";
 import { getProjects } from "../data/projects";
@@ -64,15 +65,57 @@ const t = {
   example: { fr: "Un exemple concret", en: "A real example" },
   readMore: { fr: "À lire aussi", en: "Keep reading" },
   ctaTitle: { fr: "Une question sur votre site ?", en: "A question about your website?" },
+  updated: { fr: "Mis à jour le", en: "Updated on" },
+  home: { fr: "Accueil", en: "Home" },
 };
+
+const site = Astro.site!;
+const pageUrl = new URL(Astro.url.pathname, site).href;
+const absolute = (route: Parameters<typeof path>[0]) => new URL(path(route, locale), site).href;
+const description = data.metaDescription ?? data.excerpt;
+const published = data.date.toISOString();
+const modified = data.updated?.toISOString();
+const shareImage = new URL(
+  (await getImage({ src: data.cover, width: 1200, height: 630, fit: "cover", format: "jpeg" })).src,
+  site,
+).href;
+
+const organization = { "@type": "Organization", name: business.name, url: business.url };
+const schema = [
+  {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: data.title,
+    description,
+    image: shareImage,
+    url: pageUrl,
+    mainEntityOfPage: pageUrl,
+    inLanguage: htmlLang[locale],
+    datePublished: published,
+    dateModified: modified ?? published,
+    author: organization,
+    publisher: { ...organization, logo: { "@type": "ImageObject", url: new URL("/favicon.svg", site).href } },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: t.home[locale], item: absolute("home") },
+      { "@type": "ListItem", position: 2, name: "Blog", item: absolute("blog") },
+      { "@type": "ListItem", position: 3, name: data.title },
+    ],
+  },
+];
 ---
 
 <Layout
   locale={locale}
   title={data.metaTitle ?? data.title}
-  description={data.metaDescription ?? data.excerpt}
+  description={description}
   alternates={alternates}
+  article={{ image: shareImage, imageAlt: data.coverAlt, published, modified }}
 >
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(schema)} />
   <PageHeader
     slot="full-width"
     label={blogCategories[data.category].name[locale]}
@@ -80,7 +123,17 @@ const t = {
     subtitle={data.excerpt}
   >
     <p class="mt-8 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-ui text-ash-600">
-      <time datetime={data.date.toISOString()}>{formatPostDate(data.date, locale)}</time>
+      <time datetime={published}>{formatPostDate(data.date, locale)}</time>
+      {
+        data.updated && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>
+              {t.updated[locale]} <time datetime={modified}>{formatPostDate(data.updated, locale)}</time>
+            </span>
+          </>
+        )
+      }
       <span aria-hidden="true">·</span>
       <span>{readingTime(post.minutes, locale)}</span>
     </p>
