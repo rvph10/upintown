@@ -167,7 +167,7 @@ export const questionnaire: readonly QuestionnaireSection[] = [
         id: "area",
         kind: "text",
         label: { fr: "Où travaillez-vous ?", en: "Where do you work?" },
-        placeholder: { fr: "Bruxelles et Brabant wallon, à distance…", en: "London and Surrey, remotely…" },
+        placeholder: { fr: "Liège et Namur, à distance…", en: "London and Surrey, remotely…" },
       },
       {
         id: "discovery",
