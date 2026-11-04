@@ -8,7 +8,7 @@ export const business = {
   email: "hey@upintown.dev",
   noReplyEmail: "no-reply@upintown.dev",
   phone: { display: "+32 456 97 28 48", e164: phone },
-  areaServed: ["BE"],
+  areaServed: ["BE", "FR"],
   languages: ["fr", "en"],
   openingDays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
   social: {
