@@ -72,28 +72,28 @@ export const descriptions: Record<RouteId, Localized> = {
     en: "Public prices: website creation and monthly plans, with no surprises.",
   },
   projects: {
-    fr: "Sites internet réalisés par UpInTown.",
-    en: "Websites built by UpInTown.",
+    fr: "Exemples de sites internet et d'identités de marque signés UpInTown : boulangerie, dépannage, bien-être, création.",
+    en: "Examples of websites and brand identities by UpInTown: a bakery, appliance repair, wellness and a creative agency.",
   },
   blog: {
     fr: "Conseils pratiques sur les sites internet, Google et l'e-mail professionnel pour les indépendants et petites entreprises.",
     en: "Practical advice on websites, Google and professional email for independents and small businesses.",
   },
   contact: {
-    fr: `Décrivez votre besoin, réponse sous ${workingDays(policies.inquiryReplyWorkingDays, "fr")}.`,
-    en: `Describe what you need, reply within ${workingDays(policies.inquiryReplyWorkingDays, "en")}.`,
+    fr: `Site internet, e-mail ou présence sur Google : décrivez votre besoin, réponse sous ${workingDays(policies.inquiryReplyWorkingDays, "fr")}, puis un court appel gratuit.`,
+    en: `Website, email or Google presence: describe what you need and get a reply within ${workingDays(policies.inquiryReplyWorkingDays, "en")}, then a short free call.`,
   },
   questionnaire: {
     fr: "Vos réponses servent de base à l'appel d'analyse et à la rédaction de vos textes.",
     en: "Your answers are the starting point for the analysis call and for writing your text.",
   },
   legalNotice: {
-    fr: "Mentions légales du site upintown.dev.",
-    en: "Legal notice for upintown.dev.",
+    fr: "Mentions légales du site upintown.dev : éditeur, numéro d'entreprise, hébergeur et contact.",
+    en: "Legal notice for upintown.dev: publisher, company number, hosting provider and contact details.",
   },
   privacy: {
-    fr: "Comment UpInTown traite vos données personnelles.",
-    en: "How UpInTown handles your personal data.",
+    fr: "Comment UpInTown traite vos données personnelles : ce qui est collecté, pourquoi, avec quels prestataires, et quels sont vos droits.",
+    en: "How UpInTown handles your personal data: what is collected, why, with which providers, and what your rights are.",
   },
   terms: {
     fr: "Les conditions de prestation d'UpInTown : projets de site, formules mensuelles et traitement des données.",

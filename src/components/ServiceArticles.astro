@@ -1,0 +1,44 @@
+---
+import PostCard from "./PostCard.astro";
+import Button from "./ui/Button.astro";
+import type { Locale } from "../data/i18n";
+import type { ServiceId } from "../data/offer";
+import { getPosts } from "../data/posts";
+import { path } from "../data/routes";
+
+interface Props {
+  locale: Locale;
+  service: ServiceId;
+}
+
+const { locale, service } = Astro.props;
+
+const posts = (await getPosts(locale)).filter((post) => post.data.service === service).slice(0, 3);
+
+const t = {
+  title: { fr: "Pour aller plus loin", en: "Read more on this" },
+  allPosts: { fr: "Tous les articles", en: "All articles" },
+};
+---
+
+{
+  posts.length > 0 && (
+    <section aria-labelledby="service-articles-title" class="py-12 sm:py-16">
+      <div class="flex flex-wrap items-end justify-between gap-6">
+        <h2 id="service-articles-title" class="text-3xl font-medium tracking-title text-ink">
+          {t.title[locale]}
+        </h2>
+        <Button href={path("blog", locale)} tone="surface" icon={false}>
+          {t.allPosts[locale]}
+        </Button>
+      </div>
+      <ul data-reveal="group" class="mt-10 grid gap-x-3 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+        {posts.map((post) => (
+          <li>
+            <PostCard post={post} locale={locale} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  )
+}

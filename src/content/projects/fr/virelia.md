@@ -1,7 +1,7 @@
 ---
 title: "Virelia"
 sector: "Bien-être et santé"
-summary: "Une identité de marque complète pour une plateforme de bien-être et de santé : un logo, une couleur et un ton qui restent les mêmes, du site internet jusqu'à l'enseigne."
+summary: "Une identité de marque complète pour une plateforme de bien-être et de santé : un logo, une couleur et un ton, du site internet jusqu'à l'enseigne."
 context: "Dans la santé et le bien-être, beaucoup de marques se ressemblent : tons pastel, images froides, messages vagues. L'idée était de créer une marque chaleureuse et assurée, qu'on reconnaît au premier coup d'œil et qui inspire confiance, sur un écran comme dans la rue."
 work:
   - "Un logo au trait souple et personnel, avec un monogramme pour les petits formats"

@@ -1,14 +1,13 @@
 ---
 import Post from "../../../views/Post.astro";
-import { getPosts, postRedirects, type Post as PostEntry } from "../../../data/posts";
+import { getPosts, type Post as PostEntry } from "../../../data/posts";
 
 export async function getStaticPaths() {
   const posts = await getPosts("en");
-  return [...posts.map((post) => ({ params: { slug: post.slug }, props: { post } })), ...(await postRedirects("en"))];
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
 }
 
-const { post, redirect } = Astro.props as { post?: PostEntry; redirect?: string };
-if (redirect) return Astro.redirect(redirect, 301);
+const { post } = Astro.props as { post: PostEntry };
 ---
 
-<Post locale="en" post={post!} />
+<Post locale="en" post={post} />

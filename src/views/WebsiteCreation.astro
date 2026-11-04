@@ -11,6 +11,7 @@ import PriceActions from "../components/PriceActions.astro";
 import Process from "../components/Process.astro";
 import RelatedServices from "../components/RelatedServices.astro";
 import ScopeLists from "../components/ScopeLists.astro";
+import ServiceArticles from "../components/ServiceArticles.astro";
 import ServiceSchema from "../components/ServiceSchema.astro";
 import SplitFeature from "../components/SplitFeature.astro";
 import WritingPreview from "../components/WritingPreview.astro";
@@ -426,6 +427,8 @@ const t = {
     contact={{ ...t.faqContact[locale], href: path("contact", locale) }}
     class="py-12 sm:py-16"
   />
+
+  <ServiceArticles locale={locale} service="website" />
 
   <RelatedServices locale={locale} current="website" />
 

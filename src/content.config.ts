@@ -54,6 +54,8 @@ const posts = defineCollection({
       cover: image(),
       coverAlt: z.string(),
       date: z.coerce.date(),
+      /** Set when the article is substantially revised, shown next to the date. */
+      updated: z.coerce.date().optional(),
       /** The service the article leads to, for its calls to action. */
       service: z.enum(serviceIds),
       /** A project from `src/content/projects` shown as an example, by file name. */

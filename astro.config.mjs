@@ -22,11 +22,15 @@ const translations = new Map(
   }),
 );
 
-// Blog posts with a `urlSlug` also answer at their file name with a redirect, which stays out of the sitemap.
+// Blog posts whose `urlSlug` differs from their file name also answer at the file name with a redirect, which stays
+// out of the sitemap. A `urlSlug` equal to the file name is the post itself and must stay in.
 const postRedirects = new Set(
   locales.flatMap((locale) =>
     readdirSync(`src/content/posts/${locale}`)
-      .filter((file) => /^urlSlug: /m.test(readFileSync(`src/content/posts/${locale}/${file}`, "utf8")))
+      .filter((file) => {
+        const slug = /^urlSlug: "?([a-z0-9-]+)"?\s*$/m.exec(readFileSync(`src/content/posts/${locale}/${file}`, "utf8"));
+        return slug && slug[1] !== file.replace(/\.md$/, "");
+      })
       .map((file) => url(`${routes.blog[locale]}/${file.replace(/\.md$/, "")}`)),
   ),
 );
@@ -72,6 +76,7 @@ export default defineConfig({
     sitemap({
       filter: (page) =>
         !page.startsWith(url("/components")) &&
+        !page.startsWith(url("/signature")) &&
         !postRedirects.has(page.replace(/\/$/, "")) &&
         !Object.values(routes.questionnaire).some((pathname) => page.startsWith(url(pathname))),
       serialize(item) {
