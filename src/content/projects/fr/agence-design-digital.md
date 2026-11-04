@@ -1,7 +1,7 @@
 ---
 title: "Agence de design digital"
 sector: "Agence de création"
-summary: "Un site et une identité de marque pour une agence de solutions digitales : art numérique et graphisme, développement créatif, identité de marque et marketing digital."
+summary: "Un site et une identité de marque pour une agence de solutions digitales : graphisme, développement créatif, identité de marque et marketing."
 context: "Une agence créative vend son imagination : son propre site doit le prouver dès le premier écran. L'idée était de créer une marque audacieuse et un peu ludique, qui présente clairement les quatre métiers de l'agence et donne envie de lancer un projet avec elle."
 work:
   - "Un logo en forme de chat en pixel art, simple et facile à retenir"

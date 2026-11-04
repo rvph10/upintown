@@ -1,7 +1,7 @@
 ---
 title: "Rollin"
 sector: "Boulangerie"
-summary: "Une identité de marque, un site internet et un référencement pour une boulangerie artisanale : pains, gâteaux et cookies faits maison, avec une image chaleureuse et gourmande."
+summary: "Une identité de marque, un site et un référencement pour une boulangerie artisanale : pains, gâteaux et cookies faits maison, avec une image gourmande."
 context: "Beaucoup de boulangeries ont un site daté, ou pas de site du tout, alors que leurs clients cherchent sur Google avant de passer la porte. L'idée était de créer une marque joyeuse et gourmande, qu'on reconnaît aussi bien sur un gobelet que sur un écran, et un site qui donne envie de passer commande."
 work:
   - "Un logo en lettres arrondies et généreuses, avec un point orange comme signature"
