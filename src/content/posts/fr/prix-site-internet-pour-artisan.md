@@ -50,7 +50,7 @@ Un interlocuteur unique. Une seule personne suit votre site, de la création à 
 
 Vous restez propriétaire. Le nom de domaine, le site et les contenus restent les vôtres. UpInTown travaille à distance, pour des clients partout en Belgique francophone, que vous soyez à Liège, Namur, Charleroi, Mons ou Wavre.
 
-Le référencement local fait aussi partie de la démarche, avec le suivi de votre fiche Google, de vos avis et des annuaires comme les Pages d'Or. UpInTown explique chaque terme simplement, sans promettre de place dans les résultats de recherche.
+Le référencement local s'ajoute à partir de la formule Visibilité, avec le suivi de votre fiche Google, de vos avis et des annuaires comme les Pages d'Or. UpInTown explique chaque terme simplement, sans promettre de place dans les résultats de recherche.
 
 ## Ce qui fait varier la facture, quel que soit votre choix
 

@@ -64,8 +64,8 @@ export const descriptions: Record<RouteId, Localized> = {
     en: "Website maintenance and hosting: security, domain name, professional email address and small changes, at a fixed monthly price.",
   },
   localSeo: {
-    fr: "Référencement local (SEO) : fiche Google, avis, annuaires et pages de votre site suivis chaque mois pour être trouvé sur Google et Google Maps.",
-    en: "Local SEO: Google profile, reviews, directories and your site's pages adjusted so customers find you on Google and Google Maps.",
+    fr: "Référencement local : fiche Google, avis et annuaires suivis chaque mois, et vos pages ajustées avec Croissance, pour être trouvé près de chez vous.",
+    en: "Local SEO: Google profile, reviews and directories looked after monthly, with your pages adjusted on Growth, so customers near you find you.",
   },
   pricing: {
     fr: "Tarifs publics : création de site internet et formules mensuelles, sans surprise.",
