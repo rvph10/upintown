@@ -27,11 +27,13 @@ export async function postAlternates(key: string): Promise<Partial<Localized>> {
   );
 }
 
-/** Pages for each post's file name when its address differs (Holo's slug, earlier addresses), so old links still work. */
-export async function postRedirects(locale: Locale) {
-  return (await getPosts(locale))
-    .filter((post) => post.key !== post.slug)
-    .map((post) => ({ params: { slug: post.key }, props: { redirect: postPath(post.slug, locale) } }));
+/** Where each post's file name leads when its address differs (Holo's slug, earlier addresses), so old links still work. */
+export async function postRedirects(): Promise<Map<string, string>> {
+  return new Map(
+    (await getPosts())
+      .filter((post) => post.key !== post.slug)
+      .map((post) => [postPath(post.key, post.locale), postPath(post.slug, post.locale)]),
+  );
 }
 
 export function formatPostDate(date: Date, locale: Locale): string {
