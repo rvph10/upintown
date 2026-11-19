@@ -1,6 +1,6 @@
 import type { Localized } from "./i18n";
 
-// No runtime imports: `scripts/holo-import.ts` loads this file directly with Node.
+// No runtime imports: the blog scripts load this file directly with Node.
 export const blogCategoryIds = ["website", "google", "email", "care", "advice"] as const;
 export type BlogCategoryId = (typeof blogCategoryIds)[number];
 

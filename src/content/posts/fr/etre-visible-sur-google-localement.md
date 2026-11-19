@@ -9,7 +9,6 @@ cover: ../../../assets/blog/etre-visible-sur-google-localement/cover.webp
 coverAlt: "Par-dessus l'épaule d'une personne qui tient un smartphone et touche l'écran, où s'affichent une carte avec un repère et une fiche d'entreprise avec cinq étoiles."
 date: 2026-11-04
 service: google
-holoId: "15fbaed0-2782-4267-bcd5-0259c9a1086e"
 ---
 
 Une question revient souvent chez les indépendants et les petites entreprises : comment être trouvé sur Google par les clients du quartier ou de la commune ? La réponse tient à quelques réglages simples, puis à une présence suivie dans le temps. Voici les questions les plus fréquentes, avec des réponses concrètes.
