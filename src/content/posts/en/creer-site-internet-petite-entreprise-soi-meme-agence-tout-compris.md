@@ -10,7 +10,6 @@ coverAlt: "Over the shoulder of a person holding a tablet and tapping a page blo
 date: 2026-10-18
 updated: 2026-11-04
 service: website
-holoId: "985fc961-3d4a-4b21-8777-3770100fb388"
 ---
 
 You need a website for your small business, and three routes are open to you. The first is to build it yourself. The second is to go through a traditional agency. The third is to hand everything over to an all-inclusive service at a fixed price. Each has a real cost, in money, in time and in energy. Here is what each option really asks of you, so that you can choose with your eyes open.

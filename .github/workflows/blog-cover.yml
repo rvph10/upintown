@@ -1,4 +1,4 @@
-# Generates a new cover for one blog post and proposes it in a pull request: on the article's holo/<slug> branch
+# Generates a new cover for one blog post and proposes it in a pull request: on the article's blog/<slug> branch
 # when it is still under review, else on a cover/<slug> branch from main.
 name: Blog cover
 
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       slug:
-        description: "Post file name (the Holo slug)"
+        description: "Post file name (without .md)"
         required: true
       hint:
         description: "Optional direction, for example: a phone instead, top-down"
@@ -50,11 +50,11 @@ jobs:
 
       - name: Take the post from its review branch, if any
         run: |
-          if git fetch --no-tags origin "refs/heads/holo/$SLUG:refs/remotes/origin/holo/$SLUG"; then
-            echo "BRANCH=holo/$SLUG" >> "$GITHUB_ENV"
+          if git fetch --no-tags origin "refs/heads/blog/$SLUG:refs/remotes/origin/blog/$SLUG"; then
+            echo "BRANCH=blog/$SLUG" >> "$GITHUB_ENV"
             # Only the post files: scripts always run from main.
-            git checkout "origin/holo/$SLUG" -- "src/content/posts/fr/$SLUG.md" "src/content/posts/en/$SLUG.md"
-            git checkout "origin/holo/$SLUG" -- "src/assets/blog/$SLUG" 2>/dev/null || true
+            git checkout "origin/blog/$SLUG" -- "src/content/posts/fr/$SLUG.md" "src/content/posts/en/$SLUG.md"
+            git checkout "origin/blog/$SLUG" -- "src/assets/blog/$SLUG" 2>/dev/null || true
           else
             echo "BRANCH=cover/$SLUG" >> "$GITHUB_ENV"
           fi
@@ -84,7 +84,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add src/content/posts src/assets/blog
-          if [[ "$BRANCH" == holo/* ]]; then
+          if [[ "$BRANCH" == blog/* ]]; then
             # Keep the review branch's history: the new commit goes on top of it.
             tree=$(git write-tree)
             commit=$(git commit-tree "$tree" -p "origin/$BRANCH" -m "New cover for $SLUG")

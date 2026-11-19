@@ -27,7 +27,7 @@ export async function postAlternates(key: string): Promise<Partial<Localized>> {
   );
 }
 
-/** Where each post's file name leads when its address differs (Holo's slug, earlier addresses), so old links still work. */
+/** Where each post's file name leads when its address differs (earlier addresses), so old links still work. */
 export async function postRedirects(): Promise<Map<string, string>> {
   return new Map(
     (await getPosts())

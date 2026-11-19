@@ -60,8 +60,6 @@ const posts = defineCollection({
       service: z.enum(serviceIds),
       /** A project from `src/content/projects` shown as an example, by file name. */
       project: z.string().optional(),
-      /** Holo article id, for articles imported by `scripts/holo-import.ts`. */
-      holoId: z.string().optional(),
       /** Drafts show in development only. */
       draft: z.boolean().default(false),
     }),

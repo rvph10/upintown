@@ -2,8 +2,8 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 
-// Override with HOLO_AI_MODEL to compare models on the same article.
-export const model = process.env.HOLO_AI_MODEL ?? "claude-sonnet-5-5";
+// Override with BLOG_AI_MODEL to compare models on the same article.
+export const model = process.env.BLOG_AI_MODEL ?? "claude-sonnet-5-5";
 // Haiku has no server-side refusal fallback.
 const fallback = model.startsWith("claude-haiku")
   ? {}

@@ -9,7 +9,6 @@ cover: ../../../assets/blog/etre-visible-sur-google-localement/cover.webp
 coverAlt: "Over the shoulder of a person holding a smartphone and tapping the screen, which shows a map with a pin and a business card with five stars."
 date: 2026-11-04
 service: google
-holoId: "15fbaed0-2782-4267-bcd5-0259c9a1086e"
 ---
 
 Among independents and small businesses, one question comes up again and again: how do you get found on Google by customers in your neighbourhood or town? The answer comes down to a few simple settings, then a presence that is looked after over time. Here are the most common questions, with practical answers.

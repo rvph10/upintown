@@ -10,7 +10,6 @@ coverAlt: "Par-dessus l'épaule d'une personne qui tient une tablette et touche 
 date: 2026-10-18
 updated: 2026-11-04
 service: website
-holoId: "985fc961-3d4a-4b21-8777-3770100fb388"
 ---
 
 Vous devez créer votre site internet pour votre petite entreprise, et quatre voies s'ouvrent devant vous. La première consiste à le construire vous-même. La deuxième, à le faire générer par un outil d'intelligence artificielle. La troisième passe par une agence classique. La quatrième consiste à confier l'ensemble à un service tout compris, à prix fixe. Chacune a un coût réel, en argent, en temps et en énergie. Voici ce que chaque option demande vraiment, pour que vous puissiez choisir en connaissance de cause.

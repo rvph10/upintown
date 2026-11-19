@@ -10,7 +10,6 @@ coverAlt: "A person seen from behind holds a tablet and taps the middle card, ma
 date: 2026-10-22
 updated: 2026-11-04
 service: website
-holoId: "d260abf8-3e27-45f1-b32f-b2aafedbcd0e"
 ---
 
 A plumber, electrician or joiner doesn't need the same website as a marketing agency. Their customers are often searching on a phone, sometimes in a hurry, and want two answers: "Do they work where I live?" and "How do I reach them?". So the right price depends on what your site actually has to do. For what a quote usually covers, see [how much a small business website costs](/en/blog/website-cost). Here, the focus is on what changes for someone in the trades.

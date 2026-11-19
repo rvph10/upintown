@@ -10,7 +10,6 @@ coverAlt: "Une personne vue de dos tient une tablette et touche du doigt la cart
 date: 2026-10-22
 updated: 2026-11-04
 service: website
-holoId: "d260abf8-3e27-45f1-b32f-b2aafedbcd0e"
 ---
 
 Un plombier, un électricien ou un menuisier n'a pas besoin du même site qu'une agence de communication. Ses clients cherchent souvent depuis leur téléphone, parfois dans l'urgence, et veulent une réponse à deux questions : « Est-ce qu'il travaille chez moi ? » et « Comment je le joins ? ». Le juste prix dépend donc de ce que votre site doit vraiment faire. Pour le détail de ce que comprend un devis en général, voyez [le prix d'un site internet](/blog/prix-site-internet). Ici, on regarde ce qui change pour un artisan.
